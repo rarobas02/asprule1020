@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="../asprule1020.DataAccess/asprule1020.DataAccess.csproj" />
+  <Project Path="../asprule1020.Models/asprule1020.Models.csproj" />
+  <Project Path="../asprule1020.Utility/asprule1020.Utility.csproj" />
+  <Project Path="asprule1020.csproj" />
+</Solution>
