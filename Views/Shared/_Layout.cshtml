@@ -1,50 +1,128 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - asprule1020</title>
+    <base href="./">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <meta name="author" content="remark">
+    <meta name="keyword" content="rule1020">
+    <meta name="description" content="sample web form">
+    <link rel="shortcut icon" href="assets/img/icon/form-system-logo-triangle.png" type="image/x-icon" />
+    <title> Region 4a (CALABARZON) Registration of Establishment Under Rule 1020</title>
+
+    <meta property="og:title" content="<?= $meta_og_title ?>" />
+    <meta property="og:image"
+          content="<?= ($meta_og_image != '') ? 'assets/img/logo/' . $meta_og_image . '?' . filemtime('assets/img/logo/' . $meta_og_image) : ''; ?>" />
+    <meta property=’og:description’ content="<?= $meta_og_description ?>" />
+    <meta property=’og:url’ content="<?= $meta_og_url ?>" />
+    <meta property='og:image:width' content='1200' />
+    <meta property='og:image:height' content='627' />
+    <meta property="og:type" content='website' />
+    <!-- Bootstrap and Core UI Icons; Library: https://icons.coreui.io/icons -->
+    <!-- <link rel="stylesheet" href="../assets/bootstrap5/css/bootstrap.css"> -->
+    <title>@ViewData["Title"] </title>
     <script type="importmap"></script>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/asprule1020.styles.css" asp-append-version="true" />
 </head>
+
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">asprule1020</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                    </ul>
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container-fluid">
+
+            <a href="https://calabarzon.form.gov.ph" target="_blank" class="navbar-brand">
+                <img class="h-50" src="assets/img/icon/form-system-logo-triangle.png" alt=" LOGO">
+            </a>
+            <div class="col text-light">
+                <h1 class="d-flex"><strong>RULE 1020 ONLINE</strong></h1>
+                <h6>&nbsp;REMARK A. ROBAS</h6>
+            </div>
+            <div class="collapse navbar-collapse" id="navbarCollapse">
+                <div class="navbar-nav ms-auto">
+                    <div id="myModal" class="modal">
+                        <div class="bg-login min-vh-100 d-flex flex-row align-items-center">
+                            <div class="container">
+                                <div class="row justify-content-center">
+                                    <div class="col-xl-5 col-md-8">
+                                        <div class="card-group d-block d-md-flex row">
+                                            <!-- <span class="close">&times;</span> -->
+                                            <div class="card col-md-7 p-2 mb-2">
+                                                <div class="modal-content">
+
+                                                    <!--Header-->
+                                                    <div class="text-center mb-8 bg-primary text-light">
+                                                        <br>
+                                                        <div style="font-size: 2.5rem;" class="mt-1">
+                                                            <strong>
+                                                                <h3>Rule 1020 Online Application</h3>
+                                                            </strong>
+                                                        </div>
+
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
+        </div>
+    </nav>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2026 - asprule1020 - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+    @RenderBody()
+    <hr>
+    <footer>
+        <div class="row d-flex flex-row">
+            <div class="col-md-6 bg-white">
+                <!-- <p>&copy; 2023 <a href="https://calabarzon.form.gov.ph" class="text-dark"> CALABARZON</a>
+                </p> -->
+                <h3>
+                    <img src="assets/img/form-logo-decent.png" style="max-width: 10%;height: auto;"><a href="https://calabarzon.form.gov.ph" class="px-2 text-decoration-none">
+                        <span class="m-3 h5"> CALABARZON</span>
+                </h3></a>
+            </div>
+            <div class="col-md-6 text-md-end d-flex flex-row-reverse bg-white">
+                <h3>
+                    <a href="#" class="btn btn-outline-primary btn-icon-split btn-lg mx-3">
+                        <span class="icon text-primary">
+                            <i class="p-2 fab fa-instagram"></i>
+                        </span>Instagram</span>
+                    </a>
+                </h3>
+                <div class="vr text-primary"></div>
+                <h3>
+                    <a href="https://facebook.com/4A"
+                       class="btn btn-outline-primary btn-icon-split btn-lg mx-3">
+                        <span class="icon text-primary">
+                            <i class="p-2 fab fa-facebook"></i>
+                        </span>Facebook
+                    </a>
+                </h3>
+            </div>
         </div>
     </footer>
+
+    <script defer src="assets/design_vendor/bootstrap5/js/bootstrap.bundle.js"></script>
+
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"
+            integrity="sha512-qTXRIMyZIFb8iQcfjXWCO8+M5Tbc38Qi5WzdPOYZHIlZpzBHG3L3by84BBBOiRGiEb7KKtAOAs5qYdUiZiQNNQ=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <script type="text/javascript" src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="index.js"></script>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
+
 </html>

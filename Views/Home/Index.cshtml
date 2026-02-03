@@ -1,8 +1,175 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Registration of Establishment Under Rule 1020";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container-fluid">
+    <div class="p-3 my-3">
+        <div class="row text-center fs-3">
+            <div class="col-12 ">
+                <div class="alert alert-primary " role="alert">
+                    <strong>
+                        <a style="color:red"> </a> <a style="color:red">
+                            WELCOME TO <span style="color: blue;">RULE 1020 </span>ONLINE FORM!
+                        </a>
+                    </strong>
+                    <div class="row text-center fs-3">
+                        <div class="col-12 ">
+                            <div class="h6" role="alert">
+                                <strong>
+                                    <a style="color:red"> </a> <a style="color:red">
+                                        ALL<span style="color: blue;"> RULE 1020 </span>TRANSACTION ARE<span style="color: blue;"> FREE OF CHARGE</span>
+                                    </a>
+                                </strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row mb-4 d-flex justify-content-evenly flex-wrap">
+        <div class="col-md-12 flex-center"></div>
+        <div class="col-md-4">
+            <div class=" col-lg-12">
+                <div class="card-body text-center">
+                    <img src="assets/img/icon/registration.png" class="card-img-top " alt="Rule 1020 Application"
+                         style="width:50%">
+                    <h2 class="text-primary"><strong><br>NEW APPLICATION</strong></h2>
+                    <p><a href="client/register" class="btn btn-primary">Apply</a></p>
+                    <p>
+                        For the Establishment <span class="text-danger">WITHOUT</span> an Existing Rule 1020 Online
+                        Registration.
+                    </p>
+
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class=" col-lg-12">
+                <div class="card-body text-center">
+                    <img style="width:50%" src="assets/img/icon/updating.png" class="card-img-top h-50"
+                         alt="Rule 1020 Update">
+                    <!-- <span class="tooltip" data-hover="For updating of establishment"></span> -->
+                    <h2 class="text-primary"><strong><br>FOR UPDATING</strong></h2>
+                    <p><a href="client/update-details" class="btn btn-primary">Update </a></p>
+                    <p class="justi-text text-justify">
+                        Rule 1020 <span class="text-success">APPROVED</span>
+                        application subject to modification of
+                        Name, Location, Ownership, SEC, Mayor's permit, Valid National ID, and Opening after
+                        previous closing.
+                    </p>
+
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-12"></div>
+        </div>
+        <!-- <div class="col-md-4">
+            <div class="col-lg-12">
+                <div class="card-body text-center">
+                    <img style="width:50%" src="assets/img/icon/registration.png" class="card-img-top h-50" alt="CSHP Simplified">
+                     <span class="tooltip" data-hover="For DPWH Project/Other public or private construction project/Residential project engaging the services of a construction firm"></span>
+                    <h2><strong><br>Re-application</strong></h2>
+                    <p></p>
+                    <p><a href="client/reapplication.php" target="_blank" class="btn btn-primary">Re-application </a></p>
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-12"></div>
+        </div> -->
+        <!-- <div class="col-md-4" &raquo;>
+        <h2>Bootstrap</h2>
+        <p>Bootstrap is a powerful front-end framework for faster and easier web development. Our Bootstrap tutorials will help you to learn all the features of latest Bootstrap 4 framework so that you can easily create responsive websites.</p>
+        <p><a href="https://www.tutorialrepublic.com/twitter-bootstrap-tutorial/" target="_blank" class="btn btn-success">Learn More &raquo;</a></p>
+        </div> -->
+
+    </div>
+    <div class="container-fluid p-3 bg-primary text-light">
+        <div class="row mb-2 my-2 text-center">
+            <h5>
+                <strong>
+                    Enter the Rule 1020 Application Number here to monitor and validate the Rule 1020
+                    application.
+                </strong>
+            </h5>
+        </div>
+        <div class="row mb-4 my-2 d-flex justify-content-around">
+            <div class="col-sm-4 align-items-center col-lg-3 d-flex justify-content-center">
+                <h6>Tracking Number:</h6>
+            </div>
+            <div class="col-sm-4 my-2 col-lg-6 d-flex align-items-center">
+                <input type="text" name="tr_no" id="tr_no" class="tr_no form-control" required=""
+                       placeholder="Input tracking number e.g.(RO4A-1020-XXX-XXXX-XXXX)">
+            </div>
+            <div class="col-sm-4 col-lg-3 my-2 d-flex align-items-center justify-content-center">
+                <!-- <button id="btn_track" class="btn btn-light btn-md "><i class="cil-magnifying-glass"></i>&nbsp;&nbsp;&nbsp;Track Request</button> -->
+                <button type="button" name="submit" id="submit" class="btn btn-light btn-md">
+                    <i class="cil-magnifying-glass"></i>&nbsp;&nbsp;&nbsp;Track Request
+                </button>
+            </div>
+        </div>
+        <div class="row alert alert-primary " role="alert">
+            <p class="text-center">
+                <strong>
+                    For follow-up and other concerns, please contact your respective
+                    Offices listed below:
+                </strong> <br><br>
+                <strong>
+                    Cavite Provincial Office - &nbsp; &nbsp; &nbsp;<a style="color:red">
+                        (046) 423-3223 / (046)
+                        419-0830 / (046) 419-1996; _cavite@yahoo.com / cpo.4a@gmail.com
+                    </a><br>
+                    Laguna Provincial Office - &nbsp;&nbsp; <a style="color:red">
+                        (049) 545-7361 / (049)
+                        545-7358; lpo_4a@yahoo.com / lpo.4a@gmail.com
+                    </a><br>
+                    Batangas Provincial Office - <a style="color:red">(043) 726-9972; ro4a_batangas@form.gov.ph</a><br>
+                    Rizal Provincial Office - &nbsp; &nbsp; &nbsp; &nbsp;<a style="color:red">
+                        (02) 212-1648 /
+                        (02)
+                        682-1532; 4a_rpo@yahoo.com
+                    </a><br>
+                    Quezon Provincial Office -&nbsp;&nbsp; <a style="color:red">(042) 785-0894; 4a.quezon@gmail.com</a>
+                </strong>
+            </p>
+        </div>
+
+        <!-- Modal -->
+        <div class="modal fade" id="view_status" data-bs-keyboard="true" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5 text-primary">Rule 1020 Application Status</h1>
+                        <button type="button" class="btn-close" id="" data-bs-dismiss="modal"
+                                aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+
+                        <dl class="row text-secondary">
+                            <!-- employer details review -->
+                            <dt class="col-sm-12 col-lg-4">Transaction #:</dt>
+                            <dd class="col-sm-12 col-lg-8" id="trans"></dd>
+
+                            <dt class="col-sm-12 col-lg-4">Registration Date:</dt>
+                            <dd class="col-sm-12 col-lg-8" id="est_regdate"></dd>
+
+                            <dt class="col-sm-12 col-lg-4">Evaluation Date:</dt>
+                            <dd class="col-sm-12 col-lg-8" id="est_dateeval"></dd>
+
+                            <dt class="col-sm-12 col-lg-4">Decision Date:</dt>
+                            <dd class="col-sm-12 col-lg-8" id="est_datesigned"></dd>
+
+                            <dt class="col-sm-12 col-lg-4">Status:</dt>
+                            <dd class="col-sm-12 col-lg-8" id="status"></dd>
+                        </dl>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-sm btn-danger" id="understood"
+                                    data-bs-dismiss="modal">
+                                Close
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
