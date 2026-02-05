@@ -22,6 +22,6 @@ app.MapStaticAssets();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{area=Client}/{controller=Home}/{action=Index}/{id?}");
+    pattern: "{area=Client}/{controller=Register}/{action=Index}/{id?}");
 
 app.Run();

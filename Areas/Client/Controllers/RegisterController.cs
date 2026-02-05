@@ -4,13 +4,13 @@ namespace asprule1020.Areas.Client.Controllers
 {
     [Area("Client")]
 
-    public class HomeController : Controller
+    public class RegisterController : Controller
     {
         public IActionResult Index()
         {
             return View();
         }
-        public IActionResult Register()
+        public IActionResult New()
         {
             return View();
         }
