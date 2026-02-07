@@ -3,6 +3,20 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
+#Upload files
+# Include specific directories
+#!Uploads/bus_perm/
+#!Uploads/sec_dti/
+#!Uploads/valid_id/
+#!Uploads/upload_cert/
+
+# Exclude their contents
+#Uploads/bus_perm/*
+#Uploads/sec_dti/*
+#Uploads/valid_id/*
+#Uploads/upload_cert/*
+
+
 # User-specific files
 *.rsuser
 *.suo

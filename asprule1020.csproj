@@ -24,4 +24,11 @@
     <ProjectReference Include="..\asprule1020.Utility\asprule1020.Utility.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Uploads\bus_perm\" />
+    <Folder Include="Uploads\upload_cert\" />
+    <Folder Include="Uploads\valid_id\" />
+    <Folder Include="Uploads\sec_dti\" />
+  </ItemGroup>
+
 </Project>
