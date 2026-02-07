@@ -22,6 +22,12 @@ namespace asprule1020.Areas.Client.Controllers
         {
             return View();
         }
+        public IActionResult New()
+        {
+            
+            return View();
+        }
+        [HttpPost]
         public IActionResult New(RegisterVM registerVM, IFormFile? file)
         {
             if (ModelState.IsValid)
