@@ -34,50 +34,49 @@
                     <p class="text-secondary mb-0">Complete the form below to get started.</p>
                 </div>
 
-                <form
-                      method="post"
+                <form method="post"
                       class="row g-4 needs-validation" id="register_new"
                       novalidate>
 
                     <div class="col-md-6">
                         <label asp-for="userName" class="form-label">Set Account Username / NickName</label>
-                        <input asp-for="userName" type="text" class="form-control" id="userName" placeholder="Jane" required />
-                        <div class="invalid-feedback">First name is required.</div>
+                        <input asp-for="userName" type="text" class="form-control" id="userName" placeholder="Username" required />
+                        <div class="invalid-feedback">Username is required.</div>
                     </div>
                     <div class="col-md-6">
                         <label asp-for="estEmail" class="form-label">Establishment Email Address</label>
-                        <input asp-for="estEmail" type="text" class="form-control" id="estEmail" placeholder="Jane" required />
-                        <div class="invalid-feedback">First name is required.</div>
+                        <input asp-for="estEmail" type="text" class="form-control" id="estEmail" placeholder="ex. janedoe@gmail.com" required />
+                        <div class="invalid-feedback">Email is required.</div>
                     </div>
                     <div class="col-md-6">
                         <label asp-for="estPhone" class="form-label">Establishment Cellphone / Telephone Number</label>
-                        <input asp-for="estPhone" type="text" class="form-control" id="estPhone" placeholder="+1 (555) 012-3456" required />
-                        <label for="phone" class="form-label">Phone number</label>
-                        <div class="invalid-feedback">First name is required.</div>
+                        <input asp-for="estPhone" type="text" class="form-control" id="estPhone" placeholder="ex. +63 (02) 012-3456 /09********" required />
+                        <div class="invalid-feedback">Cellphone/Telephone Number is required.</div>
                     </div>
                     <div class="col-md-6">
                         <label asp-for="password" class="form-label">Password</label>
-                        <input asp-for="password" type="password" class="form-control" id="password" placeholder="Jane" required />
-                        <div class="invalid-feedback">First name is required.</div>
+                        <input asp-for="password" type="password" class="form-control" id="password" placeholder="Password" required />
+                        <div class="invalid-feedback">Password is required.</div>
                     </div>
                     <div class="col-md-6">
                         <label asp-for="estName" class="form-label">Establishment Name</label>
-                        <input asp-for="estName" type="text" class="form-control" id="estName" placeholder="Jane" required />
-                        <div class="invalid-feedback">First name is required.</div>
+                        <input asp-for="estName" type="text" class="form-control" id="estName" placeholder="Establishment Name" required />
+                        <div class="invalid-feedback">Establishment Name is required.</div>
                     </div>
                     <div class="col-md-6">
                         <label asp-for="estType" class="form-label">Establishment Type</label>
-                        <select asp-for="estType" class="form-select border-0 shadow" id="estType">
-                                <option value="" selected disabled>Select type of Establishment</option>
-                                <option value="SINGLE ESTABLISHMENT">Single Establishment (Main Branch)
-                                </option>
-                                <option value="BRANCH ONLY">Branch Only (Branch Unit)></option>
+                        <select asp-for="estType" class="form-select" id="estType">
+                            <option value="" selected disabled>Select type of Establishment</option>
+                            <option value="SINGLE ESTABLISHMENT">
+                                Single Establishment (Main Branch)
+                            </option>
+                            <option value="BRANCH ONLY">Branch Only (Branch Unit)></option>
                         </select>
                         <div class="invalid-feedback">First name is required.</div>
                     </div>
                     <div class="col-md-6">
-                        <label asp-for="estLegalOrg" class="form-label">Username / NickName</label>
-                        <select asp-for="estLegalOrg" class="form-select border-0 shadow" id="estLegalOrg" required>
+                        <label asp-for="estLegalOrg" class="form-label">Legal Organization</label>
+                        <select asp-for="estLegalOrg" class="form-select" id="estLegalOrg" required>
                             <option value="" selected disabled>Select Legal Organization</option>
                             <option value="SINGLE PROPRIETORSHIP">
                                 Single Proprietorship
@@ -92,14 +91,14 @@
                         <div class="invalid-feedback">First name is required.</div>
                     </div>
                     <div class="col-md-6">
-                        <label asp-for="estLegalOrgOther" class="form-label">Establishment Name</label>
-                        <input asp-for="estLegalOrgOther" type="text" class="form-control" id="estLegalOrgOther" placeholder="Jane" required />
-                        <div class="invalid-feedback">First name is required.</div>
+                        <label asp-for="estLegalOrgOther" class="form-label">Other Legal Organization</label>
+                        <input asp-for="estLegalOrgOther" type="text" class="form-control" id="estLegalOrgOther" placeholder="Input the legal organization type" required />
+                        <div class="invalid-feedback">Legal Organization is required.</div>
                     </div>
                     <div class="col-md-6">
                         <label asp-for="estRegion" class="form-label">Region</label>
                         <select asp-for="estRegion"
-                                class="form-select border-0 shadow"
+                                class="form-select "
                                 id="estRegion">
                             <option value="" disabled selected>Select Region</option>
                             <option value="Region IV-A (CALABARZON)">Region IV-A (CALABARZON)</option>
@@ -109,7 +108,7 @@
                     <div class="col-md-6">
                         <label asp-for="estProvince" class="form-label">Province</label>
                         <select asp-for="estProvince"
-                                class="form-select border-0 shadow"
+                                class="form-select "
                                 id="estProvince"
                                 disabled>
                             <option value="" disabled selected>Select Province</option>
@@ -119,7 +118,7 @@
                     <div class="col-md-6">
                         <label asp-for="estCityMun" class="form-label">City / Municipality</label>
                         <select asp-for="estCityMun"
-                                class="form-select border-0 shadow"
+                                class="form-select "
                                 id="estCityMun"
                                 disabled>
                             <option value="" disabled selected>Select City/Municipality</option>
@@ -129,7 +128,7 @@
                     <div class="col-md-6">
                         <label asp-for="estBrgy" class="form-label">Barangay</label>
                         <select asp-for="estBrgy"
-                                class="form-select border-0 shadow"
+                                class="form-select "
                                 id="estBrgy"
                                 disabled>
                             <option value="" disabled selected>Select Barangay</option>
@@ -138,7 +137,7 @@
                     </div>
                     <div class="col-md-6">
                         <label asp-for="estStreet" class="form-label"> Street Address/ Floor/ Bldg. No./ Subdivision:</label>
-                        <input asp-for="estStreet" type="text" class="form-control" id="userName" placeholder="Jane" required />
+                        <input asp-for="estStreet" type="text" class="form-control" id="estStreet" placeholder="ex. 45 Sesame Street" required />
                         <div class="invalid-feedback">Street Address is required.</div>
                     </div>
                     <div class="col-md-6">
@@ -146,7 +145,7 @@
                             First Name of
                             Manager/Owner
                         </label>
-                        <input asp-for="estOwnerFirst" type="text" class="form-control" id="userName" placeholder="Jane" required />
+                        <input asp-for="estOwnerFirst" type="text" class="form-control" id="estOwnerFirst" placeholder="ex. Jane" required />
                         <div class="invalid-feedback">First name is required.</div>
                     </div>
                     <div class="col-md-6">
@@ -154,34 +153,34 @@
                             Middle Name of
                             Manager/Owner:
                         </label><span class="text-muted">(Leave Blank if None)</span>
-                        <input asp-for="estOwnerMid" type="text" class="form-control" id="userName" placeholder="Jane" />
-                        <div class="invalid-feedback">First name is required.</div>
+                        <input asp-for="estOwnerMid" type="text" class="form-control" id="estOwnerMid" placeholder="ex. Opal" />
+                        <div class="invalid-feedback">Middle name is required.</div>
                     </div>
                     <div class="col-md-6">
                         <label asp-for="estOwnerLast" class="form-label">
                             Last Name of
                             Manager/Owner
                         </label>
-                        <input asp-for="estOwnerLast" type="text" class="form-control" id="userName" placeholder="Jane" required />
-                        <div class="invalid-feedback">First name is required.</div>
+                        <input asp-for="estOwnerLast" type="text" class="form-control" id="estOwnerLast" placeholder="ex. Doe" required />
+                        <div class="invalid-feedback">Last name is required.</div>
                     </div>
                     <div class="col-md-6">
                         <label asp-for="estCurrentCap" class="form-label">
                             Current Capitalization
                         </label>
-                        <input asp-for="estCurrentCap" type="text" class="form-control" id="userName" placeholder="Jane" required />
+                        <input asp-for="estCurrentCap" type="text" class="form-control" id="estCurrentCap" required />
                         <div class="invalid-feedback">First name is required.</div>
                     </div>
                     <div class="col-md-6">
                         <label asp-for="estTotalAssets" class="form-label">
-                            Current Capitalization
+                            Total Assets
                         </label>
-                        <input asp-for="estTotalAssets" type="text" class="form-control" id="userName" placeholder="Jane" required />
-                        <div class="invalid-feedback">First name is required.</div>
+                        <input asp-for="estTotalAssets" type="text" class="form-control" id="estTotalAssets" required />
+                        <div class="invalid-feedback">Total Assets name is required.</div>
                     </div>
                     <div class="col-md-6">
                         <label asp-for="estBusinessNature" class="form-label">Region</label>
-                        <select asp-for="estBusinessNature" class="form-select border-0 shadow">
+                        <select asp-for="estBusinessNature" class="form-select " id="estBusinessNature">
                             <option value="" selected disabled>Select Nature of Business</option>
                             <option value="Agriculture, Forestry, and Fishing">
                                 Agriculture,
@@ -255,28 +254,28 @@
                             </option>
                             <option value="Others,Please Specify">Others,Please Specify</option>
                         </select>
-                        <div class="invalid-feedback">First name is required.</div>
+                        <div class="invalid-feedback">Business Nature is required.</div>
                     </div>
 
                     <div class="col-md-6">
                         <label asp-for="estOtherBusNature" class="form-label">Specify Business Nature</label>
-                        <input asp-for="estOtherBusNature" type="text" class="form-control" id="userName" placeholder="Jane" required />
-                        <div class="invalid-feedback">First name is required.</div>
+                        <input asp-for="estOtherBusNature" type="text" class="form-control" id="estOtherBusNature"  required />
+                        <div class="invalid-feedback">Other Business Nature is required.</div>
                     </div>
                     <div class="col-md-6">
                         <label asp-for="estMaleCount" class="form-label">Number of Male Employees</label>
-                        <input asp-for="estMaleCount" type="text" class="form-control" id="userName" placeholder="Jane" required />
-                        <div class="invalid-feedback">First name is required.</div>
+                        <input asp-for="estMaleCount" type="text" class="form-control" id="estMaleCount"  required />
+                        <div class="invalid-feedback">Number of Female Employee is required.</div>
                     </div>
                     <div class="col-md-6">
                         <label asp-for="estFemaleCount" class="form-label">Number of Female Employees</label>
-                        <input asp-for="estFemaleCount" type="text" class="form-control" id="userName" placeholder="Jane" required />
-                        <div class="invalid-feedback">First name is required.</div>
+                        <input asp-for="estFemaleCount" type="text" class="form-control" id="estFemaleCount"  required />
+                        <div class="invalid-feedback">Number of Female Employee is required.</div>
                     </div>
                     <div class="col-md-6">
-                        <label asp-for="estTotalEmployees" class="form-label">Number of Female Employees</label>
-                        <input asp-for="estTotalEmployees" type="text" class="form-control" id="userName" placeholder="Jane" required />
-                        <div class="invalid-feedback">First name is required.</div>
+                        <label asp-for="estTotalEmployees" class="form-label">Total Number of Employees</label>
+                        <input asp-for="estTotalEmployees" type="text" class="form-control" id="estTotalEmployees"  required />
+                        <div class="invalid-feedback">Number of Total Employee is required.</div>
                     </div>
                     <div class="row mb-2">
                         <div class="col-lg-12">
@@ -285,7 +284,7 @@
                                 Information 1:
                             </label>
                             <br>
-                            <div class="d-flex flex-wrap gap-4 rounded p-2 bg-light">
+                            <div class="d-flex flex-wrap gap-4 rounded p-2 bg-body-secondary bg-gradient text-black">
                                 @foreach (var option in techInfo1Options)
                                 {
                                     var checkboxId = $"techInfo1_{option.Replace(" ", "")}";
@@ -311,16 +310,16 @@
                         </div>
                     </div>
                     <div class="col-md-6">
-                        <label asp-for="estTechInfo1Other" class="form-label">Provide Other Technical Information</label>
-                        <input asp-for="estTechInfo1Other" type="text" class="form-control" id="userName" placeholder="Jane" />
-                        <div class="invalid-feedback">First name is required.</div>
+                        <label asp-for="estTechInfo1Other" class="form-label">Provide Other Technical Information 1</label>
+                        <input asp-for="estTechInfo1Other" type="text" class="form-control" id="estTechInfo1Other"  />
+                        <div class="invalid-feedback">Other Technical Information 1 is required.</div>
                     </div>
 
                     <div class="row mb-2">
                         <div class="col-lg-12">
                             <label class="form-label" for="est_techinfo2[]">Technical Information 2: </label>
                             <br>
-                            <div class="d-flex flex-wrap gap-4 rounded p-2 bg-light">
+                            <div class="d-flex flex-wrap gap-4 rounded p-2 bg-body-secondary bg-gradient text-black">
                                 @foreach (var option in techInfo2Options)
                                 {
                                     var checkboxId = $"techInfo2_{option.Replace(" ", "")}";
@@ -348,12 +347,10 @@
 
                     <div class="col-md-6">
                         <label asp-for="estTechInfo2Other" class="form-label">
-                            Provide Other Chemical Subtances
-                            uses or
-                            Handled
+                            Provide Other Technical Information 2
                         </label>
-                        <input asp-for="estTechInfo2Other" type="text" class="form-control" id="estTechInfo2Other" placeholder="Jane" />
-                        <div class="invalid-feedback">First name is required.</div>
+                        <input asp-for="estTechInfo2Other" type="text" class="form-control" id="estTechInfo2Other"  />
+                        <div class="invalid-feedback">Other Technical Information 2 is required.</div>
                     </div>
                     <div class="col-md-6">
                         <label asp-for="estChemSubstance" class="form-label">
@@ -361,33 +358,53 @@
                             uses or
                             Handled
                         </label>
-                        <input asp-for="estChemSubstance" type="text" class="form-control" id="estChemSubstance" placeholder="Jane" required />
-                        <div class="invalid-feedback">First name is required.</div>
+                        <input asp-for="estChemSubstance" type="text" class="form-control" id="estChemSubstance"  required />
+                        <div class="invalid-feedback">Other Technical Information 2 is required.</div>
                     </div>
-                    <div class="row">
-                        <input type="checkbox" name="estIsHaveBranchUnits" id="estIsHaveBranchUnits">
-                            <label class="form-label ml-3" for="estIsHaveBranchUnits"> Do you have Branch Unit/s?
-                                <span class="text-muted fw-lighter">(Please Specify)</span></label>
-                    </div>
+      
 
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="row">
-                                <div id="branchUnitContent"></div>
+                    <div class="my-4" id="estBisnessUnitDiv"">
+                        <!-- display none -->
+                        <div class="bg-body-secondary p-4 rounded">
+                            <input type="checkbox" id="estIsHaveBranchUnits">
+                            <label class="form-label ml-3" for="estIsHaveBranchUnits">
+                                Do you have Branch Unit/s?
+                                <span class="text-muted fw-lighter">(Please Specify)</span>
+                            </label>
+                            <div class="rounded my-3 d-none" id="branchUnitContent">
+                                <div class="mb-2 mt-3 p-2 bg-primary text-center text-light rounded">
+                                    <h4>Branch Unit</h4>
+                                </div>
+                                <button class="btn btn-warning w-100" id="addBranchBtn" type="button">
+                                    Add
+                                    Branch
+                                </button>
+                                <div id="branchContainer"></div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="row">
-                        <input type="checkbox" name="estIsHaveLaborUnion" id="estIsHaveLaborUnion">
-                            <label class="form-label ml-3" for="estIsHaveLaborUnion"> Do you have Labor Union/s?
-                                <span class="text-muted fw-lighter">(Please Specify)</span></label>
-                    </div>
+                    <div class="my-1"> @*should have d-none*@
+                        <div class="bg-body-secondary p-4 rounded">
+                            <input type="checkbox" id="estIsHaveLaborUnion">
+                            <label class="form-label ml-3" for="estIsHaveLaborUnion">
+                                Do you have an Existing
+                                Registered Labor Union/s?<span class="text-muted fw-lighter">
+                                    (Please
+                                    Specify)
+                                </span>
+                            </label>
 
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="row">
-                                <div id="laborUnionContent"></div>
+                            <div class="rounded d-none" id="laborUnionContent">
+                                <div class="mb-2 mt-3 p-2 bg-primary text-center text-light rounded">
+                                    <h4>Labor Union</h4>
+                                </div>
+
+                                <button class="btn btn-warning w-100" id="addUnionBtn" type="button">
+                                    Add
+                                    Labor Union
+                                </button>
+                                <div id="LabUnionContainer"></div>
                             </div>
                         </div>
                     </div>
@@ -402,9 +419,9 @@
                     </div>
                     <div class="col-md-6">
                         <label asp-for="estSECNumber" class="form-label">
-                            SEC Company Registration Number / DTI Business Name No. 
+                            SEC Company Registration Number / DTI Business Name No.
                         </label>
-                        <input asp-for="estSECNumber" type="text" class="form-control" id="estSECNumber" placeholder="Jane" required />
+                        <input asp-for="estSECNumber" type="text" class="form-control" id="estSECNumber"  required />
                         <div class="invalid-feedback">SEC Company Registration Number / DTI Business Name No. is required.</div>
                     </div>
                     <div class="col-md-6">
@@ -413,81 +430,89 @@
                             uses or
                             Handled
                         </label>
-                        <input asp-for="estSECDateIssued" type="date" class="form-control" id="userName" placeholder="Jane" required />
+                        <input asp-for="estSECDateIssued" type="date" class="form-control" id="estSECDateIssued"  required />
                         <div class="invalid-feedback">First name is required.</div>
                     </div>
                     <div class="col-md-6">
                         <label asp-for="estSECFile" class="form-label">
-                            Scanned or Photocopy of <span>SEC Registration or DTI Certificate</span>: <span
-                                        class="text-danger fw-bolder"> *</span>
-                                        <small class="text-info"><i>Attach PDF file with a maximum upload file size of 25
-                                                megabytes</i></small>
+                            Scanned or Photocopy of <span>SEC Registration or DTI Certificate</span>: <span class="text-danger fw-bolder"> *</span>
+                            <small class="text-info">
+                                <i>
+                                    Attach PDF file with a maximum upload file size of 25
+                                    megabytes
+                                </i>
+                            </small>
                         </label>
-                        <input asp-for="estSECFile" type="file" class="form-control" id="estSECFile" placeholder="Jane" required />
+                        <input asp-for="estSECFile" type="file" class="form-control" id="estSECFile"  required />
                         <div class="invalid-feedback">First name is required.</div>
                     </div>
                     <div class="col-md-6">
                         <label asp-for="estBisPermitNumber" class="form-label">
-                            SEC Company Registration Number / DTI Business Name No. 
+                            SEC Company Registration Number / DTI Business Name No.
                         </label>
-                        <input asp-for="estBisPermitNumber" type="text" class="form-control" id="estBisPermit" required />
-                        <div class="invalid-feedback">First name is required.</div>
+                        <input asp-for="estBisPermitNumber" type="text" class="form-control" id="estBisPermitNumber" required />
+                        <div class="invalid-feedback">SEC Company Registration Number / DTI Business Number is required.</div>
                     </div>
                     <div class="col-md-6">
                         <label asp-for="estBisPermitDateIssued" class="form-label">
                             SEC Company Registration Number / DTI Business Issued Date
                         </label>
-                        <input asp-for="estBisPermitDateIssued" type="date" class="form-control" id="estBisPermitDateIssued" placeholder="Jane" required />
-                        <div class="invalid-feedback">First name is required.</div>
+                        <input asp-for="estBisPermitDateIssued" type="date" class="form-control" id="estBisPermitDateIssued" required />
+                        <div class="invalid-feedback">SEC Company Registration Number / DTI Business Date Issued is required.</div>
                     </div>
                     <div class="col-md-6">
                         <label asp-for="estBisPermitValidityDate" class="form-label">
                             SEC Company Registration Number / DTI Business Validity Date
                         </label>
-                        <input asp-for="estBisPermitValidityDate" type="date" class="form-control" id="estBisPermitValidityDate" placeholder="Jane" required />
-                        <div class="invalid-feedback">First name is required.</div>
+                        <input asp-for="estBisPermitValidityDate" type="date" class="form-control" id="estBisPermitValidityDate"  required />
+                        <div class="invalid-feedback">SEC Company Registration Number / DTI Business is required.</div>
                     </div>
                     <div class="col-md-6">
                         <label asp-for="estBisPermitFile" class="form-label">
-                            Scanned or Photocopy of <span>Business or Mayor's Permit</span>: <span
-                                        class="text-danger fw-bolder"> *</span>
-                                        <small class="text-info"><i>Attach PDF file with a maximum upload file size of 25
-                                                megabytes</i></small>
+                            Scanned or Photocopy of <span>Business or Mayor's Permit</span>: <span class="text-danger fw-bolder"> *</span>
+                            <small class="text-info">
+                                <i>
+                                    Attach PDF file with a maximum upload file size of 25
+                                    megabytes
+                                </i>
+                            </small>
                         </label>
                         <input asp-for="estBisPermitFile" type="file" class="form-control" id="estBisPermitFile" required />
-                        <div class="invalid-feedback">First name is required.</div>
+                        <div class="invalid-feedback">Business or Mayor's Permit is required.</div>
                     </div>
 
                     <div class="col-md-6">
                         <label asp-for="estOwnerValidIDNumber" class="form-label">
-                            Valid National ID Number 
+                            Valid National ID Number
                         </label>
                         <input asp-for="estOwnerValidIDNumber" type="text" class="form-control" id="estOwnerValidID" required />
-                        <div class="invalid-feedback">First name is required.</div>
+                        <div class="invalid-feedback">Valid ID Number is required.</div>
                     </div>
                     <div class="col-md-6">
                         <label asp-for="estOwnerValidIDDateIssued" class="form-label">
-                            Valid National ID Number Date Issued 
+                            Valid National ID Number Date Issued
                         </label>
                         <input asp-for="estOwnerValidIDDateIssued" type="date" class="form-control" id="estOwnerValidIDDateIssued" required />
-                        <div class="invalid-feedback">First name is required.</div>
+                        <div class="invalid-feedback"> is required.</div>
                     </div>
                     <div class="col-md-6">
                         <label asp-for="estOwnerValidIDDateExpire" class="form-label">
-                            Valid National ID Number Date Expire 
+                            Valid National ID Number Date Expire
                         </label>
                         <input asp-for="estOwnerValidIDDateExpire" type="date" class="form-control" id="estOwnerValidIDDateExpire" />
-                        <div class="invalid-feedback">First name is required.</div>
                     </div>
                     <div class="col-md-6">
                         <label asp-for="estOwnerValidIDFile" class="form-label">
-                            Scanned or Photocopy of <span>Valid ID</span>: <span
-                                        class="text-danger fw-bolder"> *</span>
-                                        <small class="text-info"><i>Attach PDF file with a maximum upload file size of 25
-                                                megabytes</i></small>
+                            Scanned or Photocopy of <span>Valid ID</span>: <span class="text-danger fw-bolder"> *</span>
+                            <small class="text-info">
+                                <i>
+                                    Attach PDF file with a maximum upload file size of 25
+                                    megabytes
+                                </i>
+                            </small>
                         </label>
                         <input asp-for="estOwnerValidIDFile" type="file" class="form-control" id="estOwnerValidIDFile" required />
-                        <div class="invalid-feedback">First name is required.</div>
+                        <div class="invalid-feedback">Valid ID is required.</div>
                     </div>
 
                     <div class="col-12 d-grid">
