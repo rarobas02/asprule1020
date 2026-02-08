@@ -98,7 +98,9 @@
                     </div>
                     <div class="col-md-6">
                         <label asp-for="estRegion" class="form-label">Region</label>
-                        <select asp-for="estRegion" class="form-select border-0 shadow" id="estRegion">
+                        <select asp-for="estRegion"
+                                class="form-select border-0 shadow"
+                                id="estRegion">
                             <option value="" disabled selected>Select Region</option>
                             <option value="Region IV-A (CALABARZON)">Region IV-A (CALABARZON)</option>
                         </select>
@@ -106,31 +108,38 @@
                     </div>
                     <div class="col-md-6">
                         <label asp-for="estProvince" class="form-label">Province</label>
-                        <select asp-for="estProvince" class="form-select border-0 shadow" id="estProvince">
+                        <select asp-for="estProvince"
+                                class="form-select border-0 shadow"
+                                id="estProvince"
+                                disabled>
                             <option value="" disabled selected>Select Province</option>
                         </select>
                         <div class="invalid-feedback">First name is required.</div>
                     </div>
                     <div class="col-md-6">
                         <label asp-for="estCityMun" class="form-label">City / Municipality</label>
-                        <select asp-for="estCityMun" class="form-select border-0 shadow" id="estCityMun">
+                        <select asp-for="estCityMun"
+                                class="form-select border-0 shadow"
+                                id="estCityMun"
+                                disabled>
                             <option value="" disabled selected>Select City/Municipality</option>
                         </select>
                         <div class="invalid-feedback">First name is required.</div>
                     </div>
                     <div class="col-md-6">
                         <label asp-for="estBrgy" class="form-label">Barangay</label>
-                        <select asp-for="estBrgy" class="form-select border-0 shadow" id="estBrgy">
-                            <option value="" disabled selected>Select City/Municipality</option>
+                        <select asp-for="estBrgy"
+                                class="form-select border-0 shadow"
+                                id="estBrgy"
+                                disabled>
+                            <option value="" disabled selected>Select Barangay</option>
                         </select>
                         <div class="invalid-feedback">First name is required.</div>
                     </div>
                     <div class="col-md-6">
-                        <label asp-for="estStreet" class="form-label">Floor/ Bldg. No./ Street/ Subdivision:</label>
-                        <select asp-for="estStreet" class="form-select border-0 shadow" id="estStreet">
-                            <option value="" disabled selected>Select City/Municipality</option>
-                        </select>
-                        <div class="invalid-feedback">First name is required.</div>
+                        <label asp-for="estStreet" class="form-label"> Street Address/ Floor/ Bldg. No./ Subdivision:</label>
+                        <input asp-for="estStreet" type="text" class="form-control" id="userName" placeholder="Jane" required />
+                        <div class="invalid-feedback">Street Address is required.</div>
                     </div>
                     <div class="col-md-6">
                         <label asp-for="estOwnerFirst" class="form-label" id="estOwnerFirst">
@@ -491,19 +500,5 @@
 </div>
 
 @section Scripts {
-    <script>
-        (() => {
-            "use strict";
-            const forms = document.querySelectorAll(".needs-validation");
-            Array.from(forms).forEach(form => {
-                form.addEventListener("submit", event => {
-                    if (!form.checkValidity()) {
-                        event.preventDefault();
-                        event.stopPropagation();
-                    }
-                    form.classList.add("was-validated");
-                }, false);
-            });
-        })();
-    </script>
+    <script src="~/js/Register.js"></script>
 }

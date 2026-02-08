@@ -1,4 +1,5 @@
 ﻿using asprule1020.DataAccess.Repository.IRepository;
+using asprule1020.Models;
 using asprule1020.Models.ViewModel;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -24,7 +25,6 @@ namespace asprule1020.Areas.Client.Controllers
         }
         public IActionResult New()
         {
-            
             return View();
         }
         [HttpPost]
@@ -32,11 +32,11 @@ namespace asprule1020.Areas.Client.Controllers
         {
             if (ModelState.IsValid)
             {
-                string FileUpdloadPath = Path.Combine(_webHostEnvironment.ContentRootPath,"Uploads");
-                
+                string FileUpdloadPath = Path.Combine(_webHostEnvironment.ContentRootPath, "Uploads");
+
                 if (file != null)
                 {
-                    string fileName = Guid.NewGuid().ToString(); 
+                    string fileName = Guid.NewGuid().ToString();
                     var extension = Path.GetExtension(file.FileName);
                     var isPdf = string.Equals(extension, ".pdf", StringComparison.OrdinalIgnoreCase) &&
                                 string.Equals(file.ContentType, "application/pdf", StringComparison.OrdinalIgnoreCase);
@@ -70,6 +70,25 @@ namespace asprule1020.Areas.Client.Controllers
             {
                 return View();
             }
+        }
+        public IActionResult GetProvDist(string? estRegion)
+        {
+            List<PhProvDist> objProvDistList = _unitOfWork.Province.GetAll(p => p.Region == estRegion).ToList();
+
+            return Json(new { status = true, data = objProvDistList });
+        }
+
+        public IActionResult GetCityMun(string? estProvince)
+        {
+            List<PhCityMun> objCityMunList = _unitOfWork.CityMunicipality.GetAll(c => c.ProvinceDistrict == estProvince).ToList();
+            return Json(new { status = true, data = objCityMunList });
+        }
+
+        public IActionResult GetBrgy(string? estCityMun)
+        {
+            List<PhBarangay> objBarangayList = _unitOfWork.Barangay.GetAll(b => b.CityMunicipality == estCityMun).ToList();
+
+            return Json(new { status = true, data = objBarangayList });
         }
     }
 }
