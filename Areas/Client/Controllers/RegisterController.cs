@@ -3,7 +3,8 @@ using asprule1020.Models;
 using asprule1020.Models.ViewModel;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering; 
+using Microsoft.AspNetCore.Mvc.Rendering;
+using BCrypt.Net;
 
 namespace asprule1020.Areas.Client.Controllers
 {
@@ -28,48 +29,79 @@ namespace asprule1020.Areas.Client.Controllers
             return View();
         }
         [HttpPost]
-        public IActionResult New(RegisterVM registerVM, IFormFile? file)
+        [ValidateAntiForgeryToken]
+        public IActionResult New(RegisterVM registerVM, IFormFile? secFile,IFormFile? bisPermitFile,IFormFile? validIdFile)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                string FileUpdloadPath = Path.Combine(_webHostEnvironment.ContentRootPath, "Uploads");
-
-                if (file != null)
-                {
-                    string fileName = Guid.NewGuid().ToString();
-                    var extension = Path.GetExtension(file.FileName);
-                    var isPdf = string.Equals(extension, ".pdf", StringComparison.OrdinalIgnoreCase) &&
-                                string.Equals(file.ContentType, "application/pdf", StringComparison.OrdinalIgnoreCase);
-                    if (!isPdf)
-                    {
-                        ModelState.AddModelError(nameof(file), "Only PDF files are allowed.");
-
-                        return View();
-                    }
-                    string productPath = Path.Combine(FileUpdloadPath, @"sec_dti");
-
-                    using (var fileStream = new FileStream(Path.Combine(productPath, fileName), FileMode.Create))
-                    {
-                        file.CopyTo(fileStream); //upload the new image
-                    }
-
-                    if (registerVM.Register != null)
-                    {
-                        registerVM.Register.estSECFile = @"\sec_dti" + fileName + extension;
-                    }
-                }
-                if (registerVM.Register != null)
-                {
-                    _unitOfWork.Register.Add(registerVM.Register);
-                }
-                _unitOfWork.Save();
-                TempData["success"] = "Product created successfully";
-                return RedirectToAction("Index");
+                return View(registerVM);
             }
-            else
+
+            string uploadRoot = Path.Combine(_webHostEnvironment.ContentRootPath, "Uploads");
+
+            if (registerVM.Register is null)
             {
-                return View();
+                ModelState.AddModelError(string.Empty, "Invalid form payload.");
+                return View(registerVM);
             }
+
+            if (registerVM.Register.password != registerVM.confirmPassword)
+            {
+                ModelState.AddModelError("ConfirmPassword", "Passwords do not match.");
+                return View(registerVM);
+            }
+
+            var existingUser = _unitOfWork.Register.Get(r => r.userName == registerVM.Register.userName);
+            if (existingUser is not null)
+            {
+                ModelState.AddModelError("Register.userName", "Username already exists.");
+                return View(registerVM);
+            }
+
+            registerVM.Register.estSECFile = SavePdf(secFile, uploadRoot, "sec_dti");
+            registerVM.Register.estBisPermitFile = SavePdf(bisPermitFile, uploadRoot, "bus_perm");
+            registerVM.Register.estOwnerValidIDFile = SavePdf(validIdFile, uploadRoot, "valid_id");
+
+            if (!ModelState.IsValid)
+            {
+                return View(registerVM);
+            }
+
+            _unitOfWork.Register.Add(registerVM.Register);
+            _unitOfWork.Save();
+
+            TempData["success"] = "Establishment Registration is Under Review";
+            return RedirectToAction(nameof(Index));
+        }
+        private string SavePdf(IFormFile? file, string rootPath, string subFolder)
+        {
+            if (file is null || file.Length == 0)
+            {
+                ModelState.AddModelError(subFolder, "File is required.");
+                return string.Empty;
+            }
+
+            var extension = Path.GetExtension(file.FileName);
+            bool isPdf = string.Equals(extension, ".pdf", StringComparison.OrdinalIgnoreCase)
+                         && string.Equals(file.ContentType, "application/pdf", StringComparison.OrdinalIgnoreCase);
+
+            if (!isPdf)
+            {
+                ModelState.AddModelError(subFolder, "Only PDF files are allowed.");
+                return string.Empty;
+            }
+
+            string folderPath = Path.Combine(rootPath, subFolder);
+            Directory.CreateDirectory(folderPath);
+
+            string fileName = $"{Guid.NewGuid()}{extension}";
+            string relativePath = Path.Combine(Path.DirectorySeparatorChar + subFolder, fileName);
+            string absolutePath = Path.Combine(folderPath, fileName);
+
+            using var stream = new FileStream(absolutePath, FileMode.Create);
+            file.CopyTo(stream);
+
+            return relativePath;
         }
         public IActionResult GetProvDist(string? estRegion)
         {

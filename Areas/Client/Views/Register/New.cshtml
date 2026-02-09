@@ -1,4 +1,4 @@
-﻿@model Register
+﻿@model RegisterVM
 
 @{
     var techInfo1Options = new[]
@@ -22,61 +22,67 @@
 }
 
 <div class="row justify-content-center">
-    <fieldset>
-        <div class="card w-100 shadow-sm border-0">
-            <div class="card-body">
-                <div class="text-center mb-4">
-                    @* <img src="~/img/_Layout/chatgpt-icon.svg"
+    <form method="post"
+          class="needs-validation" id="registerNew"
+          novalidate>
+        <fieldset>
+            <div class="card w-100 shadow-sm border-0">
+                <div class="card-body row g-4 ">
+                    <div class="text-center mb-4">
+                        @* <img src="~/img/_Layout/chatgpt-icon.svg"
                          alt="Brand logo"
                          class="rounded-circle border border-2 border-primary-subtle"
                          style="width: 96px; height: 96px;" /> *@
-                    <h1 class="h3 fw-semibold mt-3 mb-1">Create your account</h1>
-                    <p class="text-secondary mb-0">Complete the form below to get started.</p>
-                </div>
+                        <h1 class="h3 fw-semibold mt-3 mb-1">Create your account</h1>
+                        <p class="text-secondary mb-0">Complete the form below to get started.</p>
+                    </div>
 
-                <form method="post"
-                      class="row g-4 needs-validation" id="register_new"
-                      novalidate>
 
+                    @Html.AntiForgeryToken()
                     <div class="col-md-6">
-                        <label asp-for="userName" class="form-label">Set Account Username / NickName</label>
-                        <input asp-for="userName" type="text" class="form-control" id="userName" placeholder="Username" required />
+                        <label asp-for="Register.userName" class="form-label">Set Account Username / NickName</label>
+                        <input asp-for="Register.userName" type="text" class="form-control" id="userName" placeholder="Username" required />
                         <div class="invalid-feedback">Username is required.</div>
                     </div>
                     <div class="col-md-6">
-                        <label asp-for="estEmail" class="form-label">Establishment Email Address</label>
-                        <input asp-for="estEmail" type="text" class="form-control" id="estEmail" placeholder="ex. janedoe@gmail.com" required />
+                        <label asp-for="Register.estEmail" class="form-label">Establishment Email Address</label>
+                        <input asp-for="Register.estEmail" type="text" class="form-control" id="estEmail" placeholder="ex. janedoe@gmail.com" required />
                         <div class="invalid-feedback">Email is required.</div>
                     </div>
                     <div class="col-md-6">
-                        <label asp-for="estPhone" class="form-label">Establishment Cellphone / Telephone Number</label>
-                        <input asp-for="estPhone" type="text" class="form-control" id="estPhone" placeholder="ex. +63 (02) 012-3456 /09********" required />
+                        <label asp-for="Register.estPhone" class="form-label">Establishment Cellphone / Telephone Number</label>
+                        <input asp-for="Register.estPhone" type="text" class="form-control" id="estPhone" placeholder="ex. +63 (02) 012-3456 /09********" required />
                         <div class="invalid-feedback">Cellphone/Telephone Number is required.</div>
                     </div>
                     <div class="col-md-6">
-                        <label asp-for="password" class="form-label">Password</label>
-                        <input asp-for="password" type="password" class="form-control" id="password" placeholder="Password" required />
+                        <label asp-for="Register.password" class="form-label">Password</label>
+                        <input asp-for="Register.password" type="password" class="form-control" id="password" placeholder="Password" required />
                         <div class="invalid-feedback">Password is required.</div>
                     </div>
                     <div class="col-md-6">
-                        <label asp-for="estName" class="form-label">Establishment Name</label>
-                        <input asp-for="estName" type="text" class="form-control" id="estName" placeholder="Establishment Name" required />
+                        <label asp-for="@Model.confirmPassword" class="form-label">Confirm Password</label>
+                        <input asp-for="@Model.confirmPassword" type="password" class="form-control" id="confirmPassword" placeholder="Confirm Password" required />
+                        <div class="invalid-feedback">Password is required.</div>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="Register.estName" class="form-label">Establishment Name</label>
+                        <input asp-for="Register.estName" type="text" class="form-control" id="estName" placeholder="Establishment Name" required />
                         <div class="invalid-feedback">Establishment Name is required.</div>
                     </div>
                     <div class="col-md-6">
-                        <label asp-for="estType" class="form-label">Establishment Type</label>
-                        <select asp-for="estType" class="form-select" id="estType">
+                        <label asp-for="Register.estType" class="form-label">Establishment Type</label>
+                        <select asp-for="Register.estType" class="form-select" id="estType">
                             <option value="" selected disabled>Select type of Establishment</option>
                             <option value="SINGLE ESTABLISHMENT">
                                 Single Establishment (Main Branch)
                             </option>
-                            <option value="BRANCH ONLY">Branch Only (Branch Unit)></option>
+                            <option value="BRANCH ONLY">Branch Only (Branch Unit)</option>
                         </select>
                         <div class="invalid-feedback">First name is required.</div>
                     </div>
                     <div class="col-md-6">
-                        <label asp-for="estLegalOrg" class="form-label">Legal Organization</label>
-                        <select asp-for="estLegalOrg" class="form-select" id="estLegalOrg" required>
+                        <label asp-for="Register.estLegalOrg" class="form-label">Legal Organization</label>
+                        <select asp-for="Register.estLegalOrg" class="form-select" id="estLegalOrg" required>
                             <option value="" selected disabled>Select Legal Organization</option>
                             <option value="SINGLE PROPRIETORSHIP">
                                 Single Proprietorship
@@ -91,13 +97,13 @@
                         <div class="invalid-feedback">First name is required.</div>
                     </div>
                     <div class="col-md-6">
-                        <label asp-for="estLegalOrgOther" class="form-label">Other Legal Organization</label>
-                        <input asp-for="estLegalOrgOther" type="text" class="form-control" id="estLegalOrgOther" placeholder="Input the legal organization type" required />
+                        <label asp-for="Register.estLegalOrgOther" class="form-label">Other Legal Organization</label>
+                        <input asp-for="Register.estLegalOrgOther" type="text" class="form-control" id="estLegalOrgOther" placeholder="Input the legal organization type" required />
                         <div class="invalid-feedback">Legal Organization is required.</div>
                     </div>
                     <div class="col-md-6">
-                        <label asp-for="estRegion" class="form-label">Region</label>
-                        <select asp-for="estRegion"
+                        <label asp-for="Register.estRegion" class="form-label">Region</label>
+                        <select asp-for="Register.estRegion"
                                 class="form-select "
                                 id="estRegion">
                             <option value="" disabled selected>Select Region</option>
@@ -106,8 +112,8 @@
                         <div class="invalid-feedback">First name is required.</div>
                     </div>
                     <div class="col-md-6">
-                        <label asp-for="estProvince" class="form-label">Province</label>
-                        <select asp-for="estProvince"
+                        <label asp-for="Register.estProvince" class="form-label">Province</label>
+                        <select asp-for="Register.estProvince"
                                 class="form-select "
                                 id="estProvince"
                                 disabled>
@@ -116,8 +122,8 @@
                         <div class="invalid-feedback">First name is required.</div>
                     </div>
                     <div class="col-md-6">
-                        <label asp-for="estCityMun" class="form-label">City / Municipality</label>
-                        <select asp-for="estCityMun"
+                        <label asp-for="Register.estCityMun" class="form-label">City / Municipality</label>
+                        <select asp-for="Register.estCityMun"
                                 class="form-select "
                                 id="estCityMun"
                                 disabled>
@@ -126,8 +132,8 @@
                         <div class="invalid-feedback">First name is required.</div>
                     </div>
                     <div class="col-md-6">
-                        <label asp-for="estBrgy" class="form-label">Barangay</label>
-                        <select asp-for="estBrgy"
+                        <label asp-for="Register.estBrgy" class="form-label">Barangay</label>
+                        <select asp-for="Register.estBrgy"
                                 class="form-select "
                                 id="estBrgy"
                                 disabled>
@@ -136,51 +142,51 @@
                         <div class="invalid-feedback">First name is required.</div>
                     </div>
                     <div class="col-md-6">
-                        <label asp-for="estStreet" class="form-label"> Street Address/ Floor/ Bldg. No./ Subdivision:</label>
-                        <input asp-for="estStreet" type="text" class="form-control" id="estStreet" placeholder="ex. 45 Sesame Street" required />
+                        <label asp-for="Register.estStreet" class="form-label"> Street Address/ Floor/ Bldg. No./ Subdivision:</label>
+                        <input asp-for="Register.estStreet" type="text" class="form-control" id="estStreet" placeholder="ex. 45 Sesame Street" required />
                         <div class="invalid-feedback">Street Address is required.</div>
                     </div>
                     <div class="col-md-6">
-                        <label asp-for="estOwnerFirst" class="form-label" id="estOwnerFirst">
+                        <label asp-for="Register.estOwnerFirst" class="form-label" id="estOwnerFirst">
                             First Name of
                             Manager/Owner
                         </label>
-                        <input asp-for="estOwnerFirst" type="text" class="form-control" id="estOwnerFirst" placeholder="ex. Jane" required />
+                        <input asp-for="Register.estOwnerFirst" type="text" class="form-control" id="estOwnerFirst" placeholder="ex. Jane" required />
                         <div class="invalid-feedback">First name is required.</div>
                     </div>
                     <div class="col-md-6">
-                        <label asp-for="estOwnerMid" class="form-label">
+                        <label asp-for="Register.estOwnerMid" class="form-label">
                             Middle Name of
                             Manager/Owner:
                         </label><span class="text-muted">(Leave Blank if None)</span>
-                        <input asp-for="estOwnerMid" type="text" class="form-control" id="estOwnerMid" placeholder="ex. Opal" />
+                        <input asp-for="Register.estOwnerMid" type="text" class="form-control" id="estOwnerMid" placeholder="ex. Opal" />
                         <div class="invalid-feedback">Middle name is required.</div>
                     </div>
                     <div class="col-md-6">
-                        <label asp-for="estOwnerLast" class="form-label">
+                        <label asp-for="Register.estOwnerLast" class="form-label">
                             Last Name of
                             Manager/Owner
                         </label>
-                        <input asp-for="estOwnerLast" type="text" class="form-control" id="estOwnerLast" placeholder="ex. Doe" required />
+                        <input asp-for="Register.estOwnerLast" type="text" class="form-control" id="estOwnerLast" placeholder="ex. Doe" required />
                         <div class="invalid-feedback">Last name is required.</div>
                     </div>
                     <div class="col-md-6">
-                        <label asp-for="estCurrentCap" class="form-label">
+                        <label asp-for="Register.estCurrentCap" class="form-label">
                             Current Capitalization
                         </label>
-                        <input asp-for="estCurrentCap" type="text" class="form-control" id="estCurrentCap" required />
+                        <input asp-for="Register.estCurrentCap" type="text" class="form-control" id="estCurrentCap" required />
                         <div class="invalid-feedback">First name is required.</div>
                     </div>
                     <div class="col-md-6">
-                        <label asp-for="estTotalAssets" class="form-label">
+                        <label asp-for="Register.estTotalAssets" class="form-label">
                             Total Assets
                         </label>
-                        <input asp-for="estTotalAssets" type="text" class="form-control" id="estTotalAssets" required />
+                        <input asp-for="Register.estTotalAssets" type="text" class="form-control" id="estTotalAssets" required />
                         <div class="invalid-feedback">Total Assets name is required.</div>
                     </div>
                     <div class="col-md-6">
-                        <label asp-for="estBusinessNature" class="form-label">Region</label>
-                        <select asp-for="estBusinessNature" class="form-select " id="estBusinessNature">
+                        <label asp-for="Register.estBusinessNature" class="form-label">Region</label>
+                        <select asp-for="Register.estBusinessNature" class="form-select " id="estBusinessNature">
                             <option value="" selected disabled>Select Nature of Business</option>
                             <option value="Agriculture, Forestry, and Fishing">
                                 Agriculture,
@@ -258,28 +264,28 @@
                     </div>
 
                     <div class="col-md-6">
-                        <label asp-for="estOtherBusNature" class="form-label">Specify Business Nature</label>
-                        <input asp-for="estOtherBusNature" type="text" class="form-control" id="estOtherBusNature"  required />
+                        <label asp-for="Register.estOtherBusNature" class="form-label">Specify Business Nature</label>
+                        <input asp-for="Register.estOtherBusNature" type="text" class="form-control" id="estOtherBusNature" required />
                         <div class="invalid-feedback">Other Business Nature is required.</div>
                     </div>
                     <div class="col-md-6">
-                        <label asp-for="estMaleCount" class="form-label">Number of Male Employees</label>
-                        <input asp-for="estMaleCount" type="text" class="form-control" id="estMaleCount"  required />
+                        <label asp-for="Register.estMaleCount" class="form-label">Number of Male Employees</label>
+                        <input asp-for="Register.estMaleCount" type="text" class="form-control" id="estMaleCount" required />
                         <div class="invalid-feedback">Number of Female Employee is required.</div>
                     </div>
                     <div class="col-md-6">
-                        <label asp-for="estFemaleCount" class="form-label">Number of Female Employees</label>
-                        <input asp-for="estFemaleCount" type="text" class="form-control" id="estFemaleCount"  required />
+                        <label asp-for="Register.estFemaleCount" class="form-label">Number of Female Employees</label>
+                        <input asp-for="Register.estFemaleCount" type="text" class="form-control" id="estFemaleCount" required />
                         <div class="invalid-feedback">Number of Female Employee is required.</div>
                     </div>
                     <div class="col-md-6">
-                        <label asp-for="estTotalEmployees" class="form-label">Total Number of Employees</label>
-                        <input asp-for="estTotalEmployees" type="text" class="form-control" id="estTotalEmployees"  required />
+                        <label asp-for="Register.estTotalEmployees" class="form-label">Total Number of Employees</label>
+                        <input asp-for="Register.estTotalEmployees" type="text" class="form-control" id="estTotalEmployees" required />
                         <div class="invalid-feedback">Number of Total Employee is required.</div>
                     </div>
                     <div class="row mb-2">
                         <div class="col-lg-12">
-                            <label class="form-label" asp-for="estTechInfo1" class="form-check-label">
+                            <label class="form-label" asp-for="Register.estTechInfo1" class="form-check-label">
                                 Technical
                                 Information 1:
                             </label>
@@ -291,10 +297,9 @@
                                     <div class="form-check">
                                         <input type="checkbox"
                                                class="form-check-input"
-                                               id="@checkboxId"
                                                name="estTechInfo1"
                                                value="@option"
-                                               @(Model?.estTechInfo1?.Contains(option) == true ? "checked" : null) />
+                                               @(Model?.Register.estTechInfo1?.Contains(option) == true ? "checked" : null) />
                                         <label class="form-check-label" for="@checkboxId">@option</label>
                                     </div>
                                 }
@@ -310,8 +315,8 @@
                         </div>
                     </div>
                     <div class="col-md-6">
-                        <label asp-for="estTechInfo1Other" class="form-label">Provide Other Technical Information 1</label>
-                        <input asp-for="estTechInfo1Other" type="text" class="form-control" id="estTechInfo1Other"  />
+                        <label asp-for="Register.estTechInfo1Other" class="form-label">Provide Other Technical Information 1</label>
+                        <input asp-for="Register.estTechInfo1Other" type="text" class="form-control" id="estTechInfo1Other" />
                         <div class="invalid-feedback">Other Technical Information 1 is required.</div>
                     </div>
 
@@ -326,10 +331,9 @@
                                     <div class="form-check">
                                         <input type="checkbox"
                                                class="form-check-input ml-2"
-                                               id="@checkboxId"
                                                name="estTechInfo2"
                                                value="@option"
-                                               @(Model?.estTechInfo2?.Contains(option) == true ? "checked" : null) />
+                                               @(Model?.Register.estTechInfo2?.Contains(option) == true ? "checked" : null) />
                                         <label class="form-check-label" for="@checkboxId">@option</label>
                                     </div>
                                 }
@@ -346,24 +350,24 @@
                     </div>
 
                     <div class="col-md-6">
-                        <label asp-for="estTechInfo2Other" class="form-label">
+                        <label asp-for="Register.estTechInfo2Other" class="form-label">
                             Provide Other Technical Information 2
                         </label>
-                        <input asp-for="estTechInfo2Other" type="text" class="form-control" id="estTechInfo2Other"  />
+                        <input asp-for="Register.estTechInfo2Other" type="text" class="form-control" id="estTechInfo2Other" />
                         <div class="invalid-feedback">Other Technical Information 2 is required.</div>
                     </div>
                     <div class="col-md-6">
-                        <label asp-for="estChemSubstance" class="form-label">
+                        <label asp-for="Register.estChemSubstance" class="form-label">
                             Provide Other Chemical Subtances
                             uses or
                             Handled
                         </label>
-                        <input asp-for="estChemSubstance" type="text" class="form-control" id="estChemSubstance"  required />
+                        <input asp-for="Register.estChemSubstance" type="text" class="form-control" id="estChemSubstance" required />
                         <div class="invalid-feedback">Other Technical Information 2 is required.</div>
                     </div>
-      
 
-                    <div class="my-4" id="estBisnessUnitDiv"">
+
+                    <div class="my-4" id="estBisnessUnitDiv" >
                         <!-- display none -->
                         <div class="bg-body-secondary p-4 rounded">
                             <input type="checkbox" id="estIsHaveBranchUnits">
@@ -384,7 +388,8 @@
                         </div>
                     </div>
 
-                    <div class="my-1"> @*should have d-none*@
+                    <div class="my-1">
+                        @*should have d-none*@
                         <div class="bg-body-secondary p-4 rounded">
                             <input type="checkbox" id="estIsHaveLaborUnion">
                             <label class="form-label ml-3" for="estIsHaveLaborUnion">
@@ -418,23 +423,23 @@
                         <p class="text-secondary mb-0">Upload the required Files in PDF format</p>
                     </div>
                     <div class="col-md-6">
-                        <label asp-for="estSECNumber" class="form-label">
+                        <label asp-for="Register.estSECNumber" class="form-label">
                             SEC Company Registration Number / DTI Business Name No.
                         </label>
-                        <input asp-for="estSECNumber" type="text" class="form-control" id="estSECNumber"  required />
+                        <input asp-for="Register.estSECNumber" type="text" class="form-control" id="estSECNumber" required />
                         <div class="invalid-feedback">SEC Company Registration Number / DTI Business Name No. is required.</div>
                     </div>
                     <div class="col-md-6">
-                        <label asp-for="estSECDateIssued" class="form-label">
+                        <label asp-for="Register.estSECDateIssued" class="form-label">
                             Provide Other Chemical Subtances
                             uses or
                             Handled
                         </label>
-                        <input asp-for="estSECDateIssued" type="date" class="form-control" id="estSECDateIssued"  required />
+                        <input asp-for="Register.estSECDateIssued" type="date" class="form-control" id="estSECDateIssued" required />
                         <div class="invalid-feedback">First name is required.</div>
                     </div>
                     <div class="col-md-6">
-                        <label asp-for="estSECFile" class="form-label">
+                        <label asp-for="Register.estSECFile" class="form-label">
                             Scanned or Photocopy of <span>SEC Registration or DTI Certificate</span>: <span class="text-danger fw-bolder"> *</span>
                             <small class="text-info">
                                 <i>
@@ -443,32 +448,32 @@
                                 </i>
                             </small>
                         </label>
-                        <input asp-for="estSECFile" type="file" class="form-control" id="estSECFile"  required />
+                        <input asp-for="Register.estSECFile" type="file" class="form-control" id="estSECFile" required />
                         <div class="invalid-feedback">First name is required.</div>
                     </div>
                     <div class="col-md-6">
-                        <label asp-for="estBisPermitNumber" class="form-label">
+                        <label asp-for="Register.estBisPermitNumber" class="form-label">
                             SEC Company Registration Number / DTI Business Name No.
                         </label>
-                        <input asp-for="estBisPermitNumber" type="text" class="form-control" id="estBisPermitNumber" required />
+                        <input asp-for="Register.estBisPermitNumber" type="text" class="form-control" id="estBisPermitNumber" required />
                         <div class="invalid-feedback">SEC Company Registration Number / DTI Business Number is required.</div>
                     </div>
                     <div class="col-md-6">
-                        <label asp-for="estBisPermitDateIssued" class="form-label">
+                        <label asp-for="Register.estBisPermitDateIssued" class="form-label">
                             SEC Company Registration Number / DTI Business Issued Date
                         </label>
-                        <input asp-for="estBisPermitDateIssued" type="date" class="form-control" id="estBisPermitDateIssued" required />
+                        <input asp-for="Register.estBisPermitDateIssued" type="date" class="form-control" id="estBisPermitDateIssued" required />
                         <div class="invalid-feedback">SEC Company Registration Number / DTI Business Date Issued is required.</div>
                     </div>
                     <div class="col-md-6">
-                        <label asp-for="estBisPermitValidityDate" class="form-label">
+                        <label asp-for="Register.estBisPermitValidityDate" class="form-label">
                             SEC Company Registration Number / DTI Business Validity Date
                         </label>
-                        <input asp-for="estBisPermitValidityDate" type="date" class="form-control" id="estBisPermitValidityDate"  required />
+                        <input asp-for="Register.estBisPermitValidityDate" type="date" class="form-control" id="estBisPermitValidityDate" required />
                         <div class="invalid-feedback">SEC Company Registration Number / DTI Business is required.</div>
                     </div>
                     <div class="col-md-6">
-                        <label asp-for="estBisPermitFile" class="form-label">
+                        <label asp-for="Register.estBisPermitFile" class="form-label">
                             Scanned or Photocopy of <span>Business or Mayor's Permit</span>: <span class="text-danger fw-bolder"> *</span>
                             <small class="text-info">
                                 <i>
@@ -477,32 +482,32 @@
                                 </i>
                             </small>
                         </label>
-                        <input asp-for="estBisPermitFile" type="file" class="form-control" id="estBisPermitFile" required />
+                        <input asp-for="Register.estBisPermitFile" type="file" class="form-control" id="estBisPermitFile" required />
                         <div class="invalid-feedback">Business or Mayor's Permit is required.</div>
                     </div>
 
                     <div class="col-md-6">
-                        <label asp-for="estOwnerValidIDNumber" class="form-label">
+                        <label asp-for="Register.estOwnerValidIDNumber" class="form-label">
                             Valid National ID Number
                         </label>
-                        <input asp-for="estOwnerValidIDNumber" type="text" class="form-control" id="estOwnerValidID" required />
+                        <input asp-for="Register.estOwnerValidIDNumber" type="text" class="form-control" id="estOwnerValidID" required />
                         <div class="invalid-feedback">Valid ID Number is required.</div>
                     </div>
                     <div class="col-md-6">
-                        <label asp-for="estOwnerValidIDDateIssued" class="form-label">
+                        <label asp-for="Register.estOwnerValidIDDateIssued" class="form-label">
                             Valid National ID Number Date Issued
                         </label>
-                        <input asp-for="estOwnerValidIDDateIssued" type="date" class="form-control" id="estOwnerValidIDDateIssued" required />
+                        <input asp-for="Register.estOwnerValidIDDateIssued" type="date" class="form-control" id="estOwnerValidIDDateIssued" required />
                         <div class="invalid-feedback"> is required.</div>
                     </div>
                     <div class="col-md-6">
-                        <label asp-for="estOwnerValidIDDateExpire" class="form-label">
+                        <label asp-for="Register.estOwnerValidIDDateExpire" class="form-label">
                             Valid National ID Number Date Expire
                         </label>
-                        <input asp-for="estOwnerValidIDDateExpire" type="date" class="form-control" id="estOwnerValidIDDateExpire" />
+                        <input asp-for="Register.estOwnerValidIDDateExpire" type="date" class="form-control" id="estOwnerValidIDDateExpire" />
                     </div>
                     <div class="col-md-6">
-                        <label asp-for="estOwnerValidIDFile" class="form-label">
+                        <label asp-for="Register.estOwnerValidIDFile" class="form-label">
                             Scanned or Photocopy of <span>Valid ID</span>: <span class="text-danger fw-bolder"> *</span>
                             <small class="text-info">
                                 <i>
@@ -511,17 +516,180 @@
                                 </i>
                             </small>
                         </label>
-                        <input asp-for="estOwnerValidIDFile" type="file" class="form-control" id="estOwnerValidIDFile" required />
+                        <input asp-for="Register.estOwnerValidIDFile" type="file" class="form-control" id="estOwnerValidIDFile" required />
                         <div class="invalid-feedback">Valid ID is required.</div>
                     </div>
-
                     <div class="col-12 d-grid">
-                        <button type="submit" class="btn btn-primary btn-lg">Create account</button>
+                        <button type="submit" class="btn btn-primary btn-lg">New</button>
                     </div>
-                </form>
+                </div>
             </div>
-        </div>
-    </fieldset>
+        </fieldset>
+
+        <fieldset>
+            <div class="card w-100 shadow-sm border-0">
+                <div class="card-header">
+                    <h5 class="card-title">Establishment Application Profile</h5>
+                </div>
+                <div class="card-body">
+                    <div class="container">
+                        <dl class="row">
+                            <!-- employer details review -->
+                            <dt class="col-sm-12 col-lg-4">Set Account Username / NickName</dt>
+                            <dd class="col-sm-12 col-lg-8" id="reviewUsername"></dd>
+                            <dt class="col-sm-12 col-lg-4">Establishment Email Address</dt>
+                            <dd class="col-sm-12 col-lg-8" id="reviewEstEmail"></dd>
+                            <dt class="col-sm-12 col-lg-4">Establishment Cellphone / Telephone Number</dt>
+                            <dd class="col-sm-12 col-lg-8" id="reviewEstPhone"></dd>
+                            <dt class="col-sm-12 col-lg-4">Establishment Name</dt>
+                            <dd class="col-sm-12 col-lg-8" id="reviewEstName"></dd>
+                            <dt class="col-sm-12 col-lg-4">Establishment Type</dt>
+                            <dd class="col-sm-12 col-lg-8" id="reviewEstType"></dd>
+                            <dt class="col-sm-12 col-lg-4">Legal Organization</dt>
+                            <dd class="col-sm-12 col-lg-8" id="reviewEstLegalOrg"></dd>
+                            <dt class="col-sm-12 col-lg-4">Other Legal Organization</dt>
+                            <dd class="col-sm-12 col-lg-8" id="reviewEstLegalOrgOther"></dd>
+                            <dt class="col-sm-12 col-lg-4">Region</dt>
+                            <dd class="col-sm-12 col-lg-8" id="reviewEstRegion"></dd>
+                            <dt class="col-sm-12 col-lg-4">Province</dt>
+                            <dd class="col-sm-12 col-lg-8" id="reviewEstProvince"></dd>
+                            <dt class="col-sm-12 col-lg-4">City / Municipality</dt>
+                            <dd class="col-sm-12 col-lg-8" id="reviewEstCityMun"></dd>
+                            <dt class="col-sm-12 col-lg-4">Barangay</dt>
+                            <dd class="col-sm-12 col-lg-8" id="reviewEstBrgy"></dd>
+                            <dt class="col-sm-12 col-lg-4">Street Address / Floor / Bldg. No. / Subdivision</dt>
+                            <dd class="col-sm-12 col-lg-8" id="reviewEstStreet"></dd>
+                            <dt class="col-sm-12 col-lg-4">Manager/Owner First Name</dt>
+                            <dd class="col-sm-12 col-lg-8" id="reviewEstOwnerFirst"></dd>
+                            <dt class="col-sm-12 col-lg-4">Manager/Owner Middle Name</dt>
+                            <dd class="col-sm-12 col-lg-8" id="reviewEstOwnerMid"></dd>
+                            <dt class="col-sm-12 col-lg-4">Manager/Owner Last Name</dt>
+                            <dd class="col-sm-12 col-lg-8" id="reviewEstOwnerLast"></dd>
+                            <dt class="col-sm-12 col-lg-4">Current Capitalization</dt>
+                            <dd class="col-sm-12 col-lg-8" id="reviewEstCurrentCap"></dd>
+                            <dt class="col-sm-12 col-lg-4">Total Assets</dt>
+                            <dd class="col-sm-12 col-lg-8" id="reviewEstTotalAssets"></dd>
+                            <dt class="col-sm-12 col-lg-4">Nature of Business</dt>
+                            <dd class="col-sm-12 col-lg-8" id="reviewEstBusinessNature"></dd>
+                            <dt class="col-sm-12 col-lg-4">Specify Nature of Business</dt>
+                            <dd class="col-sm-12 col-lg-8" id="reviewEstOtherBusNature"></dd>
+                            <dt class="col-sm-12 col-lg-4">Number of Male Employees</dt>
+                            <dd class="col-sm-12 col-lg-8" id="reviewEstMaleCount"></dd>
+                            <dt class="col-sm-12 col-lg-4">Number of Female Employees</dt>
+                            <dd class="col-sm-12 col-lg-8" id="reviewEstFemaleCount"></dd>
+                            <dt class="col-sm-12 col-lg-4">Total Number of Employees</dt>
+                            <dd class="col-sm-12 col-lg-8" id="reviewEstTotalEmployees"></dd>
+                            <dt class="col-sm-12 col-lg-4">Technical Information 1</dt>
+                            <dd class="col-sm-12 col-lg-8" id="reviewEstTechInfo1"></dd>
+                            <dt class="col-sm-12 col-lg-4">Other Technical Information 1</dt>
+                            <dd class="col-sm-12 col-lg-8" id="reviewEstTechInfo1Other"></dd>
+                            <dt class="col-sm-12 col-lg-4">Technical Information 2</dt>
+                            <dd class="col-sm-12 col-lg-8" id="reviewEstTechInfo2"></dd>
+                            <dt class="col-sm-12 col-lg-4">Other Technical Information 2</dt>
+                            <dd class="col-sm-12 col-lg-8" id="reviewEstTechInfo2Other"></dd>
+                            <dt class="col-sm-12 col-lg-4">Chemical Substances Used or Handled</dt>
+                            <dd class="col-sm-12 col-lg-8" id="reviewEstChemSubstance"></dd>
+                            <dt class="col-sm-12 col-lg-4">SEC / DTI Registration Number</dt>
+                            <dd class="col-sm-12 col-lg-8" id="reviewEstSECNumber"></dd>
+                            <dt class="col-sm-12 col-lg-4">SEC / DTI Date Issued</dt>
+                            <dd class="col-sm-12 col-lg-8" id="reviewEstSECDateIssued"></dd>
+                            <dt class="col-sm-12 col-lg-4">SEC / DTI Attachment</dt>
+                            <dd class="col-sm-12 col-lg-8" id="reviewEstSECFile"></dd>
+                            <dt class="col-sm-12 col-lg-4">Business Permit Number</dt>
+                            <dd class="col-sm-12 col-lg-8" id="reviewEstBisPermitNumber"></dd>
+                            <dt class="col-sm-12 col-lg-4">Business Permit Date Issued</dt>
+                            <dd class="col-sm-12 col-lg-8" id="reviewEstBisPermitDateIssued"></dd>
+                            <dt class="col-sm-12 col-lg-4">Business Permit Validity Date</dt>
+                            <dd class="col-sm-12 col-lg-8" id="reviewEstBisPermitValidityDate"></dd>
+                            <dt class="col-sm-12 col-lg-4">Business Permit Attachment</dt>
+                            <dd class="col-sm-12 col-lg-8" id="reviewEstBisPermitFile"></dd>
+                            <dt class="col-sm-12 col-lg-4">Valid National ID Number</dt>
+                            <dd class="col-sm-12 col-lg-8" id="reviewEstOwnerValidIDNumber"></dd>
+                            <dt class="col-sm-12 col-lg-4">Valid National ID Date Issued</dt>
+                            <dd class="col-sm-12 col-lg-8" id="reviewEstOwnerValidIDDateIssued"></dd>
+                            <dt class="col-sm-12 col-lg-4">Valid National ID Date Expire</dt>
+                            <dd class="col-sm-12 col-lg-8" id="reviewEstOwnerValidIDDateExpire"></dd>
+                            <dt class="col-sm-12 col-lg-4">Valid ID Attachment</dt>
+                            <dd class="col-sm-12 col-lg-8" id="reviewEstOwnerValidIDFile"></dd>
+                        </dl>
+                    </div>
+                    <div class="container mt-3 bg-light p-3 d-none" id="review_branch_unit_container">
+                        <h5 class="text-muted">Branch Unit</h5>
+                        <table class="table table-bordered" id="est_branch_table">
+                            <thead>
+                                <tr>
+                                    <th class="text-center">Rule 1020 Application #</th>
+                                    <th class="text-center">Branch Establishment Name</th>
+                                    <th class="text-center">Location</th>
+                                </tr>
+                            </thead>
+                            <tbody id="review_est_branch_body">
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="container mt-3 bg-light p-3 d-none" id="review_labor_union_container">
+                        <h5 class="text-muted">Labor Union</h5>
+                        <table class="table table-bordered" id="est_union_table">
+                            <thead>
+                                <tr>
+                                    <th class="text-center">Name of Labor union</th>
+                                    <th class="text-center">Address of Labor union</th>
+                                    <th class="text-center">BLR Registration number</th>
+                                </tr>
+                            </thead>
+                            <tbody id="review_est_union_body">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="alert alert-info">
+                    <div class="form-check">
+                        <input type="checkbox" id="certify" name="certify_agreement" class="form-check-input"
+                               value="true">
+                        <label class="form-label" for="certify" class="form-check-label">
+                            &nbsp;&nbsp;&nbsp;&nbsp; I HEREBY: 1)Certify the truthfulness of the above-mentioned
+                            information based on my own personal knowledge and authentic records;
+                            2)Commit to strictly implement the herein attached designed for this specific
+                            establishment and comply with occupational and health
+                            standard required by law;
+                            and 3)Be responsible for any accident that will happen during the operation of the
+                            Establishment
+                            especially for the welfare of the workers who are employed to perform the duties.
+                        </label>
+                    </div>
+                </div>
+                <div class="alert alert-info">
+                    <div class="form-check">
+                        <input type="checkbox" id="certifydpa" name="certify_agreement" class="form-check-input"
+                               value="true">
+                        <label class="form-label" for="certify_dpa" class="form-check-label">
+                            &nbsp;&nbsp;&nbsp;&nbsp; CONSENT NOTICE: The Department of Labor and Employment
+                            Regional Office No. IV-A values and is committed to comply with Republic Act No.
+                            10173
+                            otherwise known as the Philippine Data Privacy Act of 2012 (“Data Privacy Act”) to
+                            protect and safeguard your privacy. By accomplishing this form, you signify your
+                            acceptance
+                            to provide pertinent and personal information about you or data establishment. All
+                            information that will be collected through this form will be used for the sole
+                            purpose of monitoring
+                            and fulfilling the functions of this Office. We may only keep your information until
+                            such time that we have attained the purpose by which we collect them and when the
+                            information is no longer required
+                            the DOLE RO IVA procedure will be followed to dispose of said data. Under the
+                            foregoing circumstances and to the extent permissible by applicable law. You agree
+                            not to take action against DOLE RO IVA for the
+                            disclosure and retention of your information.
+                        </label>
+                    </div>
+                </div>
+                <div class="col-12 d-grid">
+                    <button type="submit" class="btn btn-primary btn-lg">Submit Form</button>
+                </div>
+            </div>
+        </fieldset>
+    </form>
+
 </div>
 
 @section Scripts {

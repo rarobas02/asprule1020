@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="10.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="10.0.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.2" />
@@ -30,6 +31,8 @@
     <Folder Include="Uploads\upload_cert\" />
     <Folder Include="Uploads\valid_id\" />
     <Folder Include="Uploads\sec_dti\" />
+    <Folder Include="wwwroot\lib\ladda\" />
+    <Folder Include="wwwroot\lib\spin\" />
   </ItemGroup>
 
 </Project>
