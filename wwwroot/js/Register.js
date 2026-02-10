@@ -3,18 +3,102 @@ const LaborUnion = []
 
 
 const register = {
+    togglePasswordVisibility: function (toggleId, inputId) {
+        const toggle = document.getElementById(toggleId);
+        const input = document.getElementById(inputId);
+
+        if (!toggle || !input) return;
+
+        const icon = toggle.querySelector("i");
+
+        toggle.addEventListener("click", function () {
+            const isPassword = input.type === "password";
+            input.type = isPassword ? "text" : "password";
+
+            if (icon) {
+                icon.classList.toggle("fa-eye", !isPassword);
+                icon.classList.toggle("fa-eye-slash", isPassword);
+            }
+        });
+    },
     endpoints:
     {
         province: '/Client/Register/GetProvDist',
         city: '/Client/Register/GetCityMun',
         barangay: '/Client/Register/GetBrgy',
-        usernameIsExistt: '/Client/Register/IsUsernameExist'
+        usernameIsExist: '/Client/Register/IsUsernameExist'
     },
     placeholders:
     {
         province: 'Select Province',
         city: 'Select City/Municipality',
         barangay: 'Select Barangay'
+    },
+    toggleDivAndRequired: function ({
+        selectId,
+        triggerValue,
+        divId,
+        inputId
+    }) {
+        const selectEl = document.getElementById(selectId);
+        const divEl = document.getElementById(divId);
+        const inputEl = document.getElementById(inputId);
+
+        if (!selectEl || !divEl || !inputEl) return;
+
+        selectEl.addEventListener("change", function () {
+            if (this.value === triggerValue) {
+                divEl.classList.remove("d-none");
+                inputEl.setAttribute("required", "required");
+            } else {
+                divEl.classList.add("d-none");
+                inputEl.removeAttribute("required");
+                inputEl.value = ""; // optional: clear value
+            }
+        });
+    },
+    toggleDivOnCheckbox: function (checkboxId, divId, inputId) {
+        const checkbox = document.getElementById(checkboxId);
+        const div = document.getElementById(divId);
+        const input = document.getElementById(inputId);
+
+        if (!checkbox || !div || !input) return;
+
+        const handleToggle = () => {
+            if (checkbox.checked) {
+                div.classList.remove('d-none');
+                input.setAttribute('required', 'required');
+            } else {
+                div.classList.add('d-none');
+                input.removeAttribute('required');
+                input.value = '';
+            }
+        };
+
+        handleToggle();
+        checkbox.addEventListener('change', handleToggle);
+    },
+
+    formatNumber: function (input) {
+        // Remove all non-numeric characters except decimal point
+        let value = input.value.replace(/[^\d.]/g, '');
+
+        // Ensure only one decimal point exists
+        let parts = value.split('.');
+        if (parts.length > 2) {
+            parts = [parts[0], parts.slice(1).join('')];
+        }
+
+        // Limit decimal places to 2
+        if (parts[1] && parts[1].length > 2) {
+            parts[1] = parts[1].substring(0, 2);
+        }
+
+        // Format integer part with commas
+        parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+
+        // Combine parts
+        input.value = parts.join('.');
     },
     review: function () {
         const form = document.getElementById("registerNew");
@@ -261,8 +345,7 @@ const register = {
 
         return uvalues;
     },
-    location: function ()
-    {
+    location: function () {
         const module = this;
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -356,8 +439,7 @@ const register = {
             });
         });
     },
-    getLocationControls: function ()
-    {
+    getLocationControls: function () {
         const region = document.getElementById('estRegion');
         const province = document.getElementById('estProvince');
         const city = document.getElementById('estCityMun');
@@ -370,8 +452,7 @@ const register = {
 
         return { region, province, city, barangay };
     },
-    resetSelect: function (selectElement, placeholderText, shouldDisable = true)
-    {
+    resetSelect: function (selectElement, placeholderText, shouldDisable = true) {
         if (!selectElement) {
             return;
         }
@@ -387,7 +468,7 @@ const register = {
         selectElement.appendChild(placeholderOption);
         selectElement.disabled = shouldDisable;
     },
-        populateSelect: function (selectElement, data, getOption) {
+    populateSelect: function (selectElement, data, getOption) {
         if (!selectElement || !Array.isArray(data)) {
             return;
         }
@@ -407,7 +488,7 @@ const register = {
             selectElement.appendChild(option);
         });
     },
-        fetchAdministrativeData: async function (url) {
+    fetchAdministrativeData: async function (url) {
         const response = await fetch(url, {
             headers: { Accept: 'application/json' },
             cache: 'no-cache'
@@ -425,5 +506,52 @@ const register = {
         return payload.data;
     }
 };
-
+Ladda.bind(".ladda-button");
 register.location();
+
+
+register.togglePasswordVisibility("togglePassword", "password");
+register.togglePasswordVisibility("toggleConfirmPassword", "confirmPassword");
+register.toggleDivAndRequired({
+    selectId: "estBusinessNature",
+    triggerValue: "Others,Please Specify",
+    divId: "estOtherBusNatureDiv",
+    inputId: "estOtherBusNature"
+});
+register.toggleDivOnCheckbox("estTechInfo1OtherCheckBox", "estTechInfo1OtherDiv", "estTechInfo1Other",);
+register.toggleDivOnCheckbox("estTechInfo2OtherCheckBox", "estTechInfo2OtherDiv", "estTechInfo2Other",);
+document.getElementById("estCurrentCap").addEventListener("input", function (e) {
+    e.preventDefault();
+    let estCurrentCapInput = document.getElementById("estCurrentCap");
+    register.formatNumber(estCurrentCapInput);
+});
+document.getElementById("estTotalAssets").addEventListener("input", function (e) {
+    e.preventDefault();
+    let estTotalAssetsInput = document.getElementById("estTotalAssets");
+    register.formatNumber(estTotalAssetsInput);
+});
+document.addEventListener("keyup", function (e) {
+    if (e.target.matches("#estMaleCount, #estFemaleCount")) {
+        const input = e.target;
+        const sanitized = input.value.replace(/\D+/g, "");
+        let filtered = "";
+
+        for (const digit of sanitized) {
+            const position = filtered.length;
+            if (digit === "0" && position < 2) {
+                continue;
+            }
+            filtered += digit;
+        }
+
+        input.value = filtered;
+
+        const maleCount = parseInt(document.getElementById("estMaleCount").value || "0", 10);
+        const femaleCount = parseInt(document.getElementById("estFemaleCount").value || "0", 10);
+        const result = maleCount + femaleCount;
+
+        if (!Number.isNaN(result)) {
+            document.getElementById("estTotalEmployees").value = result;
+        }
+    }
+});

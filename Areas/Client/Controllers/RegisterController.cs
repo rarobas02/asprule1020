@@ -122,5 +122,23 @@ namespace asprule1020.Areas.Client.Controllers
 
             return Json(new { status = true, data = objBarangayList });
         }
+        public IActionResult IsUsernameExist(string userName)
+        {
+            var existingUser = _unitOfWork.Register.Get(r => r.userName == userName);
+            if (existingUser is not null)
+            {
+                return Json(new { status = false, data = $"Username {userName} is already taken." });
+            }
+            return Json(new { status = true, data = true });
+        }
+        public IActionResult IsEmailExist(string estEmail)
+        {
+            var existingUser = _unitOfWork.Register.Get(r => r.estEmail == estEmail);
+            if (existingUser is not null)
+            {
+                return Json(new { status = false, data = $"Establishment Email: {estEmail} is already taken." });
+            }
+            return Json(new { status = true, data = true });
+        }
     }
 }
