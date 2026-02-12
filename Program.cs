@@ -1,28 +1,37 @@
+using asprule1020.Areas.Identity.Pages.Account;
 using asprule1020.DataAccess.Data;
 using asprule1020.DataAccess.Repository;
 using asprule1020.DataAccess.Repository.IRepository;
-using Microsoft.EntityFrameworkCore;
+using asprule1020.Models;
+using BulkyBook.Utility;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
-
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-builder.Services.AddIdentity<IdentityUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
-builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<ApplicationDbContext>();
+builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
 builder.Services.AddAuthentication().AddFacebook(options =>
 {
-    options.AppId = builder.Configuration["Authentication:Facebook:AppId"];
-    options.AppSecret = builder.Configuration["Authentication:Facebook:AppSecret"];
+    options.AppId = builder.Configuration["Authentication:Facebook:AppId"] ?? string.Empty;
+    options.AppSecret = builder.Configuration["Authentication:Facebook:AppSecret"] ?? string.Empty;
 });
+builder.Services.AddRazorPages();
+
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<IEmailSender, EmailSender>();
+builder.Services.AddScoped<IPasswordHasher<ApplicationUser>,
+    BcryptPasswordHasher<ApplicationUser>>();
+
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

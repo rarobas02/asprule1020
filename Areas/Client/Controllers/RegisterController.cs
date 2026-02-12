@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using BCrypt.Net;
+using Microsoft.AspNetCore.Identity;
 
 namespace asprule1020.Areas.Client.Controllers
 {
@@ -13,11 +14,15 @@ namespace asprule1020.Areas.Client.Controllers
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<ApplicationUser> _applicationUserManager;
 
-        public RegisterController(IUnitOfWork unitOfWork, IWebHostEnvironment webHostEnvironment)
+        public RegisterController(IUnitOfWork unitOfWork, IWebHostEnvironment webHostEnvironment, UserManager<IdentityUser> userManager, UserManager<ApplicationUser> applicationUserManager)
         {
             _unitOfWork = unitOfWork;
             _webHostEnvironment = webHostEnvironment;
+            _userManager = userManager;
+            _applicationUserManager = applicationUserManager;
         }
 
         public IActionResult Index()
@@ -45,22 +50,9 @@ namespace asprule1020.Areas.Client.Controllers
                 return View(registerVM);
             }
 
-            if (registerVM.Register.password != registerVM.confirmPassword)
-            {
-                ModelState.AddModelError("ConfirmPassword", "Passwords do not match.");
-                return View(registerVM);
-            }
-
-            var existingUser = _unitOfWork.Register.Get(r => r.userName == registerVM.Register.userName);
-            if (existingUser is not null)
-            {
-                ModelState.AddModelError("Register.userName", "Username already exists.");
-                return View(registerVM);
-            }
-
-            registerVM.Register.estSECFile = SavePdf(secFile, uploadRoot, "sec_dti");
-            registerVM.Register.estBisPermitFile = SavePdf(bisPermitFile, uploadRoot, "bus_perm");
-            registerVM.Register.estOwnerValidIDFile = SavePdf(validIdFile, uploadRoot, "valid_id");
+            registerVM.Register.EstSECFile = SavePdf(secFile, uploadRoot, "sec_dti");
+            registerVM.Register.EstBisPermitFile = SavePdf(bisPermitFile, uploadRoot, "bus_perm");
+            registerVM.Register.EstOwnerValidIDFile = SavePdf(validIdFile, uploadRoot, "valid_id");
 
             if (!ModelState.IsValid)
             {
@@ -124,7 +116,7 @@ namespace asprule1020.Areas.Client.Controllers
         }
         public IActionResult IsUsernameExist(string userName)
         {
-            var existingUser = _unitOfWork.Register.Get(r => r.userName == userName);
+            var existingUser = _applicationUserManager.Users.FirstOrDefault(r => r.EstUsername == userName);
             if (existingUser is not null)
             {
                 return Json(new { status = false, data = $"Username {userName} is already taken." });
@@ -133,7 +125,7 @@ namespace asprule1020.Areas.Client.Controllers
         }
         public IActionResult IsEmailExist(string estEmail)
         {
-            var existingUser = _unitOfWork.Register.Get(r => r.estEmail == estEmail);
+            var existingUser = _userManager.Users.FirstOrDefault(r => r.Email == estEmail);
             if (existingUser is not null)
             {
                 return Json(new { status = false, data = $"Establishment Email: {estEmail} is already taken." });
