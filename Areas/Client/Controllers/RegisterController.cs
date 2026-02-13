@@ -14,14 +14,12 @@ namespace asprule1020.Areas.Client.Controllers
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IWebHostEnvironment _webHostEnvironment;
-        private readonly UserManager<IdentityUser> _userManager;
         private readonly UserManager<ApplicationUser> _applicationUserManager;
 
-        public RegisterController(IUnitOfWork unitOfWork, IWebHostEnvironment webHostEnvironment, UserManager<IdentityUser> userManager, UserManager<ApplicationUser> applicationUserManager)
+        public RegisterController(IUnitOfWork unitOfWork, IWebHostEnvironment webHostEnvironment, UserManager<ApplicationUser> applicationUserManager)
         {
             _unitOfWork = unitOfWork;
             _webHostEnvironment = webHostEnvironment;
-            _userManager = userManager;
             _applicationUserManager = applicationUserManager;
         }
 
@@ -125,7 +123,7 @@ namespace asprule1020.Areas.Client.Controllers
         }
         public IActionResult IsEmailExist(string estEmail)
         {
-            var existingUser = _userManager.Users.FirstOrDefault(r => r.Email == estEmail);
+            var existingUser = _applicationUserManager.Users.FirstOrDefault(r => r.Email == estEmail);
             if (existingUser is not null)
             {
                 return Json(new { status = false, data = $"Establishment Email: {estEmail} is already taken." });
