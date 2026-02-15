@@ -27,11 +27,6 @@ namespace asprule1020.Areas.Client.Controllers
         {
             return View();
         }
-        public IActionResult New()
-        {
-            return View();
-        }
-        [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult New(RegisterVM registerVM, IFormFile? secFile,IFormFile? bisPermitFile,IFormFile? validIdFile)
         {
@@ -44,7 +39,7 @@ namespace asprule1020.Areas.Client.Controllers
 
             if (registerVM.Register is null)
             {
-                ModelState.AddModelError(string.Empty, "Invalid form payload.");
+                //ModelState.AddModelError(string.Empty, "Invalid form payload.");
                 return View(registerVM);
             }
 
@@ -67,7 +62,7 @@ namespace asprule1020.Areas.Client.Controllers
         {
             if (file is null || file.Length == 0)
             {
-                ModelState.AddModelError(subFolder, "File is required.");
+                //ModelState.AddModelError(subFolder, "File is required.");
                 return string.Empty;
             }
 
@@ -77,7 +72,7 @@ namespace asprule1020.Areas.Client.Controllers
 
             if (!isPdf)
             {
-                ModelState.AddModelError(subFolder, "Only PDF files are allowed.");
+                //ModelState.AddModelError(subFolder, "Only PDF files are allowed.");
                 return string.Empty;
             }
 
@@ -93,40 +88,40 @@ namespace asprule1020.Areas.Client.Controllers
 
             return relativePath;
         }
-        public IActionResult GetProvDist(string? estRegion)
+        public IActionResult GetProvDist(string? EstRegion)
         {
-            List<PhProvDist> objProvDistList = _unitOfWork.Province.GetAll(p => p.Region == estRegion).ToList();
+            List<PhProvDist> objProvDistList = _unitOfWork.Province.GetAll(p => p.Region == EstRegion).ToList();
 
             return Json(new { status = true, data = objProvDistList });
         }
 
-        public IActionResult GetCityMun(string? estProvince)
+        public IActionResult GetCityMun(string? EstProvince)
         {
-            List<PhCityMun> objCityMunList = _unitOfWork.CityMunicipality.GetAll(c => c.ProvinceDistrict == estProvince).ToList();
+            List<PhCityMun> objCityMunList = _unitOfWork.CityMunicipality.GetAll(c => c.ProvinceDistrict == EstProvince).ToList();
             return Json(new { status = true, data = objCityMunList });
         }
 
-        public IActionResult GetBrgy(string? estCityMun)
+        public IActionResult GetBrgy(string? EstCityMun)
         {
-            List<PhBarangay> objBarangayList = _unitOfWork.Barangay.GetAll(b => b.CityMunicipality == estCityMun).ToList();
+            List<PhBarangay> objBarangayList = _unitOfWork.Barangay.GetAll(b => b.CityMunicipality == EstCityMun).ToList();
 
             return Json(new { status = true, data = objBarangayList });
         }
-        public IActionResult IsUsernameExist(string userName)
+        public IActionResult IsUsernameExist(string UserName)
         {
-            var existingUser = _applicationUserManager.Users.FirstOrDefault(r => r.EstUsername == userName);
+            var existingUser = _applicationUserManager.Users.FirstOrDefault(r => r.EstUsername == UserName);
             if (existingUser is not null)
             {
-                return Json(new { status = false, data = $"Username {userName} is already taken." });
+                return Json(new { status = false, data = $"Username {UserName} is already taken. Please, create a different username." });
             }
             return Json(new { status = true, data = true });
         }
-        public IActionResult IsEmailExist(string estEmail)
+        public IActionResult IsEmailExist(string EstEmail)
         {
-            var existingUser = _applicationUserManager.Users.FirstOrDefault(r => r.Email == estEmail);
+            var existingUser = _applicationUserManager.Users.FirstOrDefault(r => r.Email == EstEmail);
             if (existingUser is not null)
             {
-                return Json(new { status = false, data = $"Establishment Email: {estEmail} is already taken." });
+                return Json(new { status = false, data = $"Establishment Email: {EstEmail} is already taken. Please, use a different email." });
             }
             return Json(new { status = true, data = true });
         }

@@ -1,5 +1,5 @@
-﻿const Branches = []
-const LaborUnion = []
+﻿let Branches = []
+let LaborUnion = []
 
 
 const register = {
@@ -21,18 +21,106 @@ const register = {
             }
         });
     },
+    validation: {
+        input: function (input) {
+            input.addClass("is-invalid");
+            input.focus();
+            // Scroll to the input field's position
+            $("html, body").animate(
+                {
+                    scrollTop: input.offset().top,
+                },
+                500
+            );
+        },
+        password: function (input) {
+            // Regular expression for alphanumeric and other special characters, and at least 8 characters
+            const regex = /^(?=.*[0-9])(?=.*[a-zA-Z])[a-zA-Z0-9!@#$%^&*()_+{}\[\]:;<>,.?~\\/-]{8,}$/;
+
+            // TEst the input against the regular expression
+            return regex.test(input);
+        },
+    },
     endpoints:
     {
         province: '/Client/Register/GetProvDist',
         city: '/Client/Register/GetCityMun',
         barangay: '/Client/Register/GetBrgy',
-        usernameIsExist: '/Client/Register/IsUsernameExist'
+        usernameIsExist: '/Client/Register/IsUsernameExist',
+        emailIsExist: '/Client/Register/IsEmailExist'
     },
     placeholders:
     {
         province: 'Select Province',
         city: 'Select City/Municipality',
         barangay: 'Select Barangay'
+    },
+    review: function () {
+        // Get the form element
+        const form = document.getElementById("Rule1020RegistrationForm");
+
+        // Get all input and select elements inside the form
+        const form_elements = form.querySelectorAll("input, select");
+
+        const excluded_ids = ["EstTechInfo1OtherCheckBox", "EstTechInfo2OtherCheckBox", "EstIsHaveLaborUnion", "EstIsHaveBranchUnits", "certify", "certifydpa"];
+        const excluded_names = ["EstBranchRule1020Number[]", "EstBranchName[]", "EstBranchEstName[]", "EstUnionName[]", "EstUnionAddress[]", "EstUnionBLR[]"];
+
+        const no_input_text = "No Input";
+
+        let tech_info_1_checkbox = [];
+        let tech_info_2_checkbox = [];
+
+        // Iterate through each form element and log the ID
+        form_elements.forEach(function (element) {
+            let value = "";
+            if (element.type === "checkbox" && element.name === "EstTechInfo1") {
+                // For checkboxes, check if it's checked and add the value to the array
+                if (element.checked) {
+                    tech_info_1_checkbox.push(element.value);
+                }
+            } else if (element.type === "checkbox" && element.name === "EstTechInfo2") {
+                // For checkboxes, check if it's checked and add the value to the array
+                if (element.checked) {
+                    tech_info_2_checkbox.push(element.value);
+                }
+            } else {
+                value = document.getElementById(element.id).value;
+                // get file name only
+                if (element.type == "file") {
+                    value = value.split("\\").pop();
+                }
+
+                //   console.log(element.id);
+                //   console.log({ value });
+                // Exclude specific IDs (customize as needed)
+                if (!excluded_ids.includes(element.id) && !excluded_names.includes(element.name)) {
+                    const reviewElement = document.getElementById(`review_${element.id}`);
+                    // Check if reviewElement is not null or undefined
+                    if (reviewElement) {
+                        if (value.trim() !== "") {
+                            reviewElement.innerHTML = value;
+                        } else {
+                            reviewElement.innerHTML = no_input_text;
+                        }
+                    }
+                }
+            }
+        });
+        // Display comma-separated list for checked checkboxes
+        if (tech_info_1_checkbox.length > 0) {
+            // console.log(tech_info_1_checkbox.join(", "));
+            document.getElementById("review_est_techinfo1").innerHTML = tech_info_1_checkbox.join(", ");
+        } else {
+            document.getElementById("review_est_techinfo1").innerHTML = no_input_text;
+        }
+
+        // Display comma-separated list for checked checkboxes
+        if (tech_info_2_checkbox.length > 0) {
+            // console.log(tech_info_2_checkbox.join(", "));
+            document.getElementById("review_est_techinfo2").innerHTML = tech_info_2_checkbox.join(", ");
+        } else {
+            document.getElementById("review_est_techinfo2").innerHTML = no_input_text;
+        }
     },
     toggleDivAndRequired: function ({
         selectId,
@@ -78,7 +166,170 @@ const register = {
         handleToggle();
         checkbox.addEventListener('change', handleToggle);
     },
+    toggleDivOnCheckbox: function (checkboxId, divId) {
+        const checkbox = document.getElementById(checkboxId);
+        const div = document.getElementById(divId);
 
+        if (!checkbox || !div) return;
+        const handleToggle = () => {
+            if (checkbox.checked) {
+                div.classList.remove('d-none');
+            } else {
+                div.classList.add('d-none');
+            }
+        };
+
+        handleToggle();
+        checkbox.addEventListener('change', handleToggle);
+    },
+    hideDivOnSelect: function ({ selectId, hideValue, divId }) {
+        const $select = $(`#${selectId}`);
+        const $div = $(`#${divId}`);
+
+        if ($select.length === 0 || $div.length === 0) {
+            return;
+        }
+
+        const toggleVisibility = () => {
+            const shouldHide = $select.val() === hideValue;
+            $div.toggleClass("d-none", shouldHide).attr("aria-hidden", shouldHide ? "true" : "false");
+        };
+
+        toggleVisibility();
+        $select.on("change", toggleVisibility);
+    },
+	branch_unit: function () {
+		const values = [];
+
+		document.querySelectorAll("#EstBranchDiv .branch-unit-div").forEach((row) => {
+			const rowValues = {
+				EstBranchRule1020Number: row.querySelector('[name="EstBranchRule1020Number[]"]')?.value?.trim() || "",
+				EstBranchName: row.querySelector('[name="EstBranchName[]"]')?.value?.trim() || "",
+				EstBranchEstName: row.querySelector('[name="EstBranchEstName[]"]')?.value?.trim() || ""
+			};
+
+			values.push(rowValues);
+		});
+
+		return values;
+	},
+	labor_union: function () {
+		const uvalues = [];
+
+		document.querySelectorAll("#EstLaborUnionDiv .labor-union-div").forEach((row) => {
+			const EstUnionRowValues = {
+				EstUnionName: row.querySelector('[name="EstUnionName[]"]')?.value?.trim() || "",
+				EstUnionAddress: row.querySelector('[name="EstUnionAddress[]"]')?.value?.trim() || "",
+				EstUnionBLR: row.querySelector('[name="EstUnionBLR[]"]')?.value?.trim() || ""
+			};
+
+			uvalues.push(EstUnionRowValues);
+		});
+
+		return uvalues;
+	},
+    stepper: function () {
+        var current = 1,
+            current_step,
+            next_step,
+            steps;
+        steps = $("fieldset").length;
+        $(".next").click(function () {
+            let current = $(this).closest("fieldset");
+            let next = current.next("fieldset");
+            if (!next.length) {
+                return;
+            }
+            let usernameInput = document.getElementById("UserName");
+            let passwordInput = document.getElementById("UserName");
+            let confirmPasswordInput = document.getElementById("UserName");
+            let emailInput = document.getElementById("Email");
+			const branches = register.branch_unit();
+			const laborUnions = register.labor_union();
+            if (usernameInput) {
+                usernameInput.addEventListener("blur", () => register.validateUsernameAvailability(usernameInput));
+                usernameInput.addEventListener("input", () => register.setUsernameValidationResult(usernameInput, null));
+            }
+            if (emailInput) {
+                emailInput.addEventListener("blur", () => register.validateUsernameAvailability(emailInput.value));
+                emailInput.addEventListener("input", () => register.setUsernameValidationResult(emailInput.value, null));
+            }
+			if (branches.length > 0) {
+				const branchContainer = document.getElementById("review_branch_unit_container");
+				branchContainer.classList.remove("d-none");
+				branchContainer.style.display = "block";
+                // Use map to create an array of table rows
+				let rows = branches.map(function (data) {
+                    return `<tr>
+							<td class="text-center">${data.EstBranchRule1020Number}</td>
+							<td class="text-center">${data.EstBranchName}</td>
+							<td class="text-center">${data.EstBranchEstName}</td>
+                        </tr>`;
+                });
+
+                // Append the array of rows to the table body
+                $("#review_est_branch_body").html(rows.join(""));
+            } else {
+				const branchContainer = document.getElementById("review_branch_unit_container");
+				branchContainer.classList.add("d-none");
+				branchContainer.style.display = "none";
+                $("#review_est_branch_body").html("");
+            }
+			if (laborUnions.length > 0) {
+				const laborContainer = document.getElementById("review_labor_union_container");
+				laborContainer.classList.remove("d-none");
+				laborContainer.style.display = "block";
+                // Use map to create an array of table rows
+				let rows_union = laborUnions.map(function (data_union) {
+                    return `<tr>
+							<td class="text-center">${data_union.EstUnionName}</td>
+							<td class="text-center">${data_union.EstUnionAddress}</td>
+							<td class="text-center">${data_union.EstUnionBLR}</td>
+                        </tr>`;
+                });
+
+                // Append the array of rows to the table body
+                $("#review_est_union_body").html(rows_union.join(""));
+            } else {
+				const laborContainer = document.getElementById("review_labor_union_container");
+				laborContainer.classList.add("d-none");
+				laborContainer.style.display = "none";
+                $("#review_est_union_body").html("");
+            }
+
+            current.addClass("d-none");
+            next.removeClass("d-none");
+        });
+
+        $(".previous").click(function () {
+            const current = $(this).closest("fieldset");
+            const prev = current.prev("fieldset");
+            if (!prev.length) {
+                return;
+            }
+
+            current.addClass("d-none");
+            prev.removeClass("d-none");
+        });
+
+        function validateRequiredFields(step) {
+            var valid = true;
+
+            // Check required input fields
+            step.find("input[required], select[required]").each(function () {
+                var elementValue = $(this).val();
+
+                if (elementValue === null || elementValue.trim() === "") {
+                    $(this).addClass("is-invalid");
+                    valid = false;
+                } else {
+                    $(this).removeClass("is-invalid");
+                }
+            });
+
+            return valid;
+        }
+    },
     formatNumber: function (input) {
         // Remove all non-numeric characters except decimal point
         let value = input.value.replace(/[^\d.]/g, '');
@@ -100,251 +351,69 @@ const register = {
         // Combine parts
         input.value = parts.join('.');
     },
-    review: function () {
-        const form = document.getElementById("registerNew");
+    preventFutureDate: function (inputId) {
+        const bindHandler = () => {
+            const input = typeof inputId === 'string' ? document.getElementById(inputId) : inputId;
 
-        // Get all input and select elements inside the form
-        const form_elements = form.querySelectorAll("input, select");
-
-        const excluded_ids = ["userName", "estTechInfo1Other", "estTechInfo2Other", "estIsHaveBranchUnits", "estIsHaveLaborUnion", "certify", "certifydpa"];
-        const excluded_names = ["trans_col1[]", "est_name_col2[]", "location_col3[]", "est_union_name[]", "est_union_address[]", "est_union_blr[]"];
-
-        const no_input_text = "No Input";
-
-        let tech_info_1_checkbox = [];
-        let tech_info_2_checkbox = [];
-
-        // Iterate through each form element and log the ID
-        form_elements.forEach(function (element) {
-            let value = "";
-            if (element.type === "checkbox" && element.name === "estTechInfo1[]") {
-                // For checkboxes, check if it's checked and add the value to the array
-                if (element.checked) {
-                    tech_info_1_checkbox.push(element.value);
-                }
-            } else if (element.type === "checkbox" && element.name === "estTechInfo2[]") {
-                // For checkboxes, check if it's checked and add the value to the array
-                if (element.checked) {
-                    tech_info_2_checkbox.push(element.value);
-                }
-            } else {
-                value = document.getElementById(element.id).value;
-                // get file name only
-                if (element.type == "file") {
-                    value = value.split("\\").pop();
-                }
-
-                //   console.log(element.id);
-                //   console.log({ value });
-                // Exclude specific IDs (customize as needed)
-                if (!excluded_ids.includes(element.id) && !excluded_names.includes(element.name)) {
-                    const reviewElement = document.getElementById(`review_${element.id}`);
-                    // Check if reviewElement is not null or undefined
-                    if (reviewElement) {
-                        if (value.trim() !== "") {
-                            reviewElement.innerHTML = value;
-                        } else {
-                            reviewElement.innerHTML = no_input_text;
-                        }
-                    }
-                }
+            if (!input) {
+                return;
             }
-        });
-        // Display comma-separated list for checked checkboxes
-        if (tech_info_1_checkbox.length > 0) {
-            // console.log(tech_info_1_checkbox.join(", "));
-            document.getElementById("reviewEstTechInfo1").innerHTML = tech_info_1_checkbox.join(", ");
+
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            const todayValue = today.toISOString().split('T')[0];
+
+            input.setAttribute('max', todayValue);
+
+            input.addEventListener('change', () => {
+                if (input.value && input.value > todayValue) {
+                    input.value = todayValue;
+                }
+            });
+        };
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', bindHandler, { once: true });
         } else {
-            document.getElementById("reviewEstTechInfo1").innerHTML = no_input_text;
+            bindHandler();
         }
+    },
+    preventPastDate: function (inputId) {
+        const bindHandler = () => {
+            const input = typeof inputId === 'string' ? document.getElementById(inputId) : inputId;
 
-        // Display comma-separated list for checked checkboxes
-        if (tech_info_2_checkbox.length > 0) {
-            // console.log(tech_info_2_checkbox.join(", "));
-            document.getElementById("reviewEstTechInfo2").innerHTML = tech_info_2_checkbox.join(", ");
+            if (!input) {
+                return;
+            }
+
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            const todayValue = today.toISOString().split('T')[0];
+
+            input.setAttribute('min', todayValue);
+
+            input.addEventListener('change', () => {
+                if (input.value && input.value < todayValue) {
+                    input.value = todayValue;
+                }
+            });
+        };
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', bindHandler, { once: true });
         } else {
-            document.getElementById("reviewEstTechInfo2").innerHTML = no_input_text;
+            bindHandler();
         }
     },
-    branch_unit: function () {
-        let values = [];
 
-        // Iterate through each row
-        document.querySelectorAll("#est_branch_body tr").forEach(function (row) {
-            let rowValues = {};
-
-            // Get values from input fields in the current row
-            rowValues.trans_col1 =
-                row.querySelector('[name="trans_col1[]"]')?.value || "";
-            rowValues.est_name_col2 =
-                row.querySelector('[name="est_name_col2[]"]')?.value || "";
-            rowValues.location_col3 =
-                row.querySelector('[name="location_col3[]"]')?.value || "";
-
-            // Add the values to the array
-            values.push(rowValues);
-        });
-
-        return values;
-    },
-
-    stepper: function () {
-        let current = 1;
-        let current_step, next_step;
-        const steps = document.querySelectorAll("fieldset").length;
-
-        document.querySelectorAll(".next").forEach(function (btn) {
-            btn.addEventListener("click", function () {
-                current_step = this.parentElement;
-                next_step = current_step.nextElementSibling;
-
-                const username_inp = document.getElementById("Username");
-                const password_inp = document.getElementById("password");
-
-                if (username_inp.value.length < 6) {
-                    Swal.fire({
-                        title: "Error!",
-                        html: `<span><strong>Username must be at least 6 characters long.</strong></span>`,
-                        icon: "error",
-                        confirmButtonColor: "#dc3545",
-                        confirmButtonText: "Close",
-                        allowOutsideClick: false,
-                    });
-                    reg.validation.input(username_inp);
-                    return;
-                }
-
-                if (!reg.validation.password(password_inp.value)) {
-                    Swal.fire({
-                        title: "Error!",
-                        html: `<span><strong>The password must be alphanumeric and at least 8 characters long.</strong></span>`,
-                        icon: "error",
-                        confirmButtonColor: "#dc3545",
-                        confirmButtonText: "Close",
-                        allowOutsideClick: false,
-                    });
-                    reg.validation.input(password_inp);
-                    return;
-                }
-
-                reg.get.username(username_inp, function (resp) {
-                    if (resp) {
-                        Swal.fire({
-                            title: "Error!",
-                            html: `<span><strong>Username not available. Please, create another username.</strong></span>`,
-                            icon: "error",
-                            confirmButtonColor: "#dc3545",
-                            confirmButtonText: "Close",
-                            allowOutsideClick: false,
-                        });
-                        reg.validation.input(username_inp);
-                    } else {
-                        if (validateRequiredFields(current_step)) {
-                            next_step.style.display = "block";
-                            current_step.style.display = "none";
-
-                            reg.populate.review();
-                            branches = reg.populate.branch_unit();
-                            labor_unions = reg.populate.labor_union();
-
-                            const branchContainer = document.getElementById("review_branch_unit_container");
-                            const branchBody = document.getElementById("review_est_branch_body");
-
-                            if (branches.length > 0) {
-                                branchContainer.style.display = "block";
-                                branchBody.innerHTML = branches
-                                    .map(data => `
-                  <tr>
-                    <td class="text-center">${data.trans_col1}</td>
-                    <td class="text-center">${data.est_name_col2}</td>
-                    <td class="text-center">${data.location_col3}</td>
-                  </tr>
-                `)
-                                    .join("");
-                            } else {
-                                branchContainer.style.display = "none";
-                                branchBody.innerHTML = "";
-                            }
-
-                            const unionContainer = document.getElementById("review_labor_union_container");
-                            const unionBody = document.getElementById("review_est_union_body");
-
-                            if (labor_unions.length > 0) {
-                                unionContainer.style.display = "block";
-                                unionBody.innerHTML = labor_unions
-                                    .map(data => `
-                  <tr>
-                    <td class="text-center">${data.est_union_name}</td>
-                    <td class="text-center">${data.est_union_address}</td>
-                    <td class="text-center">${data.est_union_blr}</td>
-                  </tr>
-                `)
-                                    .join("");
-                            } else {
-                                unionContainer.style.display = "none";
-                                unionBody.innerHTML = "";
-                            }
-                        }
-                    }
-                });
-            });
-        });
-
-        document.querySelectorAll(".previous").forEach(function (btn) {
-            btn.addEventListener("click", function () {
-                current_step = this.parentElement.parentElement;
-                next_step = current_step.previousElementSibling;
-
-                next_step.style.display = "block";
-                current_step.style.display = "none";
-            });
-        });
-
-        function validateRequiredFields(step) {
-            let valid = true;
-
-            step.querySelectorAll("input[required], select[required]").forEach(function (el) {
-                const value = el.value;
-
-                if (value === null || value.trim() === "") {
-                    el.classList.add("is-invalid");
-                    valid = false;
-                } else {
-                    el.classList.remove("is-invalid");
-                }
-            });
-
-            return valid;
-        }
-    },
     password: function (input) {
         // Regular expression for alphanumeric and other special characters, and at least 8 characters
         const regex = /^(?=.*[0-9])(?=.*[a-zA-Z])[a-zA-Z0-9!@#$%^&*()_+{}\[\]:;<>,.?~\\/-]{8,}$/;
 
-        // Test the input against the regular expression
+        // TEst the input against the regular expression
         return regex.test(input);
     },
-    labor_union: function () {
-        let uvalues = [];
 
-        // Iterate through each row
-        document.querySelectorAll("#est_union_body tr").forEach(function (row) {
-            let UnionrowValues = {};
-
-            // Get values from input fields in the current row
-            UnionrowValues.est_union_name =
-                row.querySelector('[name="est_union_name[]"]')?.value || "";
-            UnionrowValues.est_union_address =
-                row.querySelector('[name="est_union_address[]"]')?.value || "";
-            UnionrowValues.est_union_blr =
-                row.querySelector('[name="est_union_blr[]"]')?.value || "";
-
-            // Add the values to the array
-            uvalues.push(UnionrowValues);
-        });
-
-        return uvalues;
-    },
     location: function () {
         const module = this;
 
@@ -373,7 +442,7 @@ const register = {
 
                 try {
                     const provinces = await module.fetchAdministrativeData(
-                        `${module.endpoints.province}?estRegion=${encodeURIComponent(regionValue)}`
+                        `${module.endpoints.province}?EstRegion=${encodeURIComponent(regionValue)}`
                     );
 
                     module.populateSelect(province, provinces, (item) => ({
@@ -440,10 +509,10 @@ const register = {
         });
     },
     getLocationControls: function () {
-        const region = document.getElementById('estRegion');
-        const province = document.getElementById('estProvince');
-        const city = document.getElementById('estCityMun');
-        const barangay = document.getElementById('estBrgy');
+        const region = document.getElementById('EstRegion');
+        const province = document.getElementById('EstProvince');
+        const city = document.getElementById('EstCityMun');
+        const barangay = document.getElementById('EstBrgy');
 
         if (!region || !province || !city || !barangay) {
             console.warn('Register location controls are missing from the DOM.');
@@ -499,46 +568,133 @@ const register = {
         }
 
         const payload = await response.json();
+        //if (!expectArray) {
+        //    return payload;
+        //}
         if (!payload.status || !Array.isArray(payload.data)) {
             return [];
         }
 
         return payload.data;
+    },
+    setUsernameValidationResult: function (inputEl, isValid, message = "Username is required.") {
+        const feedback = inputEl.nextElementSibling?.classList.contains("invalid-feedback")
+            ? inputEl.nextElementSibling
+            : null;
+
+        if (isValid === null) {
+            inputEl.classList.remove("is-valid", "is-invalid");
+            if (feedback) {
+                feedback.textContent = message;
+            }
+            return;
+        }
+
+        if (isValid) {
+            inputEl.classList.remove("is-invalid");
+            inputEl.classList.add("is-valid");
+            if (feedback) {
+                feedback.textContent = "";
+            }
+        } else {
+            inputEl.classList.remove("is-valid");
+            inputEl.classList.add("is-invalid");
+            if (feedback) {
+                feedback.textContent = message;
+            }
+        }
+    },
+    validateUsernameAvailability: async function (mode,input) {
+        const inputEl = typeof input === "string" ? document.getElementById(input) : input;
+
+        if (!inputEl) {
+            return;
+        }
+
+        const username = inputEl.value.trim();
+
+        if (!username) {
+            register.setUsernameValidationResult(inputEl, null);
+            return;
+        }
+
+        register.setUsernameValidationResult(inputEl, null);
+
+        try {
+            const payload = await register.fetchAdministrativeData(
+                `${register.endpoints.usernameIsExist}?${mode}=${encodeURIComponent(username)}`,
+                { expectArray: false }
+            );
+
+            if (payload?.status) {
+                register.setUsernameValidationResult(inputEl, true);
+            } else {
+                const message = typeof payload?.data === "string"
+                    ? payload.data
+                    : "Username is already taken.";
+                register.setUsernameValidationResult(inputEl, false, message);
+            }
+        } catch (error) {
+            console.error("Unable to validate username.", error);
+        }
+    },
+    validateFile: function (inputFile, errorMessageId, maxSizeInBytes, allowedExtensions) {
+        var fileSize = inputFile.files[0].size; // in bytes
+        var fileExtension = inputFile.files[0].name.split('.').pop().toLowerCase();
+
+        if (!allowedExtensions.includes(fileExtension)) {
+            $(errorMessageId).text('Only ' + allowedExtensions.join(', ') + ' files are allowed.');
+            inputFile.value = ''; // Clear the file input
+            return;
+        }
+
+        if (fileSize > maxSizeInBytes) {
+            $(errorMessageId).text('File size exceeds the limit (' + (maxSizeInBytes / (1024 * 1024)) + ' MB). Please choose a smaller file.');
+            inputFile.value = ''; // Clear the file input
+        } else {
+            $(errorMessageId).text(''); // Clear any previous error messages
+        }
     }
 };
+
 Ladda.bind(".ladda-button");
 register.location();
 
-
+register.toggleDivAndRequired({
+    selectId: "EstLegalOrg",
+    triggerValue: "OTHERS",
+    divId: "EstLegalOrgOtherDiv",
+    inputId: "EstLegalOrgOther"
+});
 register.togglePasswordVisibility("togglePassword", "password");
 register.togglePasswordVisibility("toggleConfirmPassword", "confirmPassword");
 register.toggleDivAndRequired({
-    selectId: "estBusinessNature",
+    selectId: "EstBusinessNature",
     triggerValue: "Others,Please Specify",
-    divId: "estOtherBusNatureDiv",
-    inputId: "estOtherBusNature"
+    divId: "EstOtherBusNatureDiv",
+    inputId: "EstOtherBusNature"
 });
-register.toggleDivOnCheckbox("estTechInfo1OtherCheckBox", "estTechInfo1OtherDiv", "estTechInfo1Other",);
-register.toggleDivOnCheckbox("estTechInfo2OtherCheckBox", "estTechInfo2OtherDiv", "estTechInfo2Other",);
-document.getElementById("estCurrentCap").addEventListener("input", function (e) {
-    e.preventDefault();
-    let estCurrentCapInput = document.getElementById("estCurrentCap");
-    register.formatNumber(estCurrentCapInput);
-});
-document.getElementById("estTotalAssets").addEventListener("input", function (e) {
-    e.preventDefault();
-    let estTotalAssetsInput = document.getElementById("estTotalAssets");
-    register.formatNumber(estTotalAssetsInput);
-});
+register.hideDivOnSelect("EstType", "BRANCH ONLY", "EstBisnessUnitDiv");
+register.toggleDivOnCheckbox("EstTechInfo1OtherCheckBox", "EstTechInfo1OtherDiv", "EstTechInfo1Other",);
+register.toggleDivOnCheckbox("EstTechInfo2OtherCheckBox", "EstTechInfo2OtherDiv", "EstTechInfo2Other");
+register.toggleDivOnCheckbox("EstIsHaveBranchUnits", "EstBranchUnitContent");
+register.toggleDivOnCheckbox("EstIsHaveLaborUnion", "EstLaborUnionContent");
+register.preventFutureDate("EstSECDateIssued");
+register.preventFutureDate("EstBisPermitDateIssued");
+register.preventPastDate("EstBisPermitValidityDate");
+register.preventFutureDate("EstOwnerValidIDDateIssued");
+register.preventPastDate("EstOwnerValidIDDateExpire");
+register.stepper();
+
 document.addEventListener("keyup", function (e) {
-    if (e.target.matches("#estMaleCount, #estFemaleCount")) {
+    if (e.target.matches("#EstMaleCount, #EstFemaleCount")) {
         const input = e.target;
         const sanitized = input.value.replace(/\D+/g, "");
         let filtered = "";
 
         for (const digit of sanitized) {
             const position = filtered.length;
-            if (digit === "0" && position < 2) {
+            if (digit <= "0" && position < 2) {
                 continue;
             }
             filtered += digit;
@@ -546,12 +702,169 @@ document.addEventListener("keyup", function (e) {
 
         input.value = filtered;
 
-        const maleCount = parseInt(document.getElementById("estMaleCount").value || "0", 10);
-        const femaleCount = parseInt(document.getElementById("estFemaleCount").value || "0", 10);
+        const maleCount = parseInt(document.getElementById("EstMaleCount").value || "0", 10);
+        const femaleCount = parseInt(document.getElementById("EstFemaleCount").value || "0", 10);
         const result = maleCount + femaleCount;
 
         if (!Number.isNaN(result)) {
-            document.getElementById("estTotalEmployees").value = result;
+            document.getElementById("EstTotalEmployees").value = result;
         }
     }
 });
+$(document)
+    .off("change", "#EstType")
+    .on("change", "#EstType", function () {
+        var select = document.getElementById("EstType");
+        var input = document.getElementById("EstBisnessUnitDiv");
+        if (select.value === "SINGLE ESTABLISHMENT") {
+            input.style.display = "block";
+            input.required = true;
+            $("#EstBranchDiv").empty();
+        } else {
+            input.style.display = "none";
+            input.required = false;
+            $("#EstBranchDiv").empty();
+        }
+        // reset branches
+        Branches = [];
+        $("#EstBranchDiv").empty();
+    })
+    .off("input", "#EstCurrentCap")
+    .on("input", "#EstCurrentCap", function () {
+        let EstCurrentCapInput = document.getElementById("EstCurrentCap");
+        register.formatNumber(EstCurrentCapInput);
+    })
+    .off("input", "#EstTotalAssets")
+    .on("input", "#EstTotalAssets", function () {
+        let EstTotalAssetsInput = document.getElementById("EstTotalAssets");
+        register.formatNumber(EstTotalAssetsInput);
+    })
+    .off("click", "#EstIsPeza")
+    .on("click", "#EstIsPeza", function () {
+        const EstIsPeza = document.getElementById("EstIsPeza");
+        const EstPezaNoExpiry = document.getElementById("EstPezaNoExpiry");
+        const EstBisPermitValidityDate = document.getElementById("EstBisPermitValidityDate");
+        const EstBisPermitValidityDateRequiredSign = document.getElementById("EstBisPermitValidityDateRequiredSign");
+        const permitLabels = document.querySelectorAll(".EstBisPermitNumberLabelText");
+
+        EstPezaNoExpiry.style.display = EstIsPeza.checked ? "none" : "block";
+        EstBisPermitValidityDate.value = '';
+        EstBisPermitValidityDate.required = !EstIsPeza.checked;
+        EstBisPermitValidityDateRequiredSign.textContent = EstIsPeza.checked ? '' : '*';
+
+        permitLabels.forEach(label => {
+            label.textContent = EstIsPeza.checked ? "PEZA Certificate" : "Business or Mayor's Permit";
+        });
+    })
+    .off("click", "#EstAddBranchBtn")
+    .on("click", "#EstAddBranchBtn", function (event) {
+        // Create a new div element for the branch unit form fields
+        const branchUnitDiv = document.createElement("div");
+        branchUnitDiv.className =
+            "branch-unit-div rounded border border-1 p-4 my-4";
+
+        // Set the innerHTML of the new div
+        branchUnitDiv.innerHTML = `
+
+          <div class="row mb-2">
+            <div class="col-lg-4 col-md-12 col-sm-12 form-outline mb-4">
+              <label for="EstBranchRule1020Number" class="form-label">Rule 1020 Application #</label>
+              <input type="text" class="form-control form-control-sm EstBranchRule1020Number" name="EstBranchRule1020Number[]"
+                required />
+            </div>
+            <div class="col-lg-4 col-md-12 col-sm-12 form-outline mb-4">
+              <label for="EstBranchName" class="form-label">Branch Establishment Name</label>
+              <input type="text" class="form-control form-control-sm EstBranchName" name="EstBranchName[]"
+                required />
+            </div>
+            <div class="col-lg-4 col-md-12 col-sm-12 form-outline mb-4">
+              <label for="EstBranchEstName" class="form-label">Establishment Name</label>
+              <input type="text" class="form-control form-control-sm EstBranchEstName" name="EstBranchEstName[]"
+                required />
+            </div>
+          </div>
+          <div class="row mb-2">
+            <div class="d-flex align-items-end">
+              <button class="btn btn-danger ms-auto removeBranchUnitBtn" type="button">Remove</button>
+            </div>
+          </div>
+  `;
+
+        // Append the new div to the subcontractorContainer
+        document.getElementById("EstBranchDiv").prepend(branchUnitDiv);
+
+        branchUnitDiv.querySelector('.removeBranchUnitBtn').addEventListener('click', function () {
+            branchUnitDiv.remove();
+        });
+    })
+    .off("click", "#EstAddUnionBtn")
+    .on("click", "#EstAddUnionBtn", function (event) {
+        // Create a new div element for the subcontractor form fields
+        const laborUnionDiv = document.createElement("div");
+        laborUnionDiv.className =
+            "labor-union-div rounded border border-1 p-4 my-4";
+
+        // Set the innerHTML of the new div
+        laborUnionDiv.innerHTML = `
+
+          <div class="row mb-2">
+            <div class="col-lg-4 col-md-12 col-sm-12 form-outline">
+              <label for="EstUnionName" class="form-label">Name of Labor union</label>
+              <input type="text" class="form-control form-control-sm EstUnionName" name="EstUnionName[]"
+                required />
+            </div>
+            <div class="col-lg-4 col-md-12 col-sm-12 form-outline">
+              <label for="EstUnionAddress" class="form-label">Address of Labor union</label>
+              <input type="text" class="form-control form-control-sm EstUnionAddress" name="EstUnionAddress[]"
+                required />
+            </div>
+            <div class="col-lg-4 col-md-12 col-sm-12 form-outline">
+              <label for="EstUnionBLR" class="form-label">BLR Registration number</label>
+              <input type="text" class="form-control form-control-sm EstUnionBLR" name="EstUnionBLR[]"
+                required />
+            </div>
+          </div>
+          <div class="row mb-2">
+            <div class="d-flex align-items-end">
+              <button class="btn btn-danger ms-auto removeLaborUniohnBtn" type="button">Remove</button>
+            </div>
+          </div>
+  `;
+
+        // Append the new div to the subcontractorContainer
+        document.getElementById("EstLaborUnionDiv").prepend(laborUnionDiv);
+        laborUnionDiv.querySelector('.removeLaborUniohnBtn').addEventListener('click', function () {
+            laborUnionDiv.remove();
+        });
+    })
+    .off("click", "#EstIsHaveBranchUnits")
+    .on("click", "#EstIsHaveBranchUnits", function (event) {
+        const branchContainer = $("#EstBranchDiv");
+        const checkbox = event.currentTarget;
+
+        if (!checkbox.checked && branchContainer.length) {
+            branchContainer.empty();
+        }
+    })
+    .off("click", "#EstIsHaveLaborUnion")
+    .on("click", "#EstIsHaveLaborUnion", function (event) {
+        const laborUnionContainer = $("#EstLaborUnionDiv");
+        const checkbox = event.currentTarget;
+
+        if (!checkbox.checked && laborUnionContainer.length) {
+            laborUnionContainer.empty();
+        }
+    })
+    .off("change", "#EstSECFile")
+    .on("change", "#EstSECFile", function (event) {
+        register.validateFile(this, '#EstSECFileErrorMessege', 25 * 1024 * 1024, ['pdf']);
+    })
+    .off("change", "#EstBisPermitFile")
+    .on("change", "#EstBisPermitFile", function (event) {
+        register.validateFile(this, '#EstBisPermitFileErrorMessege', 25 * 1024 * 1024, ['pdf']);
+    })
+    .off("change", "#EstOwnerValidIDFile")
+    .on("change", "#EstOwnerValidIDFile", function (event) {
+        register.validateFile(this, '#EstOwnerValidIDFileErrorMessege', 25 * 1024 * 1024, ['pdf']);
+    })
+
