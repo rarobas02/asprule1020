@@ -198,68 +198,132 @@ const register = {
         toggleVisibility();
         $select.on("change", toggleVisibility);
     },
-	branch_unit: function () {
-		const values = [];
+    branch_unit: function () {
+        const values = [];
 
-		document.querySelectorAll("#EstBranchDiv .branch-unit-div").forEach((row) => {
-			const rowValues = {
-				EstBranchRule1020Number: row.querySelector('[name="EstBranchRule1020Number[]"]')?.value?.trim() || "",
-				EstBranchName: row.querySelector('[name="EstBranchName[]"]')?.value?.trim() || "",
-				EstBranchEstName: row.querySelector('[name="EstBranchEstName[]"]')?.value?.trim() || ""
-			};
+        document.querySelectorAll("#EstBranchDiv .branch-unit-div").forEach((row) => {
+            const rowValues = {
+                EstBranchRule1020Number: row.querySelector('[name="EstBranchRule1020Number[]"]')?.value?.trim() || "",
+                EstBranchName: row.querySelector('[name="EstBranchName[]"]')?.value?.trim() || "",
+                EstBranchEstName: row.querySelector('[name="EstBranchEstName[]"]')?.value?.trim() || ""
+            };
 
-			values.push(rowValues);
-		});
+            values.push(rowValues);
+        });
 
-		return values;
-	},
-	labor_union: function () {
-		const uvalues = [];
+        return values;
+    },
+    labor_union: function () {
+        const uvalues = [];
 
-		document.querySelectorAll("#EstLaborUnionDiv .labor-union-div").forEach((row) => {
-			const EstUnionRowValues = {
-				EstUnionName: row.querySelector('[name="EstUnionName[]"]')?.value?.trim() || "",
-				EstUnionAddress: row.querySelector('[name="EstUnionAddress[]"]')?.value?.trim() || "",
-				EstUnionBLR: row.querySelector('[name="EstUnionBLR[]"]')?.value?.trim() || ""
-			};
+        document.querySelectorAll("#EstLaborUnionDiv .labor-union-div").forEach((row) => {
+            const EstUnionRowValues = {
+                EstUnionName: row.querySelector('[name="EstUnionName[]"]')?.value?.trim() || "",
+                EstUnionAddress: row.querySelector('[name="EstUnionAddress[]"]')?.value?.trim() || "",
+                EstUnionBLR: row.querySelector('[name="EstUnionBLR[]"]')?.value?.trim() || ""
+            };
 
-			uvalues.push(EstUnionRowValues);
-		});
+            uvalues.push(EstUnionRowValues);
+        });
 
-		return uvalues;
-	},
+        return uvalues;
+    },
     stepper: function () {
         var current = 1,
             current_step,
             next_step,
             steps;
         steps = $("fieldset").length;
-        $(".next").click(function () {
+
+        const usernameInput = document.getElementById("UserName");
+        if (usernameInput) {
+            register.attachAvailabilityValidation({
+                input: usernameInput,
+                endpoint: register.endpoints.usernameIsExist,
+                queryParam: "UserName",
+                unavailableMessage: "Username is already taken."
+            });
+
+        }
+
+		const emailInput = document.getElementById("Email");
+        if (emailInput) {
+            register.attachAvailabilityValidation({
+                input: emailInput,
+                endpoint: register.endpoints.emailIsExist,
+				queryParam: "EstEmail",
+                unavailableMessage: "Establishment email is already taken."
+            });
+        }
+
+		$(".next").click(async function () {
             let current = $(this).closest("fieldset");
             let next = current.next("fieldset");
             if (!next.length) {
                 return;
             }
-            let usernameInput = document.getElementById("UserName");
-            let passwordInput = document.getElementById("UserName");
-            let confirmPasswordInput = document.getElementById("UserName");
-            let emailInput = document.getElementById("Email");
-			const branches = register.branch_unit();
-			const laborUnions = register.labor_union();
-            if (usernameInput) {
-                usernameInput.addEventListener("blur", () => register.validateUsernameAvailability(usernameInput));
-                usernameInput.addEventListener("input", () => register.setUsernameValidationResult(usernameInput, null));
-            }
-            if (emailInput) {
-                emailInput.addEventListener("blur", () => register.validateUsernameAvailability(emailInput.value));
-                emailInput.addEventListener("input", () => register.setUsernameValidationResult(emailInput.value, null));
-            }
-			if (branches.length > 0) {
-				const branchContainer = document.getElementById("review_branch_unit_container");
-				branchContainer.classList.remove("d-none");
-				branchContainer.style.display = "block";
+
+			const usernameInputEl = document.getElementById("UserName");
+			const emailInputEl = document.getElementById("Email");
+
+			const isUsernameAvailable = await register.validateAvailability({
+				input: usernameInputEl,
+				endpoint: register.endpoints.usernameIsExist,
+				queryParam: "UserName",
+				unavailableMessage: "Username is already taken."
+			});
+
+			if (isUsernameAvailable) {
+				const message = usernameInputEl?.dataset?.availabilityMessage || "Username is already taken.";
+				register.showAvailabilityError?.(message);
+				if (typeof Swal !== "undefined") {
+					Swal.fire({
+						title: "Error!",
+						theme: "bootstrap-5",
+						html: `<span><strong>${message}</strong></span>`,
+						icon: "error",
+						confirmButtonColor: "#dc3545",
+						confirmButtonText: "Close",
+						allowOutsideClick: false
+					});
+				}
+				usernameInputEl?.focus();
+				return;
+			}
+
+			const isEmailAvailable = await register.validateAvailability({
+				input: emailInputEl,
+				endpoint: register.endpoints.emailIsExist,
+				queryParam: "EstEmail",
+				unavailableMessage: "Establishment email is already taken."
+			});
+
+			if (isEmailAvailable) {
+				const message = emailInputEl?.dataset?.availabilityMessage || "Establishment email is already taken.";
+				if (typeof Swal !== "undefined") {
+					Swal.fire({
+						title: "Error!",
+						theme: "bootstrap-5",
+						html: `<span><strong>${message}</strong></span>`,
+						icon: "error",
+						confirmButtonColor: "#dc3545",
+						confirmButtonText: "Close",
+						allowOutsideClick: false
+					});
+				}
+				emailInputEl?.focus();
+				return;
+			}
+
+            let branches = register.branch_unit();
+            let laborUnions = register.labor_union();
+            if (branches.length > 0)
+            {
+                let branchContainer = document.getElementById("review_branch_unit_container");
+                branchContainer.classList.remove("d-none");
+                branchContainer.style.display = "block";
                 // Use map to create an array of table rows
-				let rows = branches.map(function (data) {
+                let rows = branches.map(function (data) {
                     return `<tr>
 							<td class="text-center">${data.EstBranchRule1020Number}</td>
 							<td class="text-center">${data.EstBranchName}</td>
@@ -269,18 +333,20 @@ const register = {
 
                 // Append the array of rows to the table body
                 $("#review_est_branch_body").html(rows.join(""));
-            } else {
-				const branchContainer = document.getElementById("review_branch_unit_container");
-				branchContainer.classList.add("d-none");
-				branchContainer.style.display = "none";
+            }
+            else
+            {
+                const branchContainer = document.getElementById("review_branch_unit_container");
+                branchContainer.classList.add("d-none");
+                branchContainer.style.display = "none";
                 $("#review_est_branch_body").html("");
             }
-			if (laborUnions.length > 0) {
-				const laborContainer = document.getElementById("review_labor_union_container");
-				laborContainer.classList.remove("d-none");
-				laborContainer.style.display = "block";
+            if (laborUnions.length > 0) {
+                const laborContainer = document.getElementById("review_labor_union_container");
+                laborContainer.classList.remove("d-none");
+                laborContainer.style.display = "block";
                 // Use map to create an array of table rows
-				let rows_union = laborUnions.map(function (data_union) {
+                let rows_union = laborUnions.map(function (data_union) {
                     return `<tr>
 							<td class="text-center">${data_union.EstUnionName}</td>
 							<td class="text-center">${data_union.EstUnionAddress}</td>
@@ -290,15 +356,19 @@ const register = {
 
                 // Append the array of rows to the table body
                 $("#review_est_union_body").html(rows_union.join(""));
-            } else {
-				const laborContainer = document.getElementById("review_labor_union_container");
-				laborContainer.classList.add("d-none");
-				laborContainer.style.display = "none";
+            }
+            else
+            {
+                const laborContainer = document.getElementById("review_labor_union_container");
+                laborContainer.classList.add("d-none");
+                laborContainer.style.display = "none";
                 $("#review_est_union_body").html("");
             }
-
-            current.addClass("d-none");
-            next.removeClass("d-none");
+            if (validateRequiredFields(current))
+            {
+                current.addClass("d-none");
+                next.removeClass("d-none");
+            }
         });
 
         $(".previous").click(function () {
@@ -577,7 +647,7 @@ const register = {
 
         return payload.data;
     },
-    setUsernameValidationResult: function (inputEl, isValid, message = "Username is required.") {
+    setFieldValidationResult: function (inputEl, isValid, message = "This field is required.") {
         const feedback = inputEl.nextElementSibling?.classList.contains("invalid-feedback")
             ? inputEl.nextElementSibling
             : null;
@@ -604,39 +674,89 @@ const register = {
             }
         }
     },
-    validateUsernameAvailability: async function (mode,input) {
+    validateInputIfExist: async function (inputValue, requestInput) {
+        try {
+            const response = await fetch(`${register.endpoints.usernameIsExist}?${requestInput}=${encodeURIComponent(inputValue)}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+
+            const result = await response.json();
+
+            if (result.status === false) {
+                // Username already exists
+                console.error(result.data);
+                return {
+                    isValid: false,
+                    message: result.data
+                };
+            }
+
+            // Username is available
+            return {
+                isValid: true,
+                message: "Username is available."
+            };
+
+        } catch (error) {
+            console.error('Error validating username:', error);
+            return {
+                isValid: false,
+                message: "An error occurred while validating username."
+            };
+        }
+    },
+    validateAvailability: async function ({ input, endpoint, queryParam, unavailableMessage = "Value is already taken." }) {
         const inputEl = typeof input === "string" ? document.getElementById(input) : input;
 
-        if (!inputEl) {
+        if (!inputEl || !endpoint || !queryParam) {
             return;
         }
 
-        const username = inputEl.value.trim();
+        const value = inputEl.value.trim();
 
-        if (!username) {
-            register.setUsernameValidationResult(inputEl, null);
+        if (!value) {
+            register.setFieldValidationResult(inputEl, null);
             return;
         }
 
-        register.setUsernameValidationResult(inputEl, null);
+        register.setFieldValidationResult(inputEl, null);
 
         try {
-            const payload = await register.fetchAdministrativeData(
-                `${register.endpoints.usernameIsExist}?${mode}=${encodeURIComponent(username)}`,
-                { expectArray: false }
-            );
+            const url = `${endpoint}?${encodeURIComponent(queryParam)}=${encodeURIComponent(value)}`;
+            const response = await fetch(url, { headers: { Accept: "application/json" }, cache: "no-cache" });
+
+            if (!response.ok) {
+                throw new Error(`Request failed with status ${response.status}`);
+            }
+
+            const payload = await response.json();
 
             if (payload?.status) {
-                register.setUsernameValidationResult(inputEl, true);
+                register.setFieldValidationResult(inputEl, true);
             } else {
-                const message = typeof payload?.data === "string"
-                    ? payload.data
-                    : "Username is already taken.";
-                register.setUsernameValidationResult(inputEl, false, message);
+                const message = typeof payload?.data === "string" ? payload.data : unavailableMessage;
+                register.setFieldValidationResult(inputEl, false, message);
             }
         } catch (error) {
-            console.error("Unable to validate username.", error);
+            console.error("Unable to validate field availability.", error);
+            register.setFieldValidationResult(inputEl, false, "Unable to validate right now.");
         }
+    },
+    attachAvailabilityValidation: function ({ input, endpoint, queryParam, unavailableMessage }) {
+        if (!input || !endpoint || !queryParam) {
+            return;
+        }
+
+        const validate = () => register.validateAvailability({ input, endpoint, queryParam, unavailableMessage });
+        input.addEventListener("blur", validate);
+        input.addEventListener("input", () => register.setFieldValidationResult(input, null));
     },
     validateFile: function (inputFile, errorMessageId, maxSizeInBytes, allowedExtensions) {
         var fileSize = inputFile.files[0].size; // in bytes
@@ -710,6 +830,9 @@ document.addEventListener("keyup", function (e) {
             document.getElementById("EstTotalEmployees").value = result;
         }
     }
+});
+document.getElementById("UserName").addEventListener("blur", async function () {
+
 });
 $(document)
     .off("change", "#EstType")
