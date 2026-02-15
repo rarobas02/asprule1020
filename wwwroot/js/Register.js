@@ -3,6 +3,9 @@ let LaborUnion = []
 
 
 const register = {
+    reviewTargets: {
+        Email: "reviewEmail"
+    },
     togglePasswordVisibility: function (toggleId, inputId) {
         const toggle = document.getElementById(toggleId);
         const input = document.getElementById(inputId);
@@ -62,7 +65,7 @@ const register = {
         // Get all input and select elements inside the form
         const form_elements = form.querySelectorAll("input, select");
 
-        const excluded_ids = ["EstTechInfo1OtherCheckBox", "EstTechInfo2OtherCheckBox", "EstIsHaveLaborUnion", "EstIsHaveBranchUnits", "certify", "certifydpa"];
+        const excluded_ids = ["password","ConfirmPassword","EstTechInfo1OtherCheckBox", "EstTechInfo2OtherCheckBox", "EstIsHaveLaborUnion", "EstIsHaveBranchUnits", "certify", "certifydpa"];
         const excluded_names = ["EstBranchRule1020Number[]", "EstBranchName[]", "EstBranchEstName[]", "EstUnionName[]", "EstUnionAddress[]", "EstUnionBLR[]"];
 
         const no_input_text = "No Input";
@@ -84,17 +87,22 @@ const register = {
                     tech_info_2_checkbox.push(element.value);
                 }
             } else {
-                value = document.getElementById(element.id).value;
+                if (!element.id) {
+                    return;
+                }
+
+                value = element.value ?? "";
                 // get file name only
                 if (element.type == "file") {
                     value = value.split("\\").pop();
                 }
 
-                //   console.log(element.id);
-                //   console.log({ value });
+                //console.log(element.id);
+                //console.log({ value });
                 // Exclude specific IDs (customize as needed)
                 if (!excluded_ids.includes(element.id) && !excluded_names.includes(element.name)) {
-                    const reviewElement = document.getElementById(`review_${element.id}`);
+                    const reviewId = register.reviewTargets[element.id] ?? `review${element.id}`;
+                    const reviewElement = document.getElementById(reviewId);
                     // Check if reviewElement is not null or undefined
                     if (reviewElement) {
                         if (value.trim() !== "") {
@@ -109,17 +117,17 @@ const register = {
         // Display comma-separated list for checked checkboxes
         if (tech_info_1_checkbox.length > 0) {
             // console.log(tech_info_1_checkbox.join(", "));
-            document.getElementById("review_est_techinfo1").innerHTML = tech_info_1_checkbox.join(", ");
+            document.getElementById("reviewEstTechInfo1").innerHTML = tech_info_1_checkbox.join(", ");
         } else {
-            document.getElementById("review_est_techinfo1").innerHTML = no_input_text;
+            document.getElementById("reviewEstTechInfo1").innerHTML = no_input_text;
         }
 
         // Display comma-separated list for checked checkboxes
         if (tech_info_2_checkbox.length > 0) {
             // console.log(tech_info_2_checkbox.join(", "));
-            document.getElementById("review_est_techinfo2").innerHTML = tech_info_2_checkbox.join(", ");
+            document.getElementById("reviewEstTechInfo2").innerHTML = tech_info_2_checkbox.join(", ");
         } else {
-            document.getElementById("review_est_techinfo2").innerHTML = no_input_text;
+            document.getElementById("reviewEstTechInfo2").innerHTML = no_input_text;
         }
     },
     toggleDivAndRequired: function ({
@@ -234,7 +242,7 @@ const register = {
             next_step,
             steps;
         steps = $("fieldset").length;
-
+        register.review();
         const usernameInput = document.getElementById("UserName");
         if (usernameInput) {
             register.attachAvailabilityValidation({
@@ -364,11 +372,13 @@ const register = {
                 laborContainer.style.display = "none";
                 $("#review_est_union_body").html("");
             }
-            if (validateRequiredFields(current))
-            {
-                current.addClass("d-none");
-                next.removeClass("d-none");
-            }
+			if (!validateRequiredFields(current)) {
+				return;
+			}
+
+			register.review();
+			current.addClass("d-none");
+			next.removeClass("d-none");
         });
 
         $(".previous").click(function () {

@@ -32,6 +32,7 @@ namespace asprule1020.Areas.Identity.Pages.Account
         private readonly IUserEmailStore<ApplicationUser> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
+        private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly ApplicationDbContext _db;
 
 
@@ -41,6 +42,7 @@ namespace asprule1020.Areas.Identity.Pages.Account
             SignInManager<ApplicationUser> signInManager,
             ILogger<RegisterModel> logger,
             IEmailSender emailSender,
+            IWebHostEnvironment webHostEnvironment,
             ApplicationDbContext db
             )
         {
@@ -50,6 +52,7 @@ namespace asprule1020.Areas.Identity.Pages.Account
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
+            _webHostEnvironment = webHostEnvironment;
             _db = db;
         }
 
