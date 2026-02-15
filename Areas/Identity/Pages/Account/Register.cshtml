@@ -22,12 +22,16 @@
     };
 }
 
-<h1>@ViewData["Title"]</h1>
-
 <div class="row">
     <section>
-        <h3>Use another service to register.</h3>
-        <hr />
+        <div class="text-center mb-4">
+            @* <img src="~/img/_Layout/chatgpt-icon.svg"
+                         alt="Brand logo"
+                         class="rounded-circle border border-2 border-primary-subtle"
+                         style="width: 96px; height: 96px;" /> *@
+            <h1 class="h3 fw-semibold mt-3 mb-1">Register using the following external Services</h1>
+            <p class="text-secondary mb-0">Accessible login after register</p>
+        </div>
         @{
             if ((Model.ExternalLogins?.Count ?? 0) == 0)
             {
@@ -45,14 +49,18 @@
                 <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
                     <div>
                         <p>
+                        <div class="d-grid">
                             @foreach (var provider in Model.ExternalLogins!)
                             {
                                 <button type="submit" class="btn btn-primary" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.DisplayName</button>
                             }
+                            </div>
                         </p>
                     </div>
                 </form>
             }
+            <hr />
+
         }
     </section>
 </div>
@@ -61,6 +69,7 @@
           class="needs-validation" id="Rule1020RegistrationForm"
           novalidate enctype="multipart/form-data">
         <fieldset id="step1">
+            @Html.AntiForgeryToken()
             <div class="card w-100 shadow-sm border-0">
                 <div class="card-body row g-4 ">
                     <div class="text-center mb-4">
@@ -73,7 +82,6 @@
                     </div>
 
 
-                    @Html.AntiForgeryToken()
                     <div class="row">
                         <div class="col-md-6">
                             <label asp-for="Input.Register.UserName" class="form-label">Set Account Username / NickName</label>
