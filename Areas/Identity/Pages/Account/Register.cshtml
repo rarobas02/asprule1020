@@ -333,12 +333,12 @@
                         </div>
                         <div class="col-md-6">
                             <label asp-for="Input.Register.EstMaleCount" class="form-label">Number of Male Employees</label>
-                            <input asp-for="Input.Register.EstMaleCount" type="text" class="form-control" id="EstMaleCount" required />
+                            <input asp-for="Input.Register.EstMaleCount" type="text" class="form-control" id="EstMaleCount" required maxlength="10" />
                             <div class="invalid-feedback">Number of Female Employee is required.</div>
                         </div>
                         <div class="col-md-6">
                             <label asp-for="Input.Register.EstFemaleCount" class="form-label">Number of Female Employees</label>
-                            <input asp-for="Input.Register.EstFemaleCount" type="text" class="form-control" id="EstFemaleCount" required />
+                            <input asp-for="Input.Register.EstFemaleCount" type="text" class="form-control" id="EstFemaleCount" required maxlength="10" />
                             <div class="invalid-feedback">Number of Female Employee is required.</div>
                         </div>
                         <div class="col-md-6">

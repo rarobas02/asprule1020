@@ -806,34 +806,33 @@ register.preventFutureDate("EstOwnerValidIDDateIssued");
 register.preventPastDate("EstOwnerValidIDDateExpire");
 register.stepper();
 
-document.addEventListener("keyup", function (e) {
+document.addEventListener("input", function (e) {
     if (e.target.matches("#EstMaleCount, #EstFemaleCount")) {
         const input = e.target;
-        const sanitized = input.value.replace(/\D+/g, "");
-        let filtered = "";
 
-        for (const digit of sanitized) {
-            const position = filtered.length;
-            if (digit <= "0" && position < 2) {
-                continue;
-            }
-            filtered += digit;
+        // Remove non-digits
+        let value = input.value.replace(/\D+/g, "");
+
+        // Remove leading zeros
+        value = value.replace(/^0+/, "");
+
+        // If empty after cleaning, set to "0"
+        if (value === "") {
+            value = "0";
         }
 
-        input.value = filtered;
+        input.value = value;
 
-        const maleCount = parseInt(document.getElementById("EstMaleCount").value || "0", 10);
-        const femaleCount = parseInt(document.getElementById("EstFemaleCount").value || "0", 10);
+        const maleCount = parseInt(document.getElementById("EstMaleCount").value, 10) || 0;
+        const femaleCount = parseInt(document.getElementById("EstFemaleCount").value, 10) || 0;
+
         const result = maleCount + femaleCount;
 
-        if (!Number.isNaN(result)) {
-            document.getElementById("EstTotalEmployees").value = result;
-        }
+        document.getElementById("EstTotalEmployees").value = result;
     }
 });
-document.getElementById("UserName").addEventListener("blur", async function () {
 
-});
+
 $(document)
     .off("change", "#EstType")
     .on("change", "#EstType", function () {
