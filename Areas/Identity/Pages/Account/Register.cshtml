@@ -84,19 +84,19 @@
                     <div class="row">
                         <div class="col-md-6">
                             <label asp-for="Input.Register.UserName" class="form-label">Set Account Username / NickName</label>
-                            <input asp-for="Input.Register.UserName" type="text" class="form-control" name="UserName" id="UserName" placeholder="Username" required />
+                            <input asp-for="Input.Register.UserName" type="text" class="form-control" data-element="UserName" placeholder="Username" required />
                             <div class="invalid-feedback">Username is required.</div>
                         </div>
                         <div class="col-md-6">
                             <label asp-for="Input.Email" class="form-label">Establishment Email Address</label>
-                            <input asp-for="Input.Email" type="text" class="form-control" id="Email" name="Email" placeholder="ex. janedoe@gmail.com" required />
+                            <input asp-for="Input.Email" type="text" class="form-control" data-element="Email" placeholder="ex. janedoe@gmail.com" required />
 
                             <div class="invalid-feedback">Email is required.</div>
                         </div>
                         <div class="col-md-6">
                             <label asp-for="Input.Password" class="form-label">Password</label>
                             <div class="input-group">
-                                <input asp-for="Input.Password" type="password" class="form-control" id="password" name="Password" placeholder="Password" required />
+                                <input asp-for="Input.Password" type="password" class="form-control" data-element="password" placeholder="Password" required />
                                 <button class="input-group-text togglePassword" type="button" id="togglePassword">
                                     <i class="fas fa-eye" style="cursor: pointer"></i>
                                 </button>
@@ -106,30 +106,30 @@
                         <div class="col-md-6">
                             <label asp-for="Input.ConfirmPassword" class="form-label">Confirm Password</label>
                             <div class="input-group">
-                                <input asp-for="Input.ConfirmPassword" type="password" class="form-control" id="confirmPassword" name="ConfirmPassword" placeholder="Confirm Password" required />
+                                <input asp-for="Input.ConfirmPassword" type="password" class="form-control" data-element="confirmPassword" placeholder="Confirm Password" required />
                                 <button class="input-group-text toggleConfirmPassword" type="button" id="toggleConfirmPassword"></button>
                             </div>
                             <div class="invalid-feedback">Password is required.</div>
                         </div>
                         <div class="col-md-6">
                             <label asp-for="Input.Register.EstPhone" class="form-label">Establishment Cellphone / Telephone Number</label>
-                            <input asp-for="Input.Register.EstPhone" type="text" class="form-control" name="EstPhone" id="EstPhone" placeholder="ex. +63 (02) 012-3456 /09********" required />
+                            <input asp-for="Input.Register.EstPhone" type="text" class="form-control" data-element="EstPhone" placeholder="ex. +63 (02) 012-3456 /09********" required />
                             <div class="invalid-feedback">Cellphone/Telephone Number is required.</div>
                         </div>
                         <div class="col-md-6">
                             <label asp-for="Input.Register.EstName" class="form-label">Establishment Name</label>
-                            <input asp-for="Input.Register.EstName" type="text" class="form-control" name="EstName" id="EstName" placeholder="Establishment Name" required />
+                            <input asp-for="Input.Register.EstName" type="text" class="form-control" data-element="EstName" placeholder="Establishment Name" required />
                             <div class="invalid-feedback">Establishment Name is required.</div>
                         </div>
                         <div class="col-md-6">
                             <label asp-for="Input.Email" class="form-label">Establishment Email Address</label>
-                            <input asp-for="Input.Email" name="Email" type="text" class="form-control" id="Email" placeholder="ex. janedoe@gmail.com" required />
+                            <input asp-for="Input.Email" type="text" class="form-control" data-element="Email" placeholder="ex. janedoe@gmail.com" required />
 
                             <div class="invalid-feedback">Email is required.</div>
                         </div>
                         <div class="col-md-6">
                             <label asp-for="Input.Register.EstType" class="form-label">Establishment Type</label>
-                            <select asp-for="Input.Register.EstType" class="form-select" id="EstType" name="EstType">
+                            <select asp-for="Input.Register.EstType" class="form-select" data-element="EstType">
                                 <option value="" selected disabled>Select type of Establishment</option>
                                 <option value="SINGLE ESTABLISHMENT">
                                     Single Establishment (Main Branch)
@@ -140,7 +140,7 @@
                         </div>
                         <div class="col-md-6">
                             <label asp-for="Input.Register.EstLegalOrg" class="form-label">Legal Organization</label>
-                            <select asp-for="Input.Register.EstLegalOrg" class="form-select" id="EstLegalOrg" name="EstLegalOrg" required>
+                            <select asp-for="Input.Register.EstLegalOrg" class="form-select" data-element="EstLegalOrg" required>
                                 <option value="" selected disabled>Select Legal Organization</option>
                                 <option value="SINGLE PROPRIETORSHIP">
                                     Single Proprietorship
@@ -156,14 +156,14 @@
                         </div>
                         <div class="col-md-6 d-none" id="EstLegalOrgOtherDiv">
                             <label asp-for="Input.Register.EstLegalOrgOther" class="form-label">Other Legal Organization</label>
-                            <input asp-for="Input.Register.EstLegalOrgOther" type="text" class="form-control" name="EstLegalOrgOther" id="EstLegalOrgOther" placeholder="Input the legal organization type" />
+                            <input asp-for="Input.Register.EstLegalOrgOther" type="text" class="form-control" data-element="EstLegalOrgOther" placeholder="Input the legal organization type" />
                             <div class="invalid-feedback">Legal Organization is required.</div>
                         </div>
                         <div class="col-md-6">
                             <label asp-for="Input.Register.EstRegion" class="form-label">Region</label>
                             <select asp-for="Input.Register.EstRegion"
                                     class="form-select "
-                                    id="EstRegion" name="EstRegion" required>
+                                    data-element="EstRegion" required>
                                 <option value="" disabled selected>Select Region</option>
                                 <option value="Region IV-A (CALABARZON)">Region IV-A (CALABARZON)</option>
                             </select>
@@ -173,7 +173,7 @@
                             <label asp-for="Input.Register.EstProvince" class="form-label">Province</label>
                             <select asp-for="Input.Register.EstProvince"
                                     class="form-select "
-                                    id="EstProvince" name="EstProvince"
+                                    data-element="EstProvince"
                                     disabled required>
                                 <option value="" disabled selected>Select Province</option>
                             </select>
@@ -183,7 +183,7 @@
                             <label asp-for="Input.Register.EstCityMun" class="form-label">City / Municipality</label>
                             <select asp-for="Input.Register.EstCityMun"
                                     class="form-select "
-                                    id="EstCityMun" name="EstCityMun"
+                                    data-element="EstCityMun"
                                     disabled required>
                                 <option value="" disabled selected>Select City/Municipality</option>
                             </select>
@@ -193,7 +193,7 @@
                             <label asp-for="Input.Register.EstBrgy" class="form-label">Barangay</label>
                             <select asp-for="Input.Register.EstBrgy"
                                     class="form-select "
-                                    id="EstBrgy" name="EstBrgy"
+                                    data-element="EstBrgy"
                                     disabled >
                                 <option value="" disabled selected>Select Barangay</option>
                             </select>
@@ -201,7 +201,7 @@
                         </div>
                         <div class="col-md-6">
                             <label asp-for="Input.Register.EstStreet" class="form-label"> Street Address/ Floor/ Bldg. No./ Subdivision:</label>
-                            <input asp-for="Input.Register.EstStreet" type="text" class="form-control" id="EstStreet" name="EstStreet" placeholder="ex. 45 Sesame Street" required />
+                            <input asp-for="Input.Register.EstStreet" type="text" class="form-control" data-element="EstStreet" placeholder="ex. 45 Sesame Street" required />
                             <div class="invalid-feedback">Street Address is required.</div>
                         </div>
                         <div class="col-md-6">
@@ -209,7 +209,7 @@
                                 First Name of
                                 Manager/Owner
                             </label>
-                            <input asp-for="Input.Register.EstOwnerFirst" type="text" class="form-control" id="EstOwnerFirst" name="EstOwnerFirst" placeholder="ex. Jane" required />
+                            <input asp-for="Input.Register.EstOwnerFirst" type="text" class="form-control" data-element="EstOwnerFirst" placeholder="ex. Jane" required />
                             <div class="invalid-feedback">
                                 First Name of Manager/Owner is required.
                             </div>
@@ -219,7 +219,7 @@
                                 Middle Name of
                                 Manager/Owner:
                             </label><span class="text-muted">(Leave Blank if None)</span>
-                            <input asp-for="Input.Register.EstOwnerMid" type="text" class="form-control" id="EstOwnerMid" name="EstOwnerMid" placeholder="ex. Opal" />
+                            <input asp-for="Input.Register.EstOwnerMid" type="text" class="form-control" data-element="EstOwnerMid" placeholder="ex. Opal" />
                             <div class="invalid-feedback">
                                 Middle Name of Manager/Owner is required.
                             </div>
@@ -229,26 +229,26 @@
                                 Last Name of
                                 Manager/Owner
                             </label>
-                            <input asp-for="Input.Register.EstOwnerLast" type="text" class="form-control" id="EstOwnerLast" name="EstOwnerLast" placeholder="ex. Doe" required />
+                            <input asp-for="Input.Register.EstOwnerLast" type="text" class="form-control" data-element="EstOwnerLast" placeholder="ex. Doe" required />
                             <div class="invalid-feedback">Last name of Manager/Owner is required.</div>
                         </div>
                         <div class="col-md-6">
                             <label asp-for="Input.Register.EstCurrentCap" class="form-label">
                                 Current Capitalization
                             </label>
-                            <input asp-for="Input.Register.EstCurrentCap" type="text" class="form-control" id="EstCurrentCap" name="EstCurrentCap" required />
+                            <input asp-for="Input.Register.EstCurrentCap" type="text" class="form-control" data-element="EstCurrentCap" required />
                             <div class="invalid-feedback">Current Capitalization is required.</div>
                         </div>
                         <div class="col-md-6">
                             <label asp-for="Input.Register.EstTotalAssets" class="form-label">
                                 Total Assets
                             </label>
-                            <input asp-for="Input.Register.EstTotalAssets" type="text" class="form-control" id="EstTotalAssets" name="EstTotalAssets" required />
+                            <input asp-for="Input.Register.EstTotalAssets" type="text" class="form-control" data-element="EstTotalAssets" required />
                             <div class="invalid-feedback">Total Assets name is required.</div>
                         </div>
                         <div class="col-md-6">
                             <label asp-for="Input.Register.EstBusinessNature" class="form-label">Nature of Business</label>
-                            <select asp-for="Input.Register.EstBusinessNature" class="form-select" id="EstBusinessNature" name="EstBusinessNature" required>
+                            <select asp-for="Input.Register.EstBusinessNature" class="form-select" data-element="EstBusinessNature" required>
                                 <option value="" selected disabled>Select Nature of Business</option>
                                 <option value="Agriculture, Forestry, and Fishing">
                                     Agriculture,
@@ -327,22 +327,22 @@
 
                         <div class="col-md-6 d-none" id="EstOtherBusNatureDiv">
                             <label asp-for="Input.Register.EstOtherBusNature" class="form-label">Specify Business Nature</label>
-                            <input asp-for="Input.Register.EstOtherBusNature" type="text" class="form-control" id="EstOtherBusNature" name="EstOtherBusNature" />
+                            <input asp-for="Input.Register.EstOtherBusNature" type="text" class="form-control" data-element="EstOtherBusNature" />
                             <div class="invalid-feedback">Other Business Nature is required.</div>
                         </div>
                         <div class="col-md-6">
                             <label asp-for="Input.Register.EstMaleCount" class="form-label">Number of Male Employees</label>
-                            <input asp-for="Input.Register.EstMaleCount" type="text" class="form-control" id="EstMaleCount" name="EstMaleCount" required maxlength="10" />
+                            <input asp-for="Input.Register.EstMaleCount" type="text" class="form-control" data-element="EstMaleCount" required maxlength="10" />
                             <div class="invalid-feedback">Number of Male Employee is required.</div>
                         </div>
                         <div class="col-md-6">
                             <label asp-for="Input.Register.EstFemaleCount" class="form-label">Number of Female Employees</label>
-                            <input asp-for="Input.Register.EstFemaleCount" type="text" class="form-control" id="EstFemaleCount" name="EstFemale" required maxlength="10" />
+                            <input asp-for="Input.Register.EstFemaleCount" type="text" class="form-control" data-element="EstFemaleCount" required maxlength="10" />
                             <div class="invalid-feedback">Number of Female Employee is required.</div>
                         </div>
                         <div class="col-md-6">
                             <label asp-for="Input.Register.EstTotalEmployees" class="form-label">Total Number of Employees</label>
-                            <input asp-for="Input.Register.EstTotalEmployees" type="text" class="form-control" id="EstTotalEmployees" name="EstTotalEmployees" required readonly />
+                            <input asp-for="Input.Register.EstTotalEmployees" type="text" class="form-control" data-element="EstTotalEmployees" required readonly />
                             <div class="invalid-feedback">Number of Total Employee is required.</div>
                         </div>
                         <div class="row mb-2">
@@ -374,7 +374,7 @@
                         </div>
                         <div class="col-md-6 d-none" id="EstTechInfo1OtherDiv">
                             <label asp-for="Input.Register.EstTechInfo1Other" class="form-label">Provide Other Technical Information 1</label>
-                            <input asp-for="Input.Register.EstTechInfo1Other" type="text" class="form-control" id="EstTechInfo1Other" name="" />
+                            <input asp-for="Input.Register.EstTechInfo1Other" type="text" class="form-control" data-element="EstTechInfo1Other" />
                             <div class="invalid-feedback">Other Technical Information 1 is required.</div>
                         </div>
 
@@ -410,7 +410,7 @@
                             <label asp-for="Input.Register.EstTechInfo2Other" class="form-label">
                                 Provide Other Technical Information 2
                             </label>
-                            <input asp-for="Input.Register.EstTechInfo2Other" type="text" class="form-control" id="EstTechInfo2Other" name="EstTechInfo2Other" />
+                            <input asp-for="Input.Register.EstTechInfo2Other" type="text" class="form-control" data-element="EstTechInfo2Other" />
                             <div class="invalid-feedback">Other Technical Information 2 is required.</div>
                         </div>
                         <div class="col-md-6">
@@ -419,7 +419,7 @@
                                 uses or
                                 Handled
                             </label>
-                            <input asp-for="Input.Register.EstChemSubstance" type="text" class="form-control" id="EstChemSubstance" name="EstChemSubstance" required />
+                            <input asp-for="Input.Register.EstChemSubstance" type="text" class="form-control" data-element="EstChemSubstance" required />
                             <div class="invalid-feedback">Other Technical Information 2 is required.</div>
                         </div>
 
@@ -483,7 +483,7 @@
                             <label asp-for="Input.Register.EstSECNumber" class="form-label">
                                 SEC Company Registration Number / DTI Business Name No.
                             </label>
-                            <input asp-for="Input.Register.EstSECNumber" type="text" class="form-control" id="EstSECNumber" name="EstSECNumber" required />
+                            <input asp-for="Input.Register.EstSECNumber" type="text" class="form-control" data-element="EstSECNumber" required />
                             <div class="invalid-feedback">SEC Company Registration Number / DTI Business Name No. is required.</div>
                         </div>
                         <div class="col-md-6">
@@ -492,7 +492,7 @@
                                 uses or
                                 Handled
                             </label>
-                            <input asp-for="Input.Register.EstSECDateIssued" type="date" class="form-control" id="EstSECDateIssued" name="EstSECDateIssued" required />
+                            <input asp-for="Input.Register.EstSECDateIssued" type="date" class="form-control" data-element="EstSECDateIssued" required />
                             <div class="invalid-feedback">First name is required.</div>
                         </div>
                         <div class="col-md-6">
@@ -505,7 +505,7 @@
                                     </i>
                                 </small>
                             </label>
-                            <input asp-for="Input.Register.EstSECFile" type="file" class="form-control" id="EstSECFile" name="EstSECFile" required />
+                            <input asp-for="Input.Register.EstSECFile" type="file" class="form-control" data-element="EstSECFile" required />
                             <small id="EstSECFileErrorMessege" class="text-danger"></small>
                         </div>
                         <div class="row p-0 m-0">
@@ -515,7 +515,7 @@
                                         <input asp-for="Input.Register.EstIsPeza"
                                                class="form-check-input me-2"
                                                type="checkbox"
-                                               id="EstIsPeza" name="EstIsPeza"
+                                               data-element="EstIsPeza"
                                                value="YES">
 
                                         <label class="form-check-label" for="EstIsPeza">
@@ -531,21 +531,21 @@
                                 <label asp-for="Input.Register.EstBisPermitNumber" class="form-label">
                                     <span id="EstBisPermitNumberLabelText" class="EstBisPermitNumberLabelText">Business or Mayor's Permit</span> Number
                                 </label>
-                                <input asp-for="Input.Register.EstBisPermitNumber" type="text" class="form-control" id="EstBisPermitNumber" name="EstBisPermitNumber" required />
+                                <input asp-for="Input.Register.EstBisPermitNumber" type="text" class="form-control" data-element="EstBisPermitNumber" required />
                                 <div class="invalid-feedback">SEC Company Registration Number / DTI Business Number is required.</div>
                             </div>
                             <div class="col-md-6">
                                 <label asp-for="Input.Register.EstBisPermitDateIssued" class="form-label">
                                     <span class="EstBisPermitNumberLabelText">Business or Mayor's Permit</span> Issued Date
                                 </label>
-                                <input asp-for="Input.Register.EstBisPermitDateIssued" type="date" class="form-control" id="EstBisPermitDateIssued" name="EstBisPermitDateIssued" required />
+                                <input asp-for="Input.Register.EstBisPermitDateIssued" type="date" class="form-control" data-element="EstBisPermitDateIssued" required />
                                 <div class="invalid-feedback"><span class="EstBisPermitNumberLabelText">Business or Mayor's Permit</span> is required.</div>
                             </div>
                             <div class="col-md-6" id="EstPezaNoExpiry">
                                 <label asp-for="Input.Register.EstBisPermitValidityDate" class="form-label" id="EstBisPermitValidityDateLabel">
                                     <span class="EstBisPermitNumberLabelText">Business or Mayor's Permit</span> Validity Date<span class="text-danger fw-bolder" id="EstBisPermitValidityDateRequiredSign"> *</span>
                                 </label>
-                                <input asp-for="Input.Register.EstBisPermitValidityDate" type="date" class="form-control" id="EstBisPermitValidityDate" name="EstBisPermitValidityDate" />
+                                <input asp-for="Input.Register.EstBisPermitValidityDate" type="date" class="form-control" data-element="EstBisPermitValidityDate" />
                                 <div class="invalid-feedback"><span class="EstBisPermitNumberLabelText">Business or Mayor's Permit</span> is required.</div>
                             </div>
                             <div class="col-md-6">
@@ -558,7 +558,7 @@
                                         </i>
                                     </small>
                                 </label>
-                                <input asp-for="Input.Register.EstBisPermitFile" type="file" class="form-control" id="EstBisPermitFile" name="EstBisPermitFile" required />
+                                <input asp-for="Input.Register.EstBisPermitFile" type="file" class="form-control" data-element="EstBisPermitFile" required />
                                 <div class="invalid-feedback"><span class="EstBisPermitNumberLabelText">Business or Mayor's Permit</span> is required.</div>
                                 <small id="EstBisPermitFileErrorMessege" class="text-danger"></small>
 
@@ -571,21 +571,21 @@
                             <label asp-for="Input.Register.EstOwnerValidIDNumber" class="form-label">
                                 Valid National ID Number
                             </label>
-                            <input asp-for="Input.Register.EstOwnerValidIDNumber" type="text" class="form-control" id="EstOwnerValidIDNumber" name="EstOwnerValidIDNumber" required />
+                            <input asp-for="Input.Register.EstOwnerValidIDNumber" type="text" class="form-control" data-element="EstOwnerValidIDNumber" required />
                             <div class="invalid-feedback">Valid ID Number is required.</div>
                         </div>
                         <div class="col-md-6">
                             <label asp-for="Input.Register.EstOwnerValidIDDateIssued" class="form-label">
                                 Valid National ID Number Date Issued
                             </label>
-                            <input asp-for="Input.Register.EstOwnerValidIDDateIssued" type="date" class="form-control" id="EstOwnerValidIDDateIssued" name="EstOwnerValidIDDateIssued" required />
+                            <input asp-for="Input.Register.EstOwnerValidIDDateIssued" type="date" class="form-control" data-element="EstOwnerValidIDDateIssued" required />
                             <div class="invalid-feedback"> is required.</div>
                         </div>
                         <div class="col-md-6">
                             <label asp-for="Input.Register.EstOwnerValidIDDateExpire" class="form-label">
                                 Valid National ID Number Date Expire
                             </label>
-                            <input asp-for="Input.Register.EstOwnerValidIDDateExpire" type="date" class="form-control" id="EstOwnerValidIDDateExpire" name="EstOwnerValidIDDateExpire" />
+                            <input asp-for="Input.Register.EstOwnerValidIDDateExpire" type="date" class="form-control" data-element="EstOwnerValidIDDateExpire" />
                         </div>
                         <div class="col-md-6">
                             <label asp-for="Input.Register.EstOwnerValidIDFile" class="form-label">
@@ -597,7 +597,7 @@
                                     </i>
                                 </small>
                             </label>
-                            <input asp-for="Input.Register.EstOwnerValidIDFile" type="file" class="form-control" id="EstOwnerValidIDFile" name="EstOwnerValidIDFile" required />
+                            <input asp-for="Input.Register.EstOwnerValidIDFile" type="file" class="form-control" data-element="EstOwnerValidIDFile" required />
                             <div class="invalid-feedback">Valid ID is required.</div>
                             <small id="EstOwnerValidIDFileErrorMessege" class="text-danger"></small>
 
@@ -731,7 +731,7 @@
                     <div class="form-check">
                         <input type="checkbox" id="certify" name="certify_agreement" class="form-check-input"
                                value="true">
-                        <label class="form-label" for="certify" class="form-check-label">
+                        <label for="certify" class="form-check-label">
                             &nbsp;&nbsp;&nbsp;&nbsp; I HEREBY: 1)Certify the truthfulness of the above-mentioned
                             information based on my own personal knowledge and authentic records;
                             2)Commit to strictly implement the herein attached designed for this specific
@@ -747,7 +747,7 @@
                     <div class="form-check">
                         <input type="checkbox" id="certifydpa" name="certify_agreement" class="form-check-input"
                                value="true">
-                        <label class="form-label" for="certify_dpa" class="form-check-label">
+                        <label for="certify_dpa" class="form-check-label">
                             &nbsp;&nbsp;&nbsp;&nbsp; CONSENT NOTICE: The Department of Labor and Employment
                             Regional Office No. IV-A values and is committed to comply with Republic Act No.
                             10173

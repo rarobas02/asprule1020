@@ -117,6 +117,9 @@ namespace asprule1020.Areas.Identity.Pages.Account
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; }
             public Register Register { get; set; }
+            public IFormFile EstSECFileUpload { get; set; }
+            public IFormFile EstBisPermitFileUpload { get; set; }
+            public IFormFile EstOwnerValidIdFileUpload { get; set; }
         }
 
 
@@ -143,6 +146,20 @@ namespace asprule1020.Areas.Identity.Pages.Account
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
+
+                    var registerEntity = Input.Register!;
+                    registerEntity.TransId ??= $"TR-{DateTime.UtcNow:yyyyMMddHHmmssfff}";
+                    registerEntity.UserId = user.Id;
+                    registerEntity.UserName = registerEntity.UserName ?? Input.Email;
+                    registerEntity.EstSECFile = await SavePdfAsync(Input.EstSECFileUpload, "sec_dti", "-sec");
+                    registerEntity.EstBisPermitFile = await SavePdfAsync(Input.EstBisPermitFileUpload, "bus_perm", "-bus_permit");
+                    registerEntity.EstOwnerValidIDFile = await SavePdfAsync(Input.EstOwnerValidIdFileUpload, "valid_id", "-validid");
+
+                    _db.Registers.Add(registerEntity);
+                    await _db.SaveChangesAsync();
+
+                    user.RegisterId = registerEntity.Id;
+                    await _userManager.UpdateAsync(user);
 
                     var userId = await _userManager.GetUserIdAsync(user);
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
@@ -197,6 +214,21 @@ namespace asprule1020.Areas.Identity.Pages.Account
                 throw new NotSupportedException("The default UI requires a user store with email support.");
             }
             return (IUserEmailStore<ApplicationUser>)_userStore;
+        }
+        private async Task<string> SavePdfAsync(IFormFile file, string subFolder,string subExtension)
+        {
+            if (file is null || file.Length == 0) return string.Empty;
+
+            var uploadsRoot = Path.Combine(_webHostEnvironment.ContentRootPath, "Uploads", subFolder);
+            Directory.CreateDirectory(uploadsRoot);
+
+            var fileName = $"{Guid.NewGuid()}{subExtension}{Path.GetExtension(file.FileName)}";
+            var fullPath = Path.Combine(uploadsRoot, fileName);
+
+            await using var stream = new FileStream(fullPath, FileMode.Create);
+            await file.CopyToAsync(stream);
+
+            return Path.Combine(Path.DirectorySeparatorChar + subFolder, fileName);
         }
     }
 }

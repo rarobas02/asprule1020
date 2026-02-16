@@ -6,9 +6,16 @@ const register = {
     reviewTargets: {
         Email: "reviewEmail"
     },
-    togglePasswordVisibility: function (toggleId, inputId) {
+    getField: function (key) {
+        if (!key) {
+            return null;
+        }
+
+        return document.querySelector(`[data-element="${key}"]`);
+    },
+    togglePasswordVisibility: function (toggleId, inputKey) {
         const toggle = document.getElementById(toggleId);
-        const input = document.getElementById(inputId);
+        const input = this.getField(inputKey);
 
         if (!toggle || !input) return;
 
@@ -65,7 +72,7 @@ const register = {
         // Get all input and select elements inside the form
         const form_elements = form.querySelectorAll("input, select");
 
-        const excluded_ids = ["password","ConfirmPassword","EstTechInfo1OtherCheckBox", "EstTechInfo2OtherCheckBox", "EstIsHaveLaborUnion", "EstIsHaveBranchUnits", "certify", "certifydpa"];
+        const excluded_keys = ["password","confirmPassword","EstTechInfo1OtherCheckBox", "EstTechInfo2OtherCheckBox", "EstIsHaveLaborUnion", "EstIsHaveBranchUnits", "certify", "certifydpa"];
         const excluded_names = ["EstBranchRule1020Number[]", "EstBranchName[]", "EstBranchEstName[]", "EstUnionName[]", "EstUnionAddress[]", "EstUnionBLR[]"];
 
         const no_input_text = "No Input";
@@ -87,7 +94,9 @@ const register = {
                     tech_info_2_checkbox.push(element.value);
                 }
             } else {
-                if (!element.id) {
+                const fieldKey = element.dataset?.element ?? element.id;
+
+                if (!fieldKey) {
                     return;
                 }
 
@@ -100,8 +109,8 @@ const register = {
                 //console.log(element.id);
                 //console.log({ value });
                 // Exclude specific IDs (customize as needed)
-                if (!excluded_ids.includes(element.id) && !excluded_names.includes(element.name)) {
-                    const reviewId = register.reviewTargets[element.id] ?? `review${element.id}`;
+                if (!excluded_keys.includes(fieldKey) && !excluded_names.includes(element.name)) {
+                    const reviewId = register.reviewTargets[fieldKey] ?? `review${fieldKey}`;
                     const reviewElement = document.getElementById(reviewId);
                     // Check if reviewElement is not null or undefined
                     if (reviewElement) {
@@ -136,9 +145,9 @@ const register = {
         divId,
         inputId
     }) {
-        const selectEl = document.getElementById(selectId);
+        const selectEl = this.getField(selectId);
         const divEl = document.getElementById(divId);
-        const inputEl = document.getElementById(inputId);
+        const inputEl = this.getField(inputId);
 
         if (!selectEl || !divEl || !inputEl) return;
 
@@ -153,37 +162,24 @@ const register = {
             }
         });
     },
-    toggleDivOnCheckbox: function (checkboxId, divId, inputId) {
+    toggleDivOnCheckbox: function (checkboxId, divId, inputKey) {
         const checkbox = document.getElementById(checkboxId);
         const div = document.getElementById(divId);
-        const input = document.getElementById(inputId);
-
-        if (!checkbox || !div || !input) return;
-
-        const handleToggle = () => {
-            if (checkbox.checked) {
-                div.classList.remove('d-none');
-                input.setAttribute('required', 'required');
-            } else {
-                div.classList.add('d-none');
-                input.removeAttribute('required');
-                input.value = '';
-            }
-        };
-
-        handleToggle();
-        checkbox.addEventListener('change', handleToggle);
-    },
-    toggleDivOnCheckbox: function (checkboxId, divId) {
-        const checkbox = document.getElementById(checkboxId);
-        const div = document.getElementById(divId);
+        const input = inputKey ? this.getField(inputKey) : null;
 
         if (!checkbox || !div) return;
         const handleToggle = () => {
             if (checkbox.checked) {
                 div.classList.remove('d-none');
+                if (input) {
+                    input.setAttribute('required', 'required');
+                }
             } else {
                 div.classList.add('d-none');
+                if (input) {
+                    input.removeAttribute('required');
+                    input.value = '';
+                }
             }
         };
 
@@ -191,20 +187,21 @@ const register = {
         checkbox.addEventListener('change', handleToggle);
     },
     hideDivOnSelect: function ({ selectId, hideValue, divId }) {
-        const $select = $(`#${selectId}`);
-        const $div = $(`#${divId}`);
+        const selectEl = this.getField(selectId);
+        const divEl = document.getElementById(divId);
 
-        if ($select.length === 0 || $div.length === 0) {
+        if (!selectEl || !divEl) {
             return;
         }
 
         const toggleVisibility = () => {
-            const shouldHide = $select.val() === hideValue;
-            $div.toggleClass("d-none", shouldHide).attr("aria-hidden", shouldHide ? "true" : "false");
+            const shouldHide = selectEl.value === hideValue;
+            divEl.classList.toggle("d-none", shouldHide);
+            divEl.setAttribute("aria-hidden", shouldHide ? "true" : "false");
         };
 
         toggleVisibility();
-        $select.on("change", toggleVisibility);
+        selectEl.addEventListener("change", toggleVisibility);
     },
     branch_unit: function () {
         const values = [];
@@ -243,7 +240,7 @@ const register = {
             steps;
         steps = $("fieldset").length;
         register.review();
-        const usernameInput = document.getElementById("UserName");
+        const usernameInput = this.getField("UserName");
         if (usernameInput) {
             register.attachAvailabilityValidation({
                 input: usernameInput,
@@ -254,7 +251,7 @@ const register = {
 
         }
 
-		const emailInput = document.getElementById("Email");
+		const emailInput = this.getField("Email");
         if (emailInput) {
             register.attachAvailabilityValidation({
                 input: emailInput,
@@ -271,8 +268,8 @@ const register = {
                 return;
             }
 
-			const usernameInputEl = document.getElementById("UserName");
-			const emailInputEl = document.getElementById("Email");
+			const usernameInputEl = register.getField("UserName");
+			const emailInputEl = register.getField("Email");
 
 			const isUsernameAvailable = await register.validateAvailability({
 				input: usernameInputEl,
@@ -433,7 +430,7 @@ const register = {
     },
     preventFutureDate: function (inputId) {
         const bindHandler = () => {
-            const input = typeof inputId === 'string' ? document.getElementById(inputId) : inputId;
+            const input = typeof inputId === 'string' ? register.getField(inputId) : inputId;
 
             if (!input) {
                 return;
@@ -460,7 +457,7 @@ const register = {
     },
     preventPastDate: function (inputId) {
         const bindHandler = () => {
-            const input = typeof inputId === 'string' ? document.getElementById(inputId) : inputId;
+            const input = typeof inputId === 'string' ? register.getField(inputId) : inputId;
 
             if (!input) {
                 return;
@@ -589,10 +586,10 @@ const register = {
         });
     },
     getLocationControls: function () {
-        const region = document.getElementById('EstRegion');
-        const province = document.getElementById('EstProvince');
-        const city = document.getElementById('EstCityMun');
-        const barangay = document.getElementById('EstBrgy');
+        const region = this.getField('EstRegion');
+        const province = this.getField('EstProvince');
+        const city = this.getField('EstCityMun');
+        const barangay = this.getField('EstBrgy');
 
         if (!region || !province || !city || !barangay) {
             console.warn('Register location controls are missing from the DOM.');
@@ -723,7 +720,7 @@ const register = {
         }
     },
     validateAvailability: async function ({ input, endpoint, queryParam, unavailableMessage = "Value is already taken." }) {
-        const inputEl = typeof input === "string" ? document.getElementById(input) : input;
+        const inputEl = typeof input === "string" ? this.getField(input) : input;
 
         if (!inputEl || !endpoint || !queryParam) {
             return;
@@ -804,8 +801,8 @@ register.toggleDivAndRequired({
     divId: "EstOtherBusNatureDiv",
     inputId: "EstOtherBusNature"
 });
-register.hideDivOnSelect("EstType", "BRANCH ONLY", "EstBisnessUnitDiv");
-register.toggleDivOnCheckbox("EstTechInfo1OtherCheckBox", "EstTechInfo1OtherDiv", "EstTechInfo1Other",);
+register.hideDivOnSelect({ selectId: "EstType", hideValue: "BRANCH ONLY", divId: "EstBisnessUnitDiv" });
+register.toggleDivOnCheckbox("EstTechInfo1OtherCheckBox", "EstTechInfo1OtherDiv", "EstTechInfo1Other");
 register.toggleDivOnCheckbox("EstTechInfo2OtherCheckBox", "EstTechInfo2OtherDiv", "EstTechInfo2Other");
 register.toggleDivOnCheckbox("EstIsHaveBranchUnits", "EstBranchUnitContent");
 register.toggleDivOnCheckbox("EstIsHaveLaborUnion", "EstLaborUnionContent");
@@ -817,7 +814,7 @@ register.preventPastDate("EstOwnerValidIDDateExpire");
 register.stepper();
 
 document.addEventListener("input", function (e) {
-    if (e.target.matches("#EstMaleCount, #EstFemaleCount")) {
+    if (e.target.matches('[data-element="EstMaleCount"], [data-element="EstFemaleCount"]')) {
         const input = e.target;
 
         // Remove non-digits
@@ -833,20 +830,37 @@ document.addEventListener("input", function (e) {
 
         input.value = value;
 
-        const maleCount = parseInt(document.getElementById("EstMaleCount").value, 10) || 0;
-        const femaleCount = parseInt(document.getElementById("EstFemaleCount").value, 10) || 0;
+        const maleCount = parseInt(register.getField("EstMaleCount")?.value, 10) || 0;
+        const femaleCount = parseInt(register.getField("EstFemaleCount")?.value, 10) || 0;
 
         const result = maleCount + femaleCount;
 
-        document.getElementById("EstTotalEmployees").value = result;
+        const totalEmployeesInput = register.getField("EstTotalEmployees");
+        if (totalEmployeesInput) {
+            totalEmployeesInput.value = result;
+        }
     }
 });
 
 
 $(document)
-    .off("change", "#EstType")
-    .on("change", "#EstType", function () {
-        var select = document.getElementById("EstType");
+    .off("submit", "#Rule1020RegistrationForm")
+    .on("submit", "#Rule1020RegistrationForm", function (event) {
+        Ladda.create(document.getElementById("registerSubmit")).start();
+
+        // Check if the checkbox is checked
+        var certify = $("#certify").is(":checked");
+        var certifydpa = $("#certifydpa").is(":checked");
+
+        if (!certify || !certifydpa) {
+            alert("Please agree to the terms and conditions.");
+            Ladda.stopAll();
+            event.preventDefault(); // Prevent the form from submitting
+        }
+    })
+    .off("change", '[data-element="EstType"]')
+    .on("change", '[data-element="EstType"]', function () {
+        var select = register.getField("EstType");
         var input = document.getElementById("EstBisnessUnitDiv");
         if (select.value === "SINGLE ESTABLISHMENT") {
             input.style.display = "block";
@@ -861,21 +875,21 @@ $(document)
         Branches = [];
         $("#EstBranchDiv").empty();
     })
-    .off("input", "#EstCurrentCap")
-    .on("input", "#EstCurrentCap", function () {
-        let EstCurrentCapInput = document.getElementById("EstCurrentCap");
+    .off("input", '[data-element="EstCurrentCap"]')
+    .on("input", '[data-element="EstCurrentCap"]', function () {
+        let EstCurrentCapInput = register.getField("EstCurrentCap");
         register.formatNumber(EstCurrentCapInput);
     })
-    .off("input", "#EstTotalAssets")
-    .on("input", "#EstTotalAssets", function () {
-        let EstTotalAssetsInput = document.getElementById("EstTotalAssets");
+    .off("input", '[data-element="EstTotalAssets"]')
+    .on("input", '[data-element="EstTotalAssets"]', function () {
+        let EstTotalAssetsInput = register.getField("EstTotalAssets");
         register.formatNumber(EstTotalAssetsInput);
     })
-    .off("click", "#EstIsPeza")
-    .on("click", "#EstIsPeza", function () {
-        const EstIsPeza = document.getElementById("EstIsPeza");
+    .off("click", '[data-element="EstIsPeza"]')
+    .on("click", '[data-element="EstIsPeza"]', function () {
+        const EstIsPeza = register.getField("EstIsPeza");
         const EstPezaNoExpiry = document.getElementById("EstPezaNoExpiry");
-        const EstBisPermitValidityDate = document.getElementById("EstBisPermitValidityDate");
+        const EstBisPermitValidityDate = register.getField("EstBisPermitValidityDate");
         const EstBisPermitValidityDateRequiredSign = document.getElementById("EstBisPermitValidityDateRequiredSign");
         const permitLabels = document.querySelectorAll(".EstBisPermitNumberLabelText");
 
@@ -987,16 +1001,16 @@ $(document)
             laborUnionContainer.empty();
         }
     })
-    .off("change", "#EstSECFile")
-    .on("change", "#EstSECFile", function (event) {
+    .off("change", '[data-element="EstSECFile"]')
+    .on("change", '[data-element="EstSECFile"]', function (event) {
         register.validateFile(this, '#EstSECFileErrorMessege', 25 * 1024 * 1024, ['pdf']);
     })
-    .off("change", "#EstBisPermitFile")
-    .on("change", "#EstBisPermitFile", function (event) {
+    .off("change", '[data-element="EstBisPermitFile"]')
+    .on("change", '[data-element="EstBisPermitFile"]', function (event) {
         register.validateFile(this, '#EstBisPermitFileErrorMessege', 25 * 1024 * 1024, ['pdf']);
     })
-    .off("change", "#EstOwnerValidIDFile")
-    .on("change", "#EstOwnerValidIDFile", function (event) {
+    .off("change", '[data-element="EstOwnerValidIDFile"]')
+    .on("change", '[data-element="EstOwnerValidIDFile"]', function (event) {
         register.validateFile(this, '#EstOwnerValidIDFileErrorMessege', 25 * 1024 * 1024, ['pdf']);
     })
 
