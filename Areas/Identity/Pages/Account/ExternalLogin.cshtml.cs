@@ -2,6 +2,16 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 #nullable disable
 
+using asprule1020.DataAccess.Data;
+using asprule1020.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
@@ -9,15 +19,6 @@ using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.Extensions.Options;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.WebUtilities;
-using Microsoft.Extensions.Logging;
-using asprule1020.Models;
 
 namespace asprule1020.Areas.Identity.Pages.Account
 {
@@ -30,13 +31,17 @@ namespace asprule1020.Areas.Identity.Pages.Account
         private readonly IUserEmailStore<ApplicationUser> _emailStore;
         private readonly IEmailSender _emailSender;
         private readonly ILogger<ExternalLoginModel> _logger;
+        private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly ApplicationDbContext _db;
 
         public ExternalLoginModel(
             SignInManager<ApplicationUser> signInManager,
             UserManager<ApplicationUser> userManager,
             IUserStore<ApplicationUser> userStore,
             ILogger<ExternalLoginModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            IWebHostEnvironment webHostEnvironment,
+            ApplicationDbContext db)
         {
             _signInManager = signInManager;
             _userManager = userManager;
@@ -44,6 +49,8 @@ namespace asprule1020.Areas.Identity.Pages.Account
             _emailStore = GetEmailStore();
             _logger = logger;
             _emailSender = emailSender;
+            _webHostEnvironment = webHostEnvironment;
+            _db = db;
         }
 
         /// <summary>
@@ -76,6 +83,7 @@ namespace asprule1020.Areas.Identity.Pages.Account
         ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
         ///     directly from your code. This API may change or be removed in future releases.
         /// </summary>
+
         public class InputModel
         {
             /// <summary>
@@ -85,6 +93,10 @@ namespace asprule1020.Areas.Identity.Pages.Account
             [Required]
             [EmailAddress]
             public string Email { get; set; }
+            public Register Register { get; set; }
+            public IFormFile EstSECFileUpload { get; set; }
+            public IFormFile EstBisPermitFileUpload { get; set; }
+            public IFormFile EstOwnerValidIdFileUpload { get; set; }
         }
         
         public IActionResult OnGet() => RedirectToPage("./Login");
@@ -128,13 +140,13 @@ namespace asprule1020.Areas.Identity.Pages.Account
                 // If the user does not have an account, then ask the user to create an account.
                 ReturnUrl = returnUrl;
                 ProviderDisplayName = info.ProviderDisplayName;
+
+                EnsureInputInitialized();
                 if (info.Principal.HasClaim(c => c.Type == ClaimTypes.Email))
                 {
-                    Input = new InputModel
-                    {
-                        Email = info.Principal.FindFirstValue(ClaimTypes.Email)
-                    };
+                    Input.Email = info.Principal.FindFirstValue(ClaimTypes.Email);
                 }
+
                 return Page();
             }
         }
@@ -149,14 +161,20 @@ namespace asprule1020.Areas.Identity.Pages.Account
                 ErrorMessage = "Error loading external login information during confirmation.";
                 return RedirectToPage("./Login", new { ReturnUrl = returnUrl });
             }
+            EnsureInputInitialized();
+            PopulateTransId();
+            NormalizeConditionalFields();
+            RemoveGeneratedFileFieldsFromModelState();
 
             if (ModelState.IsValid)
             {
                 var user = CreateUser();
+                user.EstName = Input.Register?.EstName?.Trim();
+                user.EstUsername = Input.Register?.UserName?.Trim() ?? Input.Email;
+                user.EstProvince = Input.Register?.EstProvince?.Trim();
 
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
-
                 var result = await _userManager.CreateAsync(user);
                 if (result.Succeeded)
                 {
@@ -164,6 +182,18 @@ namespace asprule1020.Areas.Identity.Pages.Account
                     if (result.Succeeded)
                     {
                         _logger.LogInformation("User created an account using {Name} provider.", info.LoginProvider);
+                        var registerEntity = Input.Register!;
+                        registerEntity.TransId ??= $"TR-{DateTime.UtcNow:yyyyMMddHHmmssfff}";
+                        registerEntity.UserName = registerEntity.UserName ?? Input.Email;
+                        registerEntity.EstSECFile = await SavePdfAsync(Input.EstSECFileUpload, "sec_dti", "-sec");
+                        registerEntity.EstBisPermitFile = await SavePdfAsync(Input.EstBisPermitFileUpload, "bus_perm", "-bus_permit");
+                        registerEntity.EstOwnerValidIDFile = await SavePdfAsync(Input.EstOwnerValidIdFileUpload, "valid_id", "-validid");
+
+                        _db.Registers.Add(registerEntity);
+                        await _db.SaveChangesAsync();
+
+                        user.RegisterId = registerEntity.Id;
+                        await _userManager.UpdateAsync(user);
 
                         var userId = await _userManager.GetUserIdAsync(user);
                         var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
@@ -219,6 +249,66 @@ namespace asprule1020.Areas.Identity.Pages.Account
                 throw new NotSupportedException("The default UI requires a user store with email support.");
             }
             return (IUserEmailStore<ApplicationUser>)_userStore;
+        }
+        //CUSTOM BACKEND CODE BELOW
+        private void EnsureInputInitialized()
+        {
+            Input ??= new InputModel();
+            Input.Register ??= new Register();
+            Input.Register.EstTechInfo1 ??= new List<string>();
+            Input.Register.EstTechInfo2 ??= new List<string>();
+        }
+        private async Task<string> SavePdfAsync(IFormFile file, string subFolder, string suffix)
+        {
+            if (file is null || file.Length == 0)
+            {
+                return string.Empty;
+            }
+
+            var uploadsRoot = Path.Combine(_webHostEnvironment.ContentRootPath, "Uploads", subFolder);
+            Directory.CreateDirectory(uploadsRoot);
+
+            var fileName = $"{Guid.NewGuid()}{suffix}{Path.GetExtension(file.FileName)}";
+            var fullPath = Path.Combine(uploadsRoot, fileName);
+
+            await using var stream = new FileStream(fullPath, FileMode.Create);
+            await file.CopyToAsync(stream);
+
+            return fileName;                    // <-- only the file name
+            // return Path.Combine(Path.DirectorySeparatorChar + subFolder, fileName); // <-- if you prefer relative path
+        }
+        private void PopulateTransId()
+        {
+            Input.Register.TransId ??= $"RO4A-1020-{DateTime.UtcNow:yyyyMMddHHmmssfff}";
+            ModelState.Remove("Input.Register.TransId");
+        }
+
+        private void NormalizeConditionalFields()
+        {
+            if (!string.Equals(Input.Register.EstBusinessNature, "Others,Please Specify", StringComparison.OrdinalIgnoreCase))
+            {
+                Input.Register.EstOtherBusNature = null;
+                ModelState.Remove("Input.Register.EstOtherBusNature");
+            }
+
+            if (!(Input.Register.EstTechInfo1?.Contains("Others") ?? false))
+            {
+                Input.Register.EstTechInfo1Other = null;
+                ModelState.Remove("Input.Register.EstTechInfo1Other");
+            }
+
+            if (!(Input.Register.EstTechInfo2?.Contains("Others") ?? false))
+            {
+                Input.Register.EstTechInfo2Other = null;
+                ModelState.Remove("Input.Register.EstTechInfo2Other");
+            }
+        }
+
+        private void RemoveGeneratedFileFieldsFromModelState()
+        {
+            ModelState.Remove("Input.Register.EstSECFile");
+            ModelState.Remove("Input.Register.EstBisPermitFile");
+            ModelState.Remove("Input.Register.EstOwnerValidIDFile");
         }
     }
 }

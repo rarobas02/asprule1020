@@ -121,15 +121,6 @@ namespace asprule1020.Areas.Identity.Pages.Account
             public IFormFile EstBisPermitFileUpload { get; set; }
             public IFormFile EstOwnerValidIdFileUpload { get; set; }
         }
-
-
-        public async Task OnGetAsync(string returnUrl = null)
-        {
-            ReturnUrl = returnUrl;
-            EnsureInputInitialized();
-            ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
-        }
-
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
             returnUrl ??= Url.Content("~/");
@@ -214,7 +205,12 @@ namespace asprule1020.Areas.Identity.Pages.Account
                     $"override the register page in /Areas/Identity/Pages/Account/Register.cshtml");
             }
         }
-
+        public async Task OnGetAsync(string returnUrl = null)
+        {
+            ReturnUrl = returnUrl;
+            EnsureInputInitialized();
+            ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+        }
         private IUserEmailStore<ApplicationUser> GetEmailStore()
         {
             if (!_userManager.SupportsUserEmail)
@@ -223,6 +219,7 @@ namespace asprule1020.Areas.Identity.Pages.Account
             }
             return (IUserEmailStore<ApplicationUser>)_userStore;
         }
+        //CUSTOM BACKEND CODE BELOW
         private async Task<string> SavePdfAsync(IFormFile file, string subFolder, string suffix)
         {
             if (file is null || file.Length == 0)
@@ -245,7 +242,7 @@ namespace asprule1020.Areas.Identity.Pages.Account
 
         private void PopulateTransId()
         {
-            Input.Register.TransId ??= $"TR-{DateTime.UtcNow:yyyyMMddHHmmssfff}";
+            Input.Register.TransId ??= $"RO4A-1020-{DateTime.UtcNow:yyyyMMddHHmmssfff}";
             ModelState.Remove("Input.Register.TransId");
         }
 
