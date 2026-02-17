@@ -875,6 +875,17 @@ $(document)
         Branches = [];
         $("#EstBranchDiv").empty();
     })
+    .off("blur", '[data-element="EstPhone"]')
+    .on("blur", '[data-element="EstPhone"]', function (event) {
+        var value = $(this).val().trim();
+
+        // Regex: starts with 09 and followed by exactly 9 digits
+        var pattern = /^09\d{9}$/;
+
+        if (!pattern.test(value)) {
+            $(this).val(''); // Clear input if invalid
+        }
+    })
     .off("input", '[data-element="EstCurrentCap"]')
     .on("input", '[data-element="EstCurrentCap"]', function () {
         let EstCurrentCapInput = register.getField("EstCurrentCap");
@@ -999,6 +1010,30 @@ $(document)
 
         if (!checkbox.checked && laborUnionContainer.length) {
             laborUnionContainer.empty();
+        }
+    })
+    .off("blur", '[data-element="EstSECNumber"]')
+    .on("blur", '[data-element="EstSECNumber"]', function (event) {
+        var value = $(this).val().trim();
+
+        if (value.length <= 5) {
+            $(this).val(''); // Clear input if invalid
+        }
+    })
+    .off("blur", '[data-element="EstBisPermitNumber"]')
+    .on("blur", '[data-element="EstBisPermitNumber"]', function (event) {
+        var value = $(this).val().trim();
+
+        if (value.length <= 5) {
+            $(this).val(''); // Clear input if invalid
+        }
+    })
+    .off("blur", '[data-element="EstOwnerValidIDNumber"]')
+    .on("blur", '[data-element="EstOwnerValidIDNumber"]', function (event) {
+        var value = $(this).val().trim();
+
+        if (value.length <= 5) {
+            $(this).val(''); // Clear input if invalid
         }
     })
     .off("change", '[data-element="EstSECFile"]')
