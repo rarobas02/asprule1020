@@ -483,7 +483,7 @@
                             <label asp-for="Input.Register.EstSECNumber" class="form-label">
                                 SEC Company Registration Number / DTI Business Name No.
                             </label>
-                            <input asp-for="Input.Register.EstSECNumber" type="text" class="form-control" data-element="EstSECNumber" required />
+                            <input asp-for="Input.Register.EstSECNumber" type="text" class="form-control" data-element="EstSECNumber" minlength="5" required />
                             <div class="invalid-feedback">SEC Company Registration Number / DTI Business Name No. is required.</div>
                         </div>
                         <div class="col-md-6">
@@ -505,7 +505,7 @@
                                     </i>
                                 </small>
                             </label>
-                            <input asp-for="Input.Register.EstSECFile" type="file" class="form-control" data-element="EstSECFile" required />
+                            <input asp-for="Input.EstSECFileUpload" type="file" class="form-control" data-element="EstSECFile" required />
                             <small id="EstSECFileErrorMessege" class="text-danger"></small>
                         </div>
                         <div class="row p-0 m-0">
@@ -515,8 +515,7 @@
                                         <input asp-for="Input.Register.EstIsPeza"
                                                class="form-check-input me-2"
                                                type="checkbox"
-                                               data-element="EstIsPeza"
-                                               value="YES">
+                                               data-element="EstIsPeza">
 
                                         <label class="form-check-label" for="EstIsPeza">
                                             Does your Establishment / Organization Registered in PEZA?
@@ -531,7 +530,7 @@
                                 <label asp-for="Input.Register.EstBisPermitNumber" class="form-label">
                                     <span id="EstBisPermitNumberLabelText" class="EstBisPermitNumberLabelText">Business or Mayor's Permit</span> Number
                                 </label>
-                                <input asp-for="Input.Register.EstBisPermitNumber" type="text" class="form-control" data-element="EstBisPermitNumber" required />
+                                <input asp-for="Input.Register.EstBisPermitNumber" type="text" class="form-control" data-element="EstBisPermitNumber" minlength="5" required />
                                 <div class="invalid-feedback">SEC Company Registration Number / DTI Business Number is required.</div>
                             </div>
                             <div class="col-md-6">
@@ -558,7 +557,7 @@
                                         </i>
                                     </small>
                                 </label>
-                                <input asp-for="Input.Register.EstBisPermitFile" type="file" class="form-control" data-element="EstBisPermitFile" required />
+                                <input asp-for="Input.EstBisPermitFileUpload" type="file" class="form-control" data-element="EstBisPermitFile" required />
                                 <div class="invalid-feedback"><span class="EstBisPermitNumberLabelText">Business or Mayor's Permit</span> is required.</div>
                                 <small id="EstBisPermitFileErrorMessege" class="text-danger"></small>
 
@@ -571,7 +570,7 @@
                             <label asp-for="Input.Register.EstOwnerValidIDNumber" class="form-label">
                                 Valid National ID Number
                             </label>
-                            <input asp-for="Input.Register.EstOwnerValidIDNumber" type="text" class="form-control" data-element="EstOwnerValidIDNumber" required />
+                            <input asp-for="Input.Register.EstOwnerValidIDNumber" type="text" class="form-control" data-element="EstOwnerValidIDNumber" minlength="5" required />
                             <div class="invalid-feedback">Valid ID Number is required.</div>
                         </div>
                         <div class="col-md-6">
@@ -597,7 +596,7 @@
                                     </i>
                                 </small>
                             </label>
-                            <input asp-for="Input.Register.EstOwnerValidIDFile" type="file" class="form-control" data-element="EstOwnerValidIDFile" required />
+                            <input asp-for="Input.EstOwnerValidIdFileUpload" type="file" class="form-control" data-element="EstOwnerValidIDFile" required />
                             <div class="invalid-feedback">Valid ID is required.</div>
                             <small id="EstOwnerValidIDFileErrorMessege" class="text-danger"></small>
 

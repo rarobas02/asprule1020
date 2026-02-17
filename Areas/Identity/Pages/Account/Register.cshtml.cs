@@ -132,61 +132,69 @@ namespace asprule1020.Areas.Identity.Pages.Account
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
-            EnsureInputInitialized();
             returnUrl ??= Url.Content("~/");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
-            if (ModelState.IsValid)
+            EnsureInputInitialized();
+            PopulateTransId();
+            NormalizeConditionalFields();
+            RemoveGeneratedFileFieldsFromModelState();
+
+            if (!ModelState.IsValid)
             {
-                var user = CreateUser();
-                
-                await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
-                await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
-                var result = await _userManager.CreateAsync(user, Input.Password);
+                return Page();
+            }
 
-                if (result.Succeeded)
+            var user = CreateUser();
+            user.EstName = Input.Register?.EstName?.Trim();
+            user.EstUsername = Input.Register.UserName?.Trim();
+            user.EstProvince = Input.Register.EstProvince?.Trim();
+
+            await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
+            await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
+            var result = await _userManager.CreateAsync(user, Input.Password);
+
+            if (result.Succeeded)
+            {
+                _logger.LogInformation("User created a new account with password.");
+
+                var registerEntity = Input.Register!;
+                registerEntity.TransId ??= $"TR-{DateTime.UtcNow:yyyyMMddHHmmssfff}";
+                registerEntity.UserName = registerEntity.UserName ?? Input.Email;
+                registerEntity.EstSECFile = await SavePdfAsync(Input.EstSECFileUpload, "sec_dti", "-sec");
+                registerEntity.EstBisPermitFile  = await SavePdfAsync(Input.EstBisPermitFileUpload, "bus_perm", "-bus_permit");
+                registerEntity.EstOwnerValidIDFile = await SavePdfAsync(Input.EstOwnerValidIdFileUpload, "valid_id", "-validid");
+
+                _db.Registers.Add(registerEntity);
+                await _db.SaveChangesAsync();
+
+                user.RegisterId = registerEntity.Id;
+                await _userManager.UpdateAsync(user);
+
+                var userId = await _userManager.GetUserIdAsync(user);
+                var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+                var callbackUrl = Url.Page(
+                    "/Account/ConfirmEmail",
+                    pageHandler: null,
+                    values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
+                    protocol: Request.Scheme);
+
+                await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
+                    $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+
+                if (_userManager.Options.SignIn.RequireConfirmedAccount)
                 {
-                    _logger.LogInformation("User created a new account with password.");
-
-                    var registerEntity = Input.Register!;
-                    registerEntity.TransId ??= $"TR-{DateTime.UtcNow:yyyyMMddHHmmssfff}";
-                    registerEntity.UserId = user.Id;
-                    registerEntity.UserName = registerEntity.UserName ?? Input.Email;
-                    registerEntity.EstSECFile = await SavePdfAsync(Input.EstSECFileUpload, "sec_dti", "-sec");
-                    registerEntity.EstBisPermitFile = await SavePdfAsync(Input.EstBisPermitFileUpload, "bus_perm", "-bus_permit");
-                    registerEntity.EstOwnerValidIDFile = await SavePdfAsync(Input.EstOwnerValidIdFileUpload, "valid_id", "-validid");
-
-                    _db.Registers.Add(registerEntity);
-                    await _db.SaveChangesAsync();
-
-                    user.RegisterId = registerEntity.Id;
-                    await _userManager.UpdateAsync(user);
-
-                    var userId = await _userManager.GetUserIdAsync(user);
-                    var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                    code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-                    var callbackUrl = Url.Page(
-                        "/Account/ConfirmEmail",
-                        pageHandler: null,
-                        values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
-                        protocol: Request.Scheme);
-
-                    await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
-                        $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
-
-                    if (_userManager.Options.SignIn.RequireConfirmedAccount)
-                    {
-                        return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });
-                    }
-                    else
-                    {
-                        await _signInManager.SignInAsync(user, isPersistent: false);
-                        return LocalRedirect(returnUrl);
-                    }
+                    return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });
                 }
-                foreach (var error in result.Errors)
+                else
                 {
-                    ModelState.AddModelError(string.Empty, error.Description);
+                    await _signInManager.SignInAsync(user, isPersistent: false);
+                    return LocalRedirect(returnUrl);
                 }
+            }
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError(string.Empty, error.Description);
             }
 
             // If we got this far, something failed, redisplay form
@@ -215,20 +223,58 @@ namespace asprule1020.Areas.Identity.Pages.Account
             }
             return (IUserEmailStore<ApplicationUser>)_userStore;
         }
-        private async Task<string> SavePdfAsync(IFormFile file, string subFolder,string subExtension)
+        private async Task<string> SavePdfAsync(IFormFile file, string subFolder, string suffix)
         {
-            if (file is null || file.Length == 0) return string.Empty;
+            if (file is null || file.Length == 0)
+            {
+                return string.Empty;
+            }
 
             var uploadsRoot = Path.Combine(_webHostEnvironment.ContentRootPath, "Uploads", subFolder);
             Directory.CreateDirectory(uploadsRoot);
 
-            var fileName = $"{Guid.NewGuid()}{subExtension}{Path.GetExtension(file.FileName)}";
+            var fileName = $"{Guid.NewGuid()}{suffix}{Path.GetExtension(file.FileName)}";
             var fullPath = Path.Combine(uploadsRoot, fileName);
 
             await using var stream = new FileStream(fullPath, FileMode.Create);
             await file.CopyToAsync(stream);
 
-            return Path.Combine(Path.DirectorySeparatorChar + subFolder, fileName);
+            return fileName;                    // <-- only the file name
+            // return Path.Combine(Path.DirectorySeparatorChar + subFolder, fileName); // <-- if you prefer relative path
+        }
+
+        private void PopulateTransId()
+        {
+            Input.Register.TransId ??= $"TR-{DateTime.UtcNow:yyyyMMddHHmmssfff}";
+            ModelState.Remove("Input.Register.TransId");
+        }
+
+        private void NormalizeConditionalFields()
+        {
+            if (!string.Equals(Input.Register.EstBusinessNature, "Others,Please Specify", StringComparison.OrdinalIgnoreCase))
+            {
+                Input.Register.EstOtherBusNature = null;
+                ModelState.Remove("Input.Register.EstOtherBusNature");
+            }
+
+            if (!(Input.Register.EstTechInfo1?.Contains("Others") ?? false))
+            {
+                Input.Register.EstTechInfo1Other = null;
+                ModelState.Remove("Input.Register.EstTechInfo1Other");
+            }
+
+            if (!(Input.Register.EstTechInfo2?.Contains("Others") ?? false))
+            {
+                Input.Register.EstTechInfo2Other = null;
+                ModelState.Remove("Input.Register.EstTechInfo2Other");
+            }
+        }
+
+        private void RemoveGeneratedFileFieldsFromModelState()
+        {
+            ModelState.Remove("Input.Register.EstSECFile");
+            ModelState.Remove("Input.Register.EstBisPermitFile");
+            ModelState.Remove("Input.Register.EstOwnerValidIDFile");
         }
     }
 }
