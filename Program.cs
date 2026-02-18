@@ -2,6 +2,7 @@ using asprule1020.Areas.Identity.Pages.Account;
 using asprule1020.DataAccess.Data;
 using asprule1020.DataAccess.Repository;
 using asprule1020.DataAccess.Repository.IRepository;
+using asprule1020.Infrastruture.Identity;
 using asprule1020.Models;
 using BulkyBook.Utility;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -30,6 +31,9 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IEmailSender, EmailSender>();
 builder.Services.AddScoped<IPasswordHasher<ApplicationUser>,
     BcryptPasswordHasher<ApplicationUser>>();
+builder.Services.AddScoped<
+    IUserClaimsPrincipalFactory<ApplicationUser>,
+    AppClaimsPrincipalFactory>();
 
 
 

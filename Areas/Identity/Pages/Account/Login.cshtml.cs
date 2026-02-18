@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using asprule1020.Models;
+using asprule1020.Utility;
 
 namespace asprule1020.Areas.Identity.Pages.Account
 {
@@ -116,7 +117,31 @@ namespace asprule1020.Areas.Identity.Pages.Account
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User logged in.");
-                    return LocalRedirect(returnUrl);
+                    if (User.IsInRole(SD.Role_Client))
+                    {
+                        return LocalRedirect(returnUrl);
+                    }
+                    if (User.IsInRole(SD.Role_Evaluator))
+                    {
+                        return RedirectToAction("Review", "User", new { area = "Admin" });
+                    }
+                    if (User.IsInRole(SD.Role_Po_Head))
+                    {
+                        return RedirectToAction("PoHeadReview", "User", new { area = "Admin" });
+                    }
+                    if (User.IsInRole(SD.Role_Region_Focal))
+                    {
+                        return RedirectToAction("RegionReview", "User", new { area = "Admin" });
+                    }
+                    if (User.IsInRole(SD.Role_Admin))
+                    {
+                        return RedirectToAction("ManageUser", "User", new { area = "Admin" });
+                    }
+                    else
+                    {
+                        return LocalRedirect(returnUrl);
+                    }
+
                 }
                 if (result.RequiresTwoFactor)
                 {

@@ -4,6 +4,7 @@
 
 using asprule1020.DataAccess.Data;
 using asprule1020.Models;
+using asprule1020.Utility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
@@ -26,6 +27,7 @@ namespace asprule1020.Areas.Identity.Pages.Account
     public class ExternalLoginModel : PageModel
     {
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IUserStore<ApplicationUser> _userStore;
         private readonly IUserEmailStore<ApplicationUser> _emailStore;
@@ -36,6 +38,7 @@ namespace asprule1020.Areas.Identity.Pages.Account
 
         public ExternalLoginModel(
             SignInManager<ApplicationUser> signInManager,
+            RoleManager<IdentityRole> roleManager,
             UserManager<ApplicationUser> userManager,
             IUserStore<ApplicationUser> userStore,
             ILogger<ExternalLoginModel> logger,
@@ -44,6 +47,7 @@ namespace asprule1020.Areas.Identity.Pages.Account
             ApplicationDbContext db)
         {
             _signInManager = signInManager;
+            _roleManager = roleManager;
             _userManager = userManager;
             _userStore = userStore;
             _emailStore = GetEmailStore();
@@ -140,7 +144,14 @@ namespace asprule1020.Areas.Identity.Pages.Account
                 // If the user does not have an account, then ask the user to create an account.
                 ReturnUrl = returnUrl;
                 ProviderDisplayName = info.ProviderDisplayName;
-
+                // Ensure roles exist - if not exist, the condition will create the USER roles
+                if (!_roleManager.RoleExistsAsync(SD.Role_Client).GetAwaiter().GetResult())
+                {
+                    _roleManager.CreateAsync(new IdentityRole(SD.Role_Client)).GetAwaiter().GetResult();
+                    _roleManager.CreateAsync(new IdentityRole(SD.Role_Evaluator)).GetAwaiter().GetResult();
+                    _roleManager.CreateAsync(new IdentityRole(SD.Role_Po_Head)).GetAwaiter().GetResult();
+                    _roleManager.CreateAsync(new IdentityRole(SD.Role_Region_Focal)).GetAwaiter().GetResult();
+                }
                 EnsureInputInitialized();
                 if (info.Principal.HasClaim(c => c.Type == ClaimTypes.Email))
                 {
@@ -182,6 +193,9 @@ namespace asprule1020.Areas.Identity.Pages.Account
                     if (result.Succeeded)
                     {
                         _logger.LogInformation("User created an account using {Name} provider.", info.LoginProvider);
+                        
+                        await _userManager.AddToRoleAsync(user, SD.Role_Client); // Assign the "Client" role to the newly registered user
+
                         var registerEntity = Input.Register!;
                         registerEntity.TransId ??= $"TR-{DateTime.UtcNow:yyyyMMddHHmmssfff}";
                         registerEntity.UserName = registerEntity.UserName ?? Input.Email;

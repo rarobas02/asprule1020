@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using asprule1020.DataAccess.Data;
 using asprule1020.Models;
 using asprule1020.Models.ViewModel;
+using asprule1020.Utility;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -26,7 +27,9 @@ namespace asprule1020.Areas.Identity.Pages.Account
 {
     public class RegisterModel : PageModel
     {
+
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IUserStore<ApplicationUser> _userStore;
         private readonly IUserEmailStore<ApplicationUser> _emailStore;
@@ -43,6 +46,7 @@ namespace asprule1020.Areas.Identity.Pages.Account
             ILogger<RegisterModel> logger,
             IEmailSender emailSender,
             IWebHostEnvironment webHostEnvironment,
+            RoleManager<IdentityRole> roleManager,
             ApplicationDbContext db
             )
         {
@@ -53,7 +57,8 @@ namespace asprule1020.Areas.Identity.Pages.Account
             _logger = logger;
             _emailSender = emailSender;
             _webHostEnvironment = webHostEnvironment;
-            _db = db;
+            _roleManager = roleManager;
+            _db = db;   
         }
 
         /// <summary>
@@ -148,8 +153,9 @@ namespace asprule1020.Areas.Identity.Pages.Account
             {
                 _logger.LogInformation("User created a new account with password.");
 
+                await _userManager.AddToRoleAsync(user, SD.Role_Client); // Assign the "Client" role to the newly registered user
                 var registerEntity = Input.Register!;
-                registerEntity.TransId ??= $"TR-{DateTime.UtcNow:yyyyMMddHHmmssfff}";
+                registerEntity.TransId ??= $"RO4A-1020-{DateTime.UtcNow:yyyyMMddHHmmssfff}";
                 registerEntity.UserName = registerEntity.UserName ?? Input.Email;
                 registerEntity.EstSECFile = await SavePdfAsync(Input.EstSECFileUpload, "sec_dti", "-sec");
                 registerEntity.EstBisPermitFile  = await SavePdfAsync(Input.EstBisPermitFileUpload, "bus_perm", "-bus_permit");
@@ -207,6 +213,14 @@ namespace asprule1020.Areas.Identity.Pages.Account
         }
         public async Task OnGetAsync(string returnUrl = null)
         {
+            // Ensure roles exist - if not exist, the condition will create the USER roles
+            if (!_roleManager.RoleExistsAsync(SD.Role_Client).GetAwaiter().GetResult())
+            {
+                _roleManager.CreateAsync(new IdentityRole(SD.Role_Client)).GetAwaiter().GetResult();
+                _roleManager.CreateAsync(new IdentityRole(SD.Role_Evaluator)).GetAwaiter().GetResult();
+                _roleManager.CreateAsync(new IdentityRole(SD.Role_Po_Head)).GetAwaiter().GetResult();
+                _roleManager.CreateAsync(new IdentityRole(SD.Role_Region_Focal)).GetAwaiter().GetResult();
+            }
             ReturnUrl = returnUrl;
             EnsureInputInitialized();
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
