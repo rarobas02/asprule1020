@@ -6,6 +6,7 @@ $(document).ready(function () {
 
 function loadDataTable() {
     dataTable = $('#tblManageUser').DataTable({
+        "responsive": true,
         "ajax": { url: '/Admin/User/GetAllUser' },
         "columns": [
             { data: 'estName', "width": "20%" },

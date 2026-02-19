@@ -16,11 +16,7 @@ namespace asprule1020.Areas.Admin.Controllers
         {
             _db = db;
         }
-        //[Authorize(SD.Role_Evaluator)]
-        public IActionResult Review()
-        {
-            return View();
-        }
+        //[Authorize(SD.Role_Admin)]
         public IActionResult ManageUser()
         {
             return View();

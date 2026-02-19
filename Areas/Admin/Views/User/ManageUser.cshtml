@@ -1,13 +1,14 @@
-﻿<div class="container mb-3">
+﻿@{
+    ViewData["Title"] = "Manage User";
+}
+
+<div class="container mb-3">
     <div class="row pt-4 pb-3">
-        <div class="col-6">
-            <h2 class="text-primary">User List</h2>
-        </div>
-        <div class="col-6 text-end">
-            <a asp-controller="Product" asp-action="Upsert" class="btn btn-primary"><i class="bi bi-plus-circle"></i> Create New Product</a>
+        <div class="col-12 text-end">
+            <a asp-controller="User" asp-action="Upsert" class="btn btn-primary"><i class="bi bi-plus-circle"></i> Create New User</a>
         </div>
     </div>
-    <table id="tblManageUser" class="table table-bordered table-striped w-100">
+    <table id="tblManageUser" class="table table-responsive table-bordered table-striped w-100">
         <thead>
             <tr>
                 <th>Name</th>

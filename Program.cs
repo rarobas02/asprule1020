@@ -4,6 +4,7 @@ using asprule1020.DataAccess.Repository;
 using asprule1020.DataAccess.Repository.IRepository;
 using asprule1020.Infrastruture.Identity;
 using asprule1020.Models;
+using BulkyBook.DataAccess.DbInitializer;
 using BulkyBook.Utility;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
@@ -25,8 +26,8 @@ builder.Services.AddAuthentication().AddFacebook(options =>
     options.AppId = builder.Configuration["Authentication:Facebook:AppId"] ?? string.Empty;
     options.AppSecret = builder.Configuration["Authentication:Facebook:AppSecret"] ?? string.Empty;
 });
+builder.Services.AddScoped<IDbInitializer, DbInitializer>();
 builder.Services.AddRazorPages();
-
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IEmailSender, EmailSender>();
 builder.Services.AddScoped<IPasswordHasher<ApplicationUser>,
@@ -52,6 +53,8 @@ app.UseHttpsRedirection();
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
+
+SeedDatabase();
 app.MapRazorPages();
 
 app.MapStaticAssets();
@@ -61,3 +64,12 @@ app.MapControllerRoute(
     pattern: "{area=Client}/{controller=Register}/{action=Index}/{id?}");
 
 app.Run();
+
+void SeedDatabase()
+{
+    using (var scope = app.Services.CreateScope())
+    {
+        var dbInitializer = scope.ServiceProvider.GetRequiredService<IDbInitializer>();
+        dbInitializer.Initialize();
+    }
+}
