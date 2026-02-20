@@ -141,9 +141,10 @@ namespace asprule1020.Areas.Identity.Pages.Account
             }
 
             var user = CreateUser();
-            user.EstName = Input.Register?.EstName?.Trim();
-            user.EstUsername = Input.Register.UserName?.Trim();
             user.EstProvince = Input.Register.EstProvince?.Trim();
+            user.FirstName = Input.Register?.EstOwnerFirst?.Trim();
+            user.LastName = Input.Register?.EstOwnerLast?.Trim();
+            user.MiddleName = Input.Register?.EstOwnerMid?.Trim();
 
             await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
             await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);

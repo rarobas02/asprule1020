@@ -109,7 +109,7 @@ namespace asprule1020.Areas.Client.Controllers
         }
         public IActionResult IsUsernameExist(string UserName)
         {
-            var existingUser = _applicationUserManager.Users.FirstOrDefault(r => r.EstUsername == UserName);
+            var existingUser = _applicationUserManager.Users.FirstOrDefault(r => r.UserName == UserName);
             if (existingUser is not null)
             {
                 return Json(new { status = false, data = $"Username {UserName} is already taken. Please, create a different username." });

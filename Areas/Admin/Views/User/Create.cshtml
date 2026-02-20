@@ -1,0 +1,70 @@
+﻿@using asprule1020.Models.ViewModel
+@model UserVM
+
+<div class="card shadow border-0 mt-4">
+    <div class="card-header bg-primary bg-gradient ml-0 py-3">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h2 class="text-white py-2">Create User</h2>
+            </div>
+        </div>
+    </div>
+    <div class="card-body p-4">
+        <div asp-validation-summary="All"></div>
+        <form asp-area="Admin" asp-controller="User" asp-action="Create" method="post" class="row">
+            <div class="border p-3">
+                @* <div asp-validation-summary="ModelOnly"></div> *@
+                <div class="form-floating py-2 col-12">
+                    <input asp-for="ApplicationUser.FirstName" class="form-control border-0 shadow" />
+                    <label asp-for="ApplicationUser.FirstName" class="ms-2"></label>
+                    <span asp-validation-for="ApplicationUser.FirstName" class="text-danger"></span>
+                </div>
+                <div class="form-floating py-2 col-12">
+                    <input asp-for="ApplicationUser.MiddleName" class="form-control border-0 shadow" />
+                    <label asp-for="ApplicationUser.MiddleName" class="ms-2"></label>
+                    <span asp-validation-for="ApplicationUser.MiddleName" class="text-danger"></span>
+                </div>
+                <div class="form-floating py-2 col-12">
+                    <input asp-for="ApplicationUser.LastName" class="form-control border-0 shadow" />
+                    <label asp-for="ApplicationUser.LastName" class="ms-2"></label>
+                    <span asp-validation-for="ApplicationUser.LastName" class="text-danger"></span>
+                </div>
+                <div class="form-floating py-2 col-12">
+                    <input asp-for="ApplicationUser.Email" class="form-control border-0 shadow" />
+                    <label asp-for="ApplicationUser.Email" class="ms-2"></label>
+                    <span asp-validation-for="ApplicationUser.Email" class="text-danger"></span>
+                </div>
+                <div class="form-floating py-2 col-12">
+                    <input asp-for="ApplicationUser.UserName" class="form-control border-0 shadow" />
+                    <label asp-for="ApplicationUser.UserName" class="ms-2"></label>
+                    <span asp-validation-for="ApplicationUser.UserName" class="text-danger"></span>
+                </div>
+                <div class="form-floating py-2 col-12">
+                    <input asp-for="ApplicationUser.EstProvince" class="form-control border-0 shadow" />
+                    <label asp-for="ApplicationUser.EstProvince" class="ms-2"></label>
+                    <span asp-validation-for="ApplicationUser.EstProvince" class="text-danger"></span>
+                </div>
+                <div class="form-floating py-2 col-12">
+                    <input asp-for="Password" type="password" class="form-control border-0 shadow" />
+                    <label asp-for="Password" class="ms-2"></label>
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                </div>
+                <div class="form-floating py-2 col-12">
+                    <select asp-for="SelectedRoleId" asp-items="Model.UserRoleList" class="form-select">
+                        <option value="" disabled selected>--Select User Role--</option>
+                    </select>
+                    <label asp-for="SelectedRoleId" class="ms-2"></label>
+                    <span asp-validation-for="SelectedRoleId" class="text-danger"></span>
+                </div>
+                <div class="row pt-2">
+                    <div class="col-6 col-md-3">
+                        <button type="submit" class="btn btn-primary form-control">Create</button>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <a asp-controller="User" asp-action="ManageUser" class="btn btn-outline-primary form-control">Back to List</a>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
