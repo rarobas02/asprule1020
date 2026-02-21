@@ -123,7 +123,7 @@ namespace asprule1020.Areas.Identity.Pages.Account
                     }
                     if (User.IsInRole(SD.Role_Evaluator))
                     {
-                        return RedirectToAction("Review", "User", new { area = "Admin" });
+                        return RedirectToAction("ManageUser", "User", new { area = "Admin" });
                     }
                     if (User.IsInRole(SD.Role_Po_Head))
                     {

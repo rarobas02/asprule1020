@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -39,23 +40,28 @@ namespace asprule1020.Areas.Admin.Controllers
         }
         public IActionResult Create(string? id)
         {
-            UserVM userVM = new()
+            var userVM = new UserVM
             {
                 UserRoleList = BuildRoleSelectList(),
-                ApplicationUser = new ApplicationUser()
+                ApplicationUser = new ApplicationUser { Id = string.Empty }
             };
-            if (id != null)
+
+            if (!string.IsNullOrEmpty(id))
             {
                 var existingUser = _db.ApplicationUsers.FirstOrDefault(u => u.Id == id);
-                if (existingUser == null)
-                {
-                    return NotFound();
-                }
+                if (existingUser == null) { return NotFound(); }
+
                 userVM.ApplicationUser = existingUser;
-                userVM.SelectedRoleId = _db.UserRoles.Where(r => r.UserId == id).Select(r => r.RoleId).FirstOrDefault();
+                userVM.SelectedRoleId = _db.UserRoles
+                    .Where(r => r.UserId == id)
+                    .Select(r => r.RoleId)
+                    .FirstOrDefault();
             }
+
             return View(userVM);
         }
+
+        #region API CALLS
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -69,20 +75,83 @@ namespace asprule1020.Areas.Admin.Controllers
                 return View(userVM);
             }
 
+            var isNewUser = string.IsNullOrEmpty(userVM.ApplicationUser.Id);
+            if (!isNewUser)
+            {
+                ModelState.Remove(nameof(UserVM.Password));
+            }
+
             if (!ModelState.IsValid)
             {
                 return View(userVM);
             }
 
-            var createResult = await _userManager.CreateAsync(userVM.ApplicationUser, userVM.Password!);
-            if (!createResult.Succeeded)
+            if (isNewUser)
             {
-                foreach (var error in createResult.Errors)
+                var createResult = await _userManager.CreateAsync(userVM.ApplicationUser, userVM.Password!);
+                if (!createResult.Succeeded)
                 {
-                    ModelState.AddModelError(string.Empty, error.Description);
+                    foreach (var error in createResult.Errors)
+                    {
+                        ModelState.AddModelError(string.Empty, error.Description);
+                    }
+                    return View(userVM);
                 }
-                return View(userVM);
             }
+            else
+            {
+                var userFromDb = await _userManager.FindByIdAsync(userVM.ApplicationUser.Id);
+                if (userFromDb == null)
+                {
+                    return NotFound();
+                }
+
+                userFromDb.FirstName = userVM.ApplicationUser.FirstName;
+                userFromDb.MiddleName = userVM.ApplicationUser.MiddleName;
+                userFromDb.LastName = userVM.ApplicationUser.LastName;
+                userFromDb.Email = userVM.ApplicationUser.Email;
+                userFromDb.UserName = userVM.ApplicationUser.UserName;
+                userFromDb.PhoneNumber = userVM.ApplicationUser.PhoneNumber;
+                userFromDb.EstProvince = userVM.ApplicationUser.EstProvince;
+
+                var updateResult = await _userManager.UpdateAsync(userFromDb);
+                if (!updateResult.Succeeded)
+                {
+                    foreach (var error in updateResult.Errors)
+                    {
+                        ModelState.AddModelError(string.Empty, error.Description);
+                    }
+                    return View(userVM);
+                }
+
+                var targetRoleName = _db.Roles
+                    .Where(r => r.Id == userVM.SelectedRoleId)
+                    .Select(r => r.Name)
+                    .FirstOrDefault();
+
+                var existingRoles = await _userManager.GetRolesAsync(userFromDb);
+                if (existingRoles.Any())
+                {
+                    await _userManager.RemoveFromRolesAsync(userFromDb, existingRoles);
+                }
+
+                if (!string.IsNullOrEmpty(targetRoleName))
+                {
+                    var roleResult = await _userManager.AddToRoleAsync(userFromDb, targetRoleName);
+                    if (!roleResult.Succeeded)
+                    {
+                        foreach (var error in roleResult.Errors)
+                        {
+                            ModelState.AddModelError(string.Empty, error.Description);
+                        }
+                        return View(userVM);
+                    }
+                }
+
+                TempData["success"] = "User updated successfully.";
+                return RedirectToAction(nameof(ManageUser));
+            }
+
             if (!string.IsNullOrEmpty(userVM.SelectedRoleId))
             {
                 var roleName = _db.Roles
@@ -100,34 +169,28 @@ namespace asprule1020.Areas.Admin.Controllers
             return RedirectToAction(nameof(ManageUser));
         }
 
-        #region API CALLS
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public Task<IActionResult> DeletePost(string? id) => DeleteInternalAsync(id);
+
         [HttpGet]
         public IActionResult GetAllUser()
         {
-            List<ApplicationUser> objUserList = _db.ApplicationUsers.ToList();
-
+            var objUserList = _db.ApplicationUsers.ToList();
             var userRoles = _db.UserRoles.ToList();
             var roles = _db.Roles.ToList();
 
             foreach (var user in objUserList)
             {
-                var roleId = userRoles.FirstOrDefault(u => u.UserId == user.Id).RoleId; //get the role ids
-                user.Role = roles.FirstOrDefault(u => u.Id == roleId).Name;
+                var roleId = userRoles.FirstOrDefault(u => u.UserId == user.Id)?.RoleId;
+                user.Role = roleId == null
+                    ? string.Empty
+                    : roles.FirstOrDefault(u => u.Id == roleId)?.Name ?? string.Empty;
             }
 
             return Json(new { data = objUserList });
         }
-        [HttpPost]
-        public IActionResult CreateApi([FromBody] ApplicationUser obj)
-        {
-            if (ModelState.IsValid)
-            {
-                _db.ApplicationUsers.Add(obj);
-                _db.SaveChanges();
-                return Json(new { success = true, message = "Create Successful" });
-            }
-            return Json(new { success = false, message = "Error while creating" });
-        }
+
         [HttpPost]
         public IActionResult LockUnlock([FromBody] string id)
         {
@@ -138,7 +201,6 @@ namespace asprule1020.Areas.Admin.Controllers
             }
             if (objFromDb.LockoutEnd != null && objFromDb.LockoutEnd > DateTime.Now)
             {
-                //user is currently locked, we will unlock them
                 objFromDb.LockoutEnd = DateTime.Now;
             }
             else
@@ -148,10 +210,80 @@ namespace asprule1020.Areas.Admin.Controllers
             _db.SaveChanges();
             return Json(new { success = true, message = "Operation Successful" });
         }
-        [HttpDelete]
-        public IActionResult Delete(int? id)
+
+        [HttpPut]
+        public async Task<IActionResult> UpdateApi([FromBody] ApplicationUser obj)
         {
-            return Json(new { success = true, message = "Delete Successful" });
+            if (obj == null || string.IsNullOrEmpty(obj.Id))
+            {
+                return Json(new { success = false, message = "User id is required." });
+            }
+
+            var userFromDb = await _userManager.FindByIdAsync(obj.Id);
+            if (userFromDb == null)
+            {
+                return Json(new { success = false, message = "User not found." });
+            }
+
+            userFromDb.FirstName = obj.FirstName;
+            userFromDb.MiddleName = obj.MiddleName;
+            userFromDb.LastName = obj.LastName;
+            userFromDb.Email = obj.Email;
+            userFromDb.UserName = obj.UserName;
+            userFromDb.PhoneNumber = obj.PhoneNumber;
+            userFromDb.EstProvince = obj.EstProvince;
+
+            var updateResult = await _userManager.UpdateAsync(userFromDb);
+            if (!updateResult.Succeeded)
+            {
+                var message = string.Join(" ", updateResult.Errors.Select(e => e.Description));
+                return Json(new { success = false, message });
+            }
+
+            return Json(new { success = true, message = "Update successful." });
+        }
+
+        [HttpDelete]
+        [ValidateAntiForgeryToken]
+        public Task<IActionResult> Delete(string? id) => DeleteInternalAsync(id);
+
+        private async Task<IActionResult> DeleteInternalAsync(string? id)
+        {
+            if (string.IsNullOrWhiteSpace(id))
+                return Json(new { success = false, message = "User id is required." });
+
+            var user = await _userManager.FindByIdAsync(id);
+            if (user == null)
+                return Json(new { success = false, message = "User not found." });
+
+            await RemoveUserIdentityArtifactsAsync(id);   // <-- clears AspNetUserRoles, etc.
+
+            var deleteResult = await _userManager.DeleteAsync(user);
+            if (!deleteResult.Succeeded)
+            {
+                var errors = string.Join(" ", deleteResult.Errors.Select(e => e.Description));
+                return Json(new { success = false, message = errors });
+            }
+
+            return Json(new { success = true, message = "User deleted successfully." });
+        }
+
+        private async Task RemoveUserIdentityArtifactsAsync(string userId)
+        {
+            var userRoles  = await _db.UserRoles.Where(ur => ur.UserId == userId).ToListAsync();
+            var userClaims = await _db.UserClaims.Where(uc => uc.UserId == userId).ToListAsync();
+            var userLogins = await _db.UserLogins.Where(ul => ul.UserId == userId).ToListAsync();
+            var userTokens = await _db.UserTokens.Where(ut => ut.UserId == userId).ToListAsync();
+
+            if (userRoles.Count == 0 && userClaims.Count == 0 && userLogins.Count == 0 && userTokens.Count == 0)
+                return;
+
+            _db.UserRoles.RemoveRange(userRoles);
+            _db.UserClaims.RemoveRange(userClaims);
+            _db.UserLogins.RemoveRange(userLogins);
+            _db.UserTokens.RemoveRange(userTokens);
+
+            await _db.SaveChangesAsync();
         }
         #endregion
 
