@@ -33,7 +33,7 @@ namespace asprule1020.Areas.Admin.Controllers
                 Value = u.Id.ToString()
             }).ToList();
         }
-        //[Authorize(SD.Role_Admin)]
+        [Authorize(SD.Role_Admin)]
         public IActionResult ManageUser()
         {
             return View();

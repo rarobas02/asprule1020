@@ -151,6 +151,7 @@ namespace asprule1020.Areas.Identity.Pages.Account
                     _roleManager.CreateAsync(new IdentityRole(SD.Role_Evaluator)).GetAwaiter().GetResult();
                     _roleManager.CreateAsync(new IdentityRole(SD.Role_Po_Head)).GetAwaiter().GetResult();
                     _roleManager.CreateAsync(new IdentityRole(SD.Role_Region_Focal)).GetAwaiter().GetResult();
+                    _roleManager.CreateAsync(new IdentityRole(SD.Role_Admin)).GetAwaiter().GetResult();
                 }
                 EnsureInputInitialized();
                 if (info.Principal.HasClaim(c => c.Type == ClaimTypes.Email))

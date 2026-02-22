@@ -44,15 +44,15 @@
             <!-- Divider -->
             <hr class="sidebar-divider my-0">
 
-            @* @if (User.IsInRole(SD.Role_Admin)) *@
-            <!-- Nav Item - Dashboard -->
-            <li class="nav-item active">
-                <a class="nav-link" asp-area="Admin" asp-controller="User" asp-action="ManageUser">
-                    <i class="fas fa-fw fa-tachometer-alt"></i>
-                    <span>Manage User</span>
-                </a>
-            </li>
-
+            @if (User.IsInRole(SD.Role_Admin))
+            {
+                <li class="nav-item active">
+                    <a class="nav-link" asp-area="Admin" asp-controller="User" asp-action="ManageUser">
+                        <i class="fas fa-fw fa-tachometer-alt"></i>
+                        <span>Manage User</span>
+                    </a>
+                </li>
+            }
             <!-- Divider -->
             <hr class="sidebar-divider">
 
@@ -70,7 +70,6 @@
 
 
             <!-- Divider -->
-            <hr class="sidebar-divider d-none d-md-block">
 
             <!-- Sidebar Toggler (Sidebar) -->
             <div class="text-center d-none d-md-inline">
