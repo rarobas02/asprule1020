@@ -75,16 +75,23 @@ namespace asprule1020.Areas.Admin.Controllers
                 return View(userVM);
             }
 
-            var isNewUser = string.IsNullOrEmpty(userVM.ApplicationUser.Id);
+            var isNewUser = string.IsNullOrWhiteSpace(userVM.ApplicationUser.Id);
+
             if (!isNewUser)
             {
                 ModelState.Remove(nameof(UserVM.Password));
+            }
+            else if (string.IsNullOrWhiteSpace(userVM.Password))
+            {
+                ModelState.AddModelError(nameof(UserVM.Password), "Password is required for new users.");
             }
 
             if (!ModelState.IsValid)
             {
                 return View(userVM);
             }
+
+            ApplicationUser persistedUser;
 
             if (isNewUser)
             {
@@ -97,24 +104,27 @@ namespace asprule1020.Areas.Admin.Controllers
                     }
                     return View(userVM);
                 }
+
+                persistedUser = userVM.ApplicationUser;
             }
             else
             {
-                var userFromDb = await _userManager.FindByIdAsync(userVM.ApplicationUser.Id);
-                if (userFromDb == null)
+                persistedUser = await _userManager.FindByIdAsync(userVM.ApplicationUser.Id);
+                if (persistedUser == null)
                 {
-                    return NotFound();
+                    ModelState.AddModelError(string.Empty, "Unable to locate the user you are trying to update.");
+                    return View(userVM);
                 }
 
-                userFromDb.FirstName = userVM.ApplicationUser.FirstName;
-                userFromDb.MiddleName = userVM.ApplicationUser.MiddleName;
-                userFromDb.LastName = userVM.ApplicationUser.LastName;
-                userFromDb.Email = userVM.ApplicationUser.Email;
-                userFromDb.UserName = userVM.ApplicationUser.UserName;
-                userFromDb.PhoneNumber = userVM.ApplicationUser.PhoneNumber;
-                userFromDb.EstProvince = userVM.ApplicationUser.EstProvince;
+                persistedUser.FirstName = userVM.ApplicationUser.FirstName;
+                persistedUser.MiddleName = userVM.ApplicationUser.MiddleName;
+                persistedUser.LastName = userVM.ApplicationUser.LastName;
+                persistedUser.Email = userVM.ApplicationUser.Email;
+                persistedUser.UserName = userVM.ApplicationUser.UserName;
+                persistedUser.PhoneNumber = userVM.ApplicationUser.PhoneNumber;
+                persistedUser.EstProvince = userVM.ApplicationUser.EstProvince;
 
-                var updateResult = await _userManager.UpdateAsync(userFromDb);
+                var updateResult = await _userManager.UpdateAsync(persistedUser);
                 if (!updateResult.Succeeded)
                 {
                     foreach (var error in updateResult.Errors)
@@ -123,49 +133,11 @@ namespace asprule1020.Areas.Admin.Controllers
                     }
                     return View(userVM);
                 }
-
-                var targetRoleName = _db.Roles
-                    .Where(r => r.Id == userVM.SelectedRoleId)
-                    .Select(r => r.Name)
-                    .FirstOrDefault();
-
-                var existingRoles = await _userManager.GetRolesAsync(userFromDb);
-                if (existingRoles.Any())
-                {
-                    await _userManager.RemoveFromRolesAsync(userFromDb, existingRoles);
-                }
-
-                if (!string.IsNullOrEmpty(targetRoleName))
-                {
-                    var roleResult = await _userManager.AddToRoleAsync(userFromDb, targetRoleName);
-                    if (!roleResult.Succeeded)
-                    {
-                        foreach (var error in roleResult.Errors)
-                        {
-                            ModelState.AddModelError(string.Empty, error.Description);
-                        }
-                        return View(userVM);
-                    }
-                }
-
-                TempData["success"] = "User updated successfully.";
-                return RedirectToAction(nameof(ManageUser));
             }
 
-            if (!string.IsNullOrEmpty(userVM.SelectedRoleId))
-            {
-                var roleName = _db.Roles
-                    .Where(r => r.Id == userVM.SelectedRoleId)
-                    .Select(r => r.Name)
-                    .FirstOrDefault();
+            await updateIdentityArtifactsAsync(persistedUser.Id, userVM.SelectedRoleId);
 
-                if (!string.IsNullOrEmpty(roleName))
-                {
-                    await _userManager.AddToRoleAsync(userVM.ApplicationUser, roleName);
-                }
-            }
-
-            TempData["success"] = "User created successfully.";
+            TempData["success"] = isNewUser ? "User created successfully." : "User updated successfully.";
             return RedirectToAction(nameof(ManageUser));
         }
 
@@ -211,38 +183,6 @@ namespace asprule1020.Areas.Admin.Controllers
             return Json(new { success = true, message = "Operation Successful" });
         }
 
-        [HttpPut]
-        public async Task<IActionResult> UpdateApi([FromBody] ApplicationUser obj)
-        {
-            if (obj == null || string.IsNullOrEmpty(obj.Id))
-            {
-                return Json(new { success = false, message = "User id is required." });
-            }
-
-            var userFromDb = await _userManager.FindByIdAsync(obj.Id);
-            if (userFromDb == null)
-            {
-                return Json(new { success = false, message = "User not found." });
-            }
-
-            userFromDb.FirstName = obj.FirstName;
-            userFromDb.MiddleName = obj.MiddleName;
-            userFromDb.LastName = obj.LastName;
-            userFromDb.Email = obj.Email;
-            userFromDb.UserName = obj.UserName;
-            userFromDb.PhoneNumber = obj.PhoneNumber;
-            userFromDb.EstProvince = obj.EstProvince;
-
-            var updateResult = await _userManager.UpdateAsync(userFromDb);
-            if (!updateResult.Succeeded)
-            {
-                var message = string.Join(" ", updateResult.Errors.Select(e => e.Description));
-                return Json(new { success = false, message });
-            }
-
-            return Json(new { success = true, message = "Update successful." });
-        }
-
         [HttpDelete]
         [ValidateAntiForgeryToken]
         public Task<IActionResult> Delete(string? id) => DeleteInternalAsync(id);
@@ -282,6 +222,34 @@ namespace asprule1020.Areas.Admin.Controllers
             _db.UserClaims.RemoveRange(userClaims);
             _db.UserLogins.RemoveRange(userLogins);
             _db.UserTokens.RemoveRange(userTokens);
+
+            await _db.SaveChangesAsync();
+        }
+        private async Task updateIdentityArtifactsAsync(string userId, string? targetRoleId)
+        {
+            var userRoles = await _db.UserRoles.Where(ur => ur.UserId == userId).ToListAsync();
+
+            if (string.IsNullOrEmpty(targetRoleId))
+            {
+                if (userRoles.Count > 0)
+                {
+                    _db.UserRoles.RemoveRange(userRoles);
+                    await _db.SaveChangesAsync();
+                }
+                return;
+            }
+
+            if (userRoles.Count == 1 && userRoles[0].RoleId == targetRoleId)
+            {
+                return;
+            }
+
+            _db.UserRoles.RemoveRange(userRoles);
+            _db.UserRoles.Add(new IdentityUserRole<string>
+            {
+                UserId = userId,
+                RoleId = targetRoleId
+            });
 
             await _db.SaveChangesAsync();
         }

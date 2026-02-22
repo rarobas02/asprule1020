@@ -15,6 +15,7 @@
     <div class="card-body p-4">
         <div asp-validation-summary="All"></div>
         <form asp-area="Admin" asp-controller="User" asp-action="Create" method="post" class="row">
+            <input type="hidden" asp-for="ApplicationUser.Id" />
             <div class="border p-3">
                 @* <div asp-validation-summary="ModelOnly"></div> *@
                 <div class="form-floating py-2 col-12">
@@ -61,7 +62,7 @@
                 </div>
                 <div class="form-floating py-2 col-12">
                     <select asp-for="SelectedRoleId" asp-items="Model.UserRoleList" class="form-select">
-                        <option value="" disabled selected>--Select User Role--</option>
+                        <option value="" disabled>--Select User Role--</option>
                     </select>
                     <label asp-for="SelectedRoleId" class="ms-2"></label>
                     <span asp-validation-for="SelectedRoleId" class="text-danger"></span>
