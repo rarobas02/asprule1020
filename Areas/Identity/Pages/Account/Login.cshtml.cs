@@ -109,57 +109,71 @@ namespace asprule1020.Areas.Identity.Pages.Account
 
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
 
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                // This doesn't count login failures towards account lockout
-                // To enable password failures to trigger account lockout, set lockoutOnFailure: true
-                var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
-                if (result.Succeeded)
-                {
-                    _logger.LogInformation("User logged in.");
-                    if (User.IsInRole(SD.Role_Client))
-                    {
-                        return LocalRedirect(returnUrl);
-                    }
-                    if (User.IsInRole(SD.Role_Evaluator))
-                    {
-                        return RedirectToAction("ManageUser", "User", new { area = "Admin" });
-                    }
-                    if (User.IsInRole(SD.Role_Po_Head))
-                    {
-                        return RedirectToAction("PoHeadReview", "User", new { area = "Admin" });
-                    }
-                    if (User.IsInRole(SD.Role_Region_Focal))
-                    {
-                        return RedirectToAction("RegionReview", "User", new { area = "Admin" });
-                    }
-                    if (User.IsInRole(SD.Role_Admin))
-                    {
-                        return RedirectToAction("ManageUser", "User", new { area = "Admin" });
-                    }
-                    else
-                    {
-                        return LocalRedirect(returnUrl);
-                    }
-
-                }
-                if (result.RequiresTwoFactor)
-                {
-                    return RedirectToPage("./LoginWith2fa", new { ReturnUrl = returnUrl, RememberMe = Input.RememberMe });
-                }
-                if (result.IsLockedOut)
-                {
-                    _logger.LogWarning("User account locked out.");
-                    return RedirectToPage("./Lockout");
-                }
-                else
-                {
-                    ModelState.AddModelError(string.Empty, "Invalid login attempt.");
-                    return Page();
-                }
+                return Page();
             }
 
-            // If we got this far, something failed, redisplay form
+            var email = Input.Email?.Trim();
+            if (string.IsNullOrWhiteSpace(email))
+            {
+                ModelState.AddModelError(string.Empty, "Please enter a valid email address.");
+                return Page();
+            }
+
+            var user = await _signInManager.UserManager.FindByEmailAsync(email);
+            if (user is null)
+            {
+                ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                return Page();
+            }
+
+            var result = await _signInManager.PasswordSignInAsync(user, Input.Password, Input.RememberMe, lockoutOnFailure: false);
+            if (result.Succeeded)
+            {
+                _logger.LogInformation("User logged in.");
+
+                if (await _signInManager.UserManager.IsInRoleAsync(user, SD.Role_Client))
+                {
+                    return LocalRedirect(returnUrl);
+                }
+                if (await _signInManager.UserManager.IsInRoleAsync(user, SD.Role_Evaluator))
+                {
+                    return RedirectToAction("ManageUser", "User", new { area = "Admin" });
+                }
+                if (await _signInManager.UserManager.IsInRoleAsync(user, SD.Role_Po_Head))
+                {
+                    return RedirectToAction("PoHeadReview", "User", new { area = "Admin" });
+                }
+                if (await _signInManager.UserManager.IsInRoleAsync(user, SD.Role_Region_Focal))
+                {
+                    return RedirectToAction("RegionReview", "User", new { area = "Admin" });
+                }
+                if (await _signInManager.UserManager.IsInRoleAsync(user, SD.Role_Admin))
+                {
+                    return RedirectToAction("ManageUser", "User", new { area = "Admin" });
+                }
+
+                return LocalRedirect(returnUrl);
+            }
+
+            if (result.RequiresTwoFactor)
+            {
+                return RedirectToPage("./LoginWith2fa", new { ReturnUrl = returnUrl, RememberMe = Input.RememberMe });
+            }
+            if (result.IsLockedOut)
+            {
+                _logger.LogWarning("User account locked out.");
+                return RedirectToPage("./Lockout");
+            }
+            if (result.IsNotAllowed)
+            {
+                _logger.LogWarning("User attempted to log in without confirming email.");
+                ModelState.AddModelError(string.Empty, "Please confirm your email address before logging in.");
+                return Page();
+            }
+
+            ModelState.AddModelError(string.Empty, "Invalid login attempt.");
             return Page();
         }
     }

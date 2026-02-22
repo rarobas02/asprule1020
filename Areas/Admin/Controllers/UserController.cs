@@ -33,11 +33,10 @@ namespace asprule1020.Areas.Admin.Controllers
                 Value = u.Id.ToString()
             }).ToList();
         }
-        [Authorize(SD.Role_Admin)]
-        public IActionResult ManageUser()
-        {
-            return View();
-        }
+        [Authorize(Roles = SD.Role_Admin)]
+        public IActionResult ManageUser() => View();
+
+        [Authorize(Roles = SD.Role_Admin)]
         public IActionResult Create(string? id)
         {
             var userVM = new UserVM

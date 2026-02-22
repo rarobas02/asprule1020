@@ -4,6 +4,7 @@ using asprule1020.DataAccess.Repository;
 using asprule1020.DataAccess.Repository.IRepository;
 using asprule1020.Infrastruture.Identity;
 using asprule1020.Models;
+using asprule1020.Utility;
 using BulkyBook.DataAccess.DbInitializer;
 using BulkyBook.Utility;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -25,6 +26,14 @@ builder.Services.AddAuthentication().AddFacebook(options =>
 {
     options.AppId = builder.Configuration["Authentication:Facebook:AppId"] ?? string.Empty;
     options.AppSecret = builder.Configuration["Authentication:Facebook:AppSecret"] ?? string.Empty;
+});
+// Session Configuration - Add Session Services
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(100);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
 });
 builder.Services.AddScoped<IDbInitializer, DbInitializer>();
 builder.Services.AddRazorPages();
@@ -53,7 +62,7 @@ app.UseHttpsRedirection();
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
-
+app.UseSession();
 SeedDatabase();
 app.MapRazorPages();
 
@@ -69,6 +78,17 @@ void SeedDatabase()
 {
     using (var scope = app.Services.CreateScope())
     {
+        //var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+        
+        //if (!roleManager.RoleExistsAsync(SD.Role_Client).GetAwaiter().GetResult())
+        //{
+        //    roleManager.CreateAsync(new IdentityRole(SD.Role_Client)).GetAwaiter().GetResult();
+        //    roleManager.CreateAsync(new IdentityRole(SD.Role_Evaluator)).GetAwaiter().GetResult();
+        //    roleManager.CreateAsync(new IdentityRole(SD.Role_Po_Head)).GetAwaiter().GetResult();
+        //    roleManager.CreateAsync(new IdentityRole(SD.Role_Region_Focal)).GetAwaiter().GetResult();
+        //    roleManager.CreateAsync(new IdentityRole(SD.Role_Admin)).GetAwaiter().GetResult();
+        //}
+        
         var dbInitializer = scope.ServiceProvider.GetRequiredService<IDbInitializer>();
         dbInitializer.Initialize();
     }
