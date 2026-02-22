@@ -65,10 +65,11 @@ namespace asprule1020.Areas.Admin.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(UserVM userVM)
+        public async Task<IActionResult> Create(UserVM? userVM)
         {
-            userVM.UserRoleList = BuildRoleSelectList();
+            const string idKey = $"{nameof(UserVM.ApplicationUser)}.{nameof(ApplicationUser.Id)}";
 
+            userVM.UserRoleList = BuildRoleSelectList();
             if (userVM.ApplicationUser == null)
             {
                 ModelState.AddModelError(string.Empty, "User details are required.");
@@ -77,9 +78,15 @@ namespace asprule1020.Areas.Admin.Controllers
 
             var isNewUser = string.IsNullOrWhiteSpace(userVM.ApplicationUser.Id);
 
+
             if (!isNewUser)
             {
                 ModelState.Remove(nameof(UserVM.Password));
+            }
+            else if (isNewUser)
+            {
+                ModelState.Remove(idKey);
+                ModelState.Remove(nameof(ApplicationUser.Id));
             }
             else if (string.IsNullOrWhiteSpace(userVM.Password))
             {
@@ -95,11 +102,14 @@ namespace asprule1020.Areas.Admin.Controllers
 
             if (isNewUser)
             {
+                userVM.ApplicationUser.Id = Guid.NewGuid().ToString();
                 var createResult = await _userManager.CreateAsync(userVM.ApplicationUser, userVM.Password!);
                 if (!createResult.Succeeded)
                 {
                     foreach (var error in createResult.Errors)
                     {
+                        ModelState.Remove(idKey);
+                        ModelState.Remove(nameof(ApplicationUser.Id));
                         ModelState.AddModelError(string.Empty, error.Description);
                     }
                     return View(userVM);
