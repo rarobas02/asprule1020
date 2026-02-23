@@ -1,0 +1,434 @@
+﻿@model RegisterVM
+
+@{
+    ViewData["Title"] = "Registration Details";
+    var register = Model?.Register;
+    string FormatString(string? value) => string.IsNullOrWhiteSpace(value) ? "N/A" : value;
+    string FormatDate(DateTime? date) => date?.ToString("MMMM dd, yyyy") ?? "N/A";
+    string FormatBool(bool? value) => value switch { true => "Yes", false => "No", _ => "N/A" };
+    string FormatNumber(int? value) => value.HasValue ? value.Value.ToString("N0") : "N/A";
+    string FormatList(List<string>? values) => values is { Count: > 0 } ? string.Join(", ", values) : "N/A";
+    string BuildFileUrl(string folder, string? fileName) =>
+        string.IsNullOrWhiteSpace(fileName) ? string.Empty : Url.Content($"~/Uploads/{folder}/{fileName}");
+}
+
+<ul class="nav nav-tabs" id="action_tab" role="tablist">
+    <li class="nav-item" role="presentation">
+        <button class="nav-link active d-flex align-self-start align-items-center" id="registration_details-ap-tab"
+                data-bs-toggle="tab" data-bs-target="#registration_details" type="button" role="tab"
+                aria-controls="registration_details" aria-selected="true">
+            <i class="fa-solid fa-arrow-trend-up fa-xs me-1"></i>
+            Registration Details<span class="badge badge-pill badge-danger ms-2 registration_details-badge"></span>
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link d-flex align-self-start align-items-center" id="action-ap-tab"
+                data-bs-toggle="tab" data-bs-target="#action" type="button" role="tab"
+                aria-controls="action" aria-selected="false">
+            <i class="fa-solid fa-arrow-trend-up fa-xs me-1"></i>
+            Action<span class="badge badge-pill badge-danger ms-2 action-badge"></span>
+        </button>
+    </li>
+</ul>
+
+<div class="tab-content" id="receive_forward_content">
+    <div class="tab-pane fade show active" id="registration_details" role="tabpanel"
+         aria-labelledby="registration_details-ap-tab">
+
+        <div class="row">
+            <dl class="p-4 bg-light">
+                <div class="row gap-3">
+                    <dt class="col-sm-12 col-lg">Name of Establishment:</dt>
+                    <dd class="col-sm-12 col-lg">@FormatString(register?.EstName)</dd>
+                    <dd class="col-sm-12 col-lg">
+                        <input type="checkbox" class="form-check-input remarks-check-box" name="est_name_ck" id="est_name_ck" value="Approved" checked />
+                        <input type="text" class="form-control mb-3 input-remarks" id="est_name_input" name="est_name_input" disabled />
+                    </dd>
+                </div>
+                <hr class="row mb-3" />
+                <div class="row gap-3">
+                    <dt class="col-sm-12 col-lg">Type of Establishment:</dt>
+                    <dd class="col-sm-12 col-lg">@FormatString(register?.EstType)</dd>
+                    <dd class="col-sm-12 col-lg">
+                        <input type="checkbox" class="form-check-input remarks-check-box" name="est_type_ck" id="est_type_ck" value="Approved" checked />
+                        <input type="text" class="form-control mb-3 input-remarks" id="est_type_input" name="est_type_input" disabled />
+                    </dd>
+                </div>
+                <hr class="row mb-3" />
+                <div class="row gap-3">
+                    <dt class="col-sm-12 col-lg">Legal Organization:</dt>
+                    <dd class="col-sm-12 col-lg">@FormatString(register?.EstLegalOrg)</dd>
+                    <dd class="col-sm-12 col-lg">
+                        <input type="checkbox" class="form-check-input remarks-check-box" name="est_legalorg_ck" id="est_legalorg_ck" value="Approved" checked />
+                        <input type="text" class="form-control mb-3 input-remarks" id="est_legalorg_input" name="est_legalorg_input" disabled />
+                    </dd>
+                </div>
+                <hr class="row mb-3" />
+                <div class="row gap-3">
+                    <dt class="col-sm-12 col-lg">Floor/ Bldg. No./ Street/ Subdivision/ Barangay:</dt>
+                    <dd class="col-sm-12 col-lg">@FormatString(register?.EstStreet)</dd>
+                    <dd class="col-sm-12 col-lg">
+                        <input type="checkbox" class="form-check-input remarks-check-box" name="est_adress_ck" id="est_adress_ck" value="Approved" checked />
+                        <input type="text" class="form-control mb-3 input-remarks" id="est_adress_input" name="est_adress_input" disabled />
+                    </dd>
+                </div>
+                <hr class="row mb-3" />
+                <div class="row gap-3">
+                    <dt class="col-sm-12 col-lg">Barangay:</dt>
+                    <dd class="col-sm-12 col-lg">@FormatString(register?.EstBrgy)</dd>
+                    <dd class="col-sm-12 col-lg">
+                        <input type="checkbox" class="form-check-input remarks-check-box" name="est_barangay_ck" id="est_barangay_ck" value="Approved" checked />
+                        <input type="text" class="form-control mb-3 input-remarks" id="est_barangay_input" name="est_barangay_input" disabled />
+                    </dd>
+                </div>
+                <hr class="row mb-3" />
+                <div class="row gap-3">
+                    <dt class="col-sm-12 col-lg">City / Municipality:</dt>
+                    <dd class="col-sm-12 col-lg">@FormatString(register?.EstCityMun)</dd>
+                    <dd class="col-sm-12 col-lg">
+                        <input type="checkbox" class="form-check-input remarks-check-box" name="est_citymun_ck" id="est_citymun_ck" value="Approved" checked />
+                        <input type="text" class="form-control mb-3 input-remarks" id="est_citymun_input" name="est_citymun_input" disabled />
+                    </dd>
+                </div>
+                <hr class="row mb-3" />
+                <div class="row gap-3">
+                    <dt class="col-sm-12 col-lg">Province:</dt>
+                    <dd class="col-sm-12 col-lg">@FormatString(register?.EstProvince)</dd>
+                    <dd class="col-sm-12 col-lg">
+                        <input type="checkbox" class="form-check-input remarks-check-box" name="est_province_ck" id="est_province_ck" value="Approved" checked />
+                        <input type="text" class="form-control mb-3 input-remarks" id="est_province_input" name="est_province_input" disabled />
+                    </dd>
+                </div>
+                <hr class="row mb-3" />
+                <div class="row gap-3">
+                    <dt class="col-sm-12 col-lg">Region:</dt>
+                    <dd class="col-sm-12 col-lg">@FormatString(register?.EstRegion)</dd>
+                    <dd class="col-sm-12 col-lg">
+                        <input type="checkbox" class="form-check-input remarks-check-box" name="est_region_ck" id="est_region_ck" value="Approved" checked />
+                        <input type="text" class="form-control mb-3 input-remarks" id="est_region_input" name="est_region_input" disabled />
+                    </dd>
+                </div>
+                <hr class="row mb-3" />
+                <div class="row gap-3">
+                    <dt class="col-sm-12 col-lg">Name of Manager/Owner (First):</dt>
+                    <dd class="col-sm-12 col-lg">@FormatString(register?.EstOwnerFirst)</dd>
+                    <dd class="col-sm-12 col-lg">
+                        <input type="checkbox" class="form-check-input remarks-check-box" name="est_manag_first_ck" id="est_manag_first_ck" value="Approved" checked />
+                        <input type="text" class="form-control mb-3 input-remarks" id="est_manag_first_input" name="est_manag_first_input" disabled />
+                    </dd>
+                </div>
+                <hr class="row mb-3" />
+                <div class="row gap-3">
+                    <dt class="col-sm-12 col-lg">Name of Manager/Owner (Middle):</dt>
+                    <dd class="col-sm-12 col-lg">@FormatString(register?.EstOwnerMid)</dd>
+                    <dd class="col-sm-12 col-lg">
+                        <input type="checkbox" class="form-check-input remarks-check-box" name="est_manag_mid_ck" id="est_manag_mid_ck" value="Approved" checked />
+                        <input type="text" class="form-control mb-3 input-remarks" id="est_manag_mid_input" name="est_manag_mid_input" disabled />
+                    </dd>
+                </div>
+                <hr class="row mb-3" />
+                <div class="row gap-3">
+                    <dt class="col-sm-12 col-lg">Name of Manager/Owner (Last):</dt>
+                    <dd class="col-sm-12 col-lg">@FormatString(register?.EstOwnerLast)</dd>
+                    <dd class="col-sm-12 col-lg">
+                        <input type="checkbox" class="form-check-input remarks-check-box" name="est_manag_last_ck" id="est_manag_last_ck" value="Approved" checked />
+                        <input type="text" class="form-control mb-3 input-remarks" id="est_manag_last_input" name="est_manag_last_input" disabled />
+                    </dd>
+                </div>
+                <hr class="row mb-3" />
+                <div class="row gap-3">
+                    <dt class="col-sm-12 col-lg">Date of Registration:</dt>
+                    <dd class="col-sm-12 col-lg">@FormatDate(register?.EstRegistrationDate)</dd>
+                    <dd class="col-sm-12 col-lg">
+                        <input type="checkbox" class="form-check-input remarks-check-box" name="est_regdate_ck" id="est_regdate_ck" value="Approved" checked />
+                        <input type="text" class="form-control mb-3 input-remarks" id="est_regdate_input" name="est_regdate_input" disabled />
+                    </dd>
+                </div>
+                <hr class="row mb-3" />
+                <div class="row gap-3">
+                    <dt class="col-sm-12 col-lg">Nature of Business:</dt>
+                    <dd class="col-sm-12 col-lg">@FormatString(register?.EstBusinessNature)</dd>
+                    <dd class="col-sm-12 col-lg">
+                        <input type="checkbox" class="form-check-input remarks-check-box" name="est_bus_nature_ck" id="est_bus_nature_ck" value="Approved" checked />
+                        <input type="text" class="form-control mb-3 input-remarks" id="est_bus_nature_input" name="est_bus_nature_input" disabled />
+                    </dd>
+                </div>
+                <hr class="row mb-3" />
+                <div class="row gap-3">
+                    <dt class="col-sm-12 col-lg">Nature of Business (if OTHER):</dt>
+                    <dd class="col-sm-12 col-lg">@FormatString(register?.EstOtherBusNature)</dd>
+                    <dd class="col-sm-12 col-lg">
+                        <input type="checkbox" class="form-check-input remarks-check-box" name="est_bnature_oth_ck" id="est_bnature_oth_ck" value="Approved" checked />
+                        <input type="text" class="form-control mb-3 input-remarks" id="est_bnature_oth_input" name="est_bnature_oth_input" disabled />
+                    </dd>
+                </div>
+                <hr class="row mb-3" />
+                <div class="row gap-3">
+                    <dt class="col-sm-12 col-lg">Current Capitalization:</dt>
+                    <dd class="col-sm-12 col-lg">@FormatString(register?.EstCurrentCap)</dd>
+                    <dd class="col-sm-12 col-lg">
+                        <input type="checkbox" class="form-check-input remarks-check-box" name="est_cur_cap_ck" id="est_cur_cap_ck" value="Approved" checked />
+                        <input type="text" class="form-control mb-3 input-remarks" id="est_cur_cap_input" name="est_cur_cap_input" disabled />
+                    </dd>
+                </div>
+                <hr class="row mb-3" />
+                <div class="row gap-3">
+                    <dt class="col-sm-12 col-lg">Total Assets:</dt>
+                    <dd class="col-sm-12 col-lg">@FormatString(register?.EstTotalAssets)</dd>
+                    <dd class="col-sm-12 col-lg">
+                        <input type="checkbox" class="form-check-input remarks-check-box" name="est_total_asset_ck" id="est_total_asset_ck" value="Approved" checked />
+                        <input type="text" class="form-control mb-3 input-remarks" id="est_total_asset_input" name="est_total_asset_input" disabled />
+                    </dd>
+                </div>
+                <hr class="row mb-3" />
+                <div class="row gap-3">
+                    <dt class="col-sm-12 col-lg">Telephone / Cellphone Number:</dt>
+                    <dd class="col-sm-12 col-lg">@FormatString(register?.EstPhone ?? register?.PhoneNumber)</dd>
+                    <dd class="col-sm-12 col-lg">
+                        <input type="checkbox" class="form-check-input remarks-check-box" name="est_contact_ck" id="est_contact_ck" value="Approved" checked />
+                        <input type="text" class="form-control mb-3 input-remarks" id="est_contact_input" name="est_contact_input" disabled />
+                    </dd>
+                </div>
+                <hr class="row mb-3" />
+                <div class="row gap-3">
+                    <dt class="col-sm-12 col-lg">Tax Identification Number (TIN):</dt>
+                    <dd class="col-sm-12 col-lg">@FormatString(register?.Rule1020Id)</dd>
+                    <dd class="col-sm-12 col-lg">
+                        <input type="checkbox" class="form-check-input remarks-check-box" name="est_tin_ck" id="est_tin_ck" value="Approved" checked />
+                        <input type="text" class="form-control mb-3 input-remarks" id="est_tin_input" name="est_tin_input" disabled />
+                    </dd>
+                </div>
+                <hr class="row mb-3" />
+                <div class="row gap-3">
+                    <dt class="col-sm-12 col-lg">Email Address:</dt>
+                    <dd class="col-sm-12 col-lg">@FormatString(register?.Email)</dd>
+                    <dd class="col-sm-12 col-lg">
+                        <input type="checkbox" class="form-check-input remarks-check-box" name="est_email_ck" id="est_email_ck" value="Approved" checked />
+                        <input type="text" class="form-control mb-3 input-remarks" id="est_email_input" name="est_email_input" disabled />
+                    </dd>
+                </div>
+                <hr class="row mb-3" />
+                <div class="row gap-3">
+                    <dt class="col-sm-12 col-lg">Number of Male Employees:</dt>
+                    <dd class="col-sm-12 col-lg">@FormatNumber(register?.EstMaleCount)</dd>
+                    <dd class="col-sm-12 col-lg">
+                        <input type="checkbox" class="form-check-input remarks-check-box" name="est_malenum_ck" id="est_malenum_ck" value="Approved" checked />
+                        <input type="text" class="form-control mb-3 input-remarks" id="est_malenum_input" name="est_malenum_input" disabled />
+                    </dd>
+                </div>
+                <hr class="row mb-3" />
+                <div class="row gap-3">
+                    <dt class="col-sm-12 col-lg">Number of Female Employees:</dt>
+                    <dd class="col-sm-12 col-lg">@FormatNumber(register?.EstFemaleCount)</dd>
+                    <dd class="col-sm-12 col-lg">
+                        <input type="checkbox" class="form-check-input remarks-check-box" name="est_femalenum_ck" id="est_femalenum_ck" value="Approved" checked />
+                        <input type="text" class="form-control mb-3 input-remarks" id="est_femalenum_input" name="est_femalenum_input" disabled />
+                    </dd>
+                </div>
+                <hr class="row mb-3" />
+                <div class="row gap-3">
+                    <dt class="col-sm-12 col-lg">Total Number of Employees:</dt>
+                    <dd class="col-sm-12 col-lg">@FormatNumber(register?.EstTotalEmployees)</dd>
+                    <dd class="col-sm-12 col-lg">
+                        <input type="checkbox" class="form-check-input remarks-check-box" name="est_totalemploy_ck" id="est_totalemploy_ck" value="Approved" checked />
+                        <input type="text" class="form-control mb-3 input-remarks" id="est_totalemploy_input" name="est_totalemploy_input" disabled />
+                    </dd>
+                </div>
+                <hr class="row mb-3" />
+                <div class="row gap-3">
+                    <dt class="col-sm-12 col-lg">Technical Information 1:</dt>
+                    <dd class="col-sm-12 col-lg">@FormatList(register?.EstTechInfo1)</dd>
+                    <dd class="col-sm-12 col-lg">
+                        <input type="checkbox" class="form-check-input remarks-check-box" name="est_techinfo1_ck" id="est_techinfo1_ck" value="Approved" checked />
+                        <input type="text" class="form-control mb-3 input-remarks" id="est_techinfo1_input" name="est_techinfo1_input" disabled />
+                    </dd>
+                </div>
+                <hr class="row mb-3" />
+                <div class="row gap-3">
+                    <dt class="col-sm-12 col-lg">Technical Information 1 (OTHER):</dt>
+                    <dd class="col-sm-12 col-lg">@FormatString(register?.EstTechInfo1Other)</dd>
+                    <dd class="col-sm-12 col-lg">
+                        <input type="checkbox" class="form-check-input remarks-check-box" name="est_techinfooth1_ck" id="est_techinfooth1_ck" value="Approved" checked />
+                        <input type="text" class="form-control mb-3 input-remarks" id="est_techinfooth1_input" name="est_techinfooth1_input" disabled />
+                    </dd>
+                </div>
+                <hr class="row mb-3" />
+                <div class="row gap-3">
+                    <dt class="col-sm-12 col-lg">Technical Information 2:</dt>
+                    <dd class="col-sm-12 col-lg">@FormatList(register?.EstTechInfo2)</dd>
+                    <dd class="col-sm-12 col-lg">
+                        <input type="checkbox" class="form-check-input remarks-check-box" name="est_techinfo2_ck" id="est_techinfo2_ck" value="Approved" checked />
+                        <input type="text" class="form-control mb-3 input-remarks" id="est_techinfo2_input" name="est_techinfo2_input" disabled />
+                    </dd>
+                </div>
+                <hr class="row mb-3" />
+                <div class="row gap-3">
+                    <dt class="col-sm-12 col-lg">Technical Information 2 (OTHER):</dt>
+                    <dd class="col-sm-12 col-lg">@FormatString(register?.EstTechInfo2Other)</dd>
+                    <dd class="col-sm-12 col-lg">
+                        <input type="checkbox" class="form-check-input remarks-check-box" name="est_techinfooth2_ck" id="est_techinfooth2_ck" value="Approved" checked />
+                        <input type="text" class="form-control mb-3 input-remarks" id="est_techinfooth2_input" name="est_techinfooth2_input" disabled />
+                    </dd>
+                </div>
+                <hr class="row mb-3" />
+                <div class="row gap-3">
+                    <dt class="col-sm-12 col-lg">Chemical Substances Used or Handled:</dt>
+                    <dd class="col-sm-12 col-lg">@FormatString(register?.EstChemSubstance)</dd>
+                    <dd class="col-sm-12 col-lg">
+                        <input type="checkbox" class="form-check-input remarks-check-box" name="est_chemsub_ck" id="est_chemsub_ck" value="Approved" checked />
+                        <input type="text" class="form-control mb-3 input-remarks" id="est_chemsub_input" name="est_chemsub_input" disabled />
+                    </dd>
+                </div>
+                <hr class="row mb-3" />
+                <div class="row gap-3">
+                    <dt class="col-sm-12 col-lg">SEC / DTI Registration Number:</dt>
+                    <dd class="col-sm-12 col-lg">@FormatString(register?.EstSECNumber)</dd>
+                    <dd class="col-sm-12 col-lg">
+                        <input type="checkbox" class="form-check-input remarks-check-box" name="est_sec_number_ck" id="est_sec_number_ck" value="Approved" checked />
+                        <input type="text" class="form-control mb-3 input-remarks" id="est_sec_number_input" name="est_sec_number_input" disabled />
+                    </dd>
+                </div>
+                <hr class="row mb-3" />
+                <div class="row gap-3">
+                    <dt class="col-sm-12 col-lg">SEC / DTI Date Issued:</dt>
+                    <dd class="col-sm-12 col-lg">@FormatDate(register?.EstSECDateIssued)</dd>
+                    <dd class="col-sm-12 col-lg">
+                        <input type="checkbox" class="form-check-input remarks-check-box" name="est_sec_dateiss_ck" id="est_sec_dateiss_ck" value="Approved" checked />
+                        <input type="text" class="form-control mb-3 input-remarks" id="est_sec_dateiss_input" name="est_sec_dateiss_input" disabled />
+                    </dd>
+                </div>
+                <hr class="row mb-3" />
+                <div class="row gap-3">
+                    <dt class="col-sm-12 col-lg">SEC / DTI Attachment:</dt>
+                    <dd class="col-sm-12 col-lg">
+                        @{
+                            var secFileUrl = BuildFileUrl("sec_dti", register?.EstSECFile);
+                        }
+                        @if (string.IsNullOrEmpty(secFileUrl))
+                        {
+                            <span class="text-muted">No file uploaded</span>
+                        }
+                        else
+                        {
+                            <a href="@secFileUrl" target="_blank">View SEC registration/DTI certificate Attachment</a>
+                        }
+                    </dd>
+                    <dd class="col-sm-12 col-lg">
+                        <input type="checkbox" class="form-check-input remarks-check-box" name="est_sec_permit_ck" id="est_sec_permit_ck" value="Approved" checked />
+                        <input type="text" class="form-control mb-3 input-remarks" id="est_sec_permit_input" name="est_sec_permit_input" disabled />
+                    </dd>
+                </div>
+                <hr class="row mb-3" />
+                <div class="row gap-3">
+                    <dt class="col-sm-12 col-lg">Is Establishment PEZA registered?</dt>
+                    <dd class="col-sm-12 col-lg">@FormatBool(register?.EstIsPeza)</dd>
+                    <dd class="col-sm-12 col-lg">
+                        <input type="checkbox" class="form-check-input remarks-check-box" name="est_peza_ck" id="est_peza_ck" value="Approved" checked />
+                        <input type="text" class="form-control mb-3 input-remarks" id="est_peza_input" name="est_peza_input" disabled />
+                    </dd>
+                </div>
+                <hr class="row mb-3" />
+                <div class="row gap-3">
+                    <dt class="col-sm-12 col-lg">Business or Mayor's Permit / PEZA Certificate Number:</dt>
+                    <dd class="col-sm-12 col-lg">@FormatString(register?.EstBisPermitNumber)</dd>
+                    <dd class="col-sm-12 col-lg">
+                        <input type="checkbox" class="form-check-input remarks-check-box" name="est_bperm_number_ck" id="est_bperm_number_ck" value="Approved" checked />
+                        <input type="text" class="form-control mb-3 input-remarks" id="est_bperm_number_input" name="est_bperm_number_input" disabled />
+                    </dd>
+                </div>
+                <hr class="row mb-3" />
+                <div class="row gap-3">
+                    <dt class="col-sm-12 col-lg">Business or Mayor's Permit / PEZA Certificate Issued Date:</dt>
+                    <dd class="col-sm-12 col-lg">@FormatDate(register?.EstBisPermitDateIssued)</dd>
+                    <dd class="col-sm-12 col-lg">
+                        <input type="checkbox" class="form-check-input remarks-check-box" name="est_bperm_dateiss_ck" id="est_bperm_dateiss_ck" value="Approved" checked />
+                        <input type="text" class="form-control mb-3 input-remarks" id="est_bperm_dateiss_input" name="est_bperm_dateiss_input" disabled />
+                    </dd>
+                </div>
+                <hr class="row mb-3" />
+                <div class="row gap-3">
+                    <dt class="col-sm-12 col-lg">Business or Mayor's Permit / PEZA Certificate Date of Validity:</dt>
+                    <dd class="col-sm-12 col-lg">@FormatDate(register?.EstBisPermitValidityDate)</dd>
+                    <dd class="col-sm-12 col-lg">
+                        <input type="checkbox" class="form-check-input remarks-check-box" name="est_bperm_validity_ck" id="est_bperm_validity_ck" value="Approved" checked />
+                        <input type="text" class="form-control mb-3 input-remarks" id="est_bperm_validity_input" name="est_bperm_validity_input" disabled />
+                    </dd>
+                </div>
+                <hr class="row mb-3" />
+                <div class="row gap-3">
+                    <dt class="col-sm-12 col-lg">Business or Mayor's Permit / PEZA Certificate Attachment:</dt>
+                    <dd class="col-sm-12 col-lg">
+                        @{
+                            var permitFileUrl = BuildFileUrl("bus_perm", register?.EstBisPermitFile);
+                        }
+                        @if (string.IsNullOrEmpty(permitFileUrl))
+                        {
+                            <span class="text-muted">No file uploaded</span>
+                        }
+                        else
+                        {
+                            <a href="@permitFileUrl" target="_blank">View Business or Mayor's Permit / PEZA Certificate Attachment</a>
+                        }
+                    </dd>
+                    <dd class="col-sm-12 col-lg">
+                        <input type="checkbox" class="form-check-input remarks-check-box" name="est_bus_perm_ck" id="est_bus_perm_ck" value="Approved" checked />
+                        <input type="text" class="form-control mb-3 input-remarks" id="est_bus_perm_input" name="est_bus_perm_input" disabled />
+                    </dd>
+                </div>
+                <hr class="row mb-3" />
+                <div class="row gap-3">
+                    <dt class="col-sm-12 col-lg">Valid National ID Number:</dt>
+                    <dd class="col-sm-12 col-lg">@FormatString(register?.EstOwnerValidIDNumber)</dd>
+                    <dd class="col-sm-12 col-lg">
+                        <input type="checkbox" class="form-check-input remarks-check-box" name="est_valid_number_ck" id="est_valid_number_ck" value="Approved" checked />
+                        <input type="text" class="form-control mb-3 input-remarks" id="est_valid_number_input" name="est_valid_number_input" disabled />
+                    </dd>
+                </div>
+                <hr class="row mb-3" />
+                <div class="row gap-3">
+                    <dt class="col-sm-12 col-lg">Valid National Government ID Issued Date:</dt>
+                    <dd class="col-sm-12 col-lg">@FormatDate(register?.EstOwnerValidIDDateIssued)</dd>
+                    <dd class="col-sm-12 col-lg">
+                        <input type="checkbox" class="form-check-input remarks-check-box" name="est_valid_dateiss_ck" id="est_valid_dateiss_ck" value="Approved" checked />
+                        <input type="text" class="form-control mb-3 input-remarks" id="est_valid_dateiss_input" name="est_valid_dateiss_input" disabled />
+                    </dd>
+                </div>
+                <hr class="row mb-3" />
+                <div class="row gap-3">
+                    <dt class="col-sm-12 col-lg">Valid National Government ID Validity:</dt>
+                    <dd class="col-sm-12 col-lg">@FormatDate(register?.EstOwnerValidIDDateExpire)</dd>
+                    <dd class="col-sm-12 col-lg">
+                        <input type="checkbox" class="form-check-input remarks-check-box" name="est_valid_validity_ck" id="est_valid_validity_ck" value="Approved" checked />
+                        <input type="text" class="form-control mb-3 input-remarks" id="est_valid_validity_input" name="est_valid_validity_input" disabled />
+                    </dd>
+                </div>
+                <hr class="row mb-3" />
+                <div class="row gap-3">
+                    <dt class="col-sm-12 col-lg">Valid ID Attachment:</dt>
+                    <dd class="col-sm-12 col-lg">
+                        @{
+                            var validIdUrl = BuildFileUrl("valid_id", register?.EstOwnerValidIDFile);
+                        }
+                        @if (string.IsNullOrEmpty(validIdUrl))
+                        {
+                            <span class="text-muted">No file uploaded</span>
+                        }
+                        else
+                        {
+                            <a href="@validIdUrl" target="_blank">View Valid ID</a>
+                        }
+                    </dd>
+                    <dd class="col-sm-12 col-lg">
+                        <input type="checkbox" class="form-check-input remarks-check-box" name="est_termrep_ck" id="est_termrep_ck" value="Approved" checked />
+                        <input type="text" class="form-control mb-3 input-remarks" id="est_termrep_input" name="est_termrep_input" disabled />
+                    </dd>
+                </div>
+            </dl>
+        </div>
+    </div>
+
+    <div class="tab-pane fade" id="action" role="tabpanel" aria-labelledby="action-ap-tab">
+        <h3 class="mt-3">Action</h3>
+        <!-- Action controls go here -->
+    </div>
+</div>
