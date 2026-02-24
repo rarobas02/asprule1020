@@ -101,15 +101,22 @@
             @if (User.IsInRole(SD.Role_Po_Head))
             {
                 <li class="nav-item">
-                    <a class="nav-link" asp-area="Admin" asp-controller="Evaluator" asp-action="Updating">
+                    <a class="nav-link" asp-area="Admin" asp-controller="PoHead" asp-action="PoHeadReview">
                         <i class="fas fa-sync-alt"></i>
-                        <span>Updating</span>
+                        <span>For Review</span>
                     </a>
                 </li>
             }
-
-
-            <!-- Divider -->
+            <!-- Nav Item - PO Head Approved Page -->
+            @if (User.IsInRole(SD.Role_Po_Head))
+            {
+                <li class="nav-item">
+                    <a class="nav-link" asp-area="Admin" asp-controller="PoHead" asp-action="Approved">
+                        <i class="fas fa-sync-alt"></i>
+                        <span>Approved</span>
+                    </a>
+                </li>
+            }
 
             <!-- Sidebar Toggler (Sidebar) -->
             <div class="text-center d-none d-md-inline">

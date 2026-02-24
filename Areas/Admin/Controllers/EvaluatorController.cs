@@ -9,7 +9,7 @@ using System.Security.Claims;
 namespace asprule1020.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    [Authorize(SD.Role_Evaluator)]
+    [Authorize(Roles = SD.Role_Evaluator)]
     public class EvaluatorController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
@@ -53,7 +53,7 @@ namespace asprule1020.Areas.Admin.Controllers
         public IActionResult GetAllForReview(string status)
         {
             var province = User.FindFirstValue("EstProvince");
-            List<Register> objRegisterList = _unitOfWork.Register.GetAll(u => u.EstProvince == province && u.EstStatus == "For Review").ToList();
+            List<Register> objRegisterList = _unitOfWork.Register.GetAll(u => u.EstProvince == province && u.EstStatus == SD.StatusForReview).ToList();
             return Json(new { data = objRegisterList });
         }
         [HttpPost]

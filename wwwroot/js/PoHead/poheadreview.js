@@ -7,7 +7,7 @@ $(document).ready(function () {
 function loadDataTable() {
     dataTable = $('#tblPoHeadReview').DataTable({
         responsive: true,
-        ajax: { url: '/admin/evaluator/GetAllForReview' },
+        ajax: { url: '/admin/pohead/GetAllForApprovalAndReapply' },
         columns: [
             { data: 'transId', width: '25%' },
             { data: 'estName', width: '15%' },
@@ -18,7 +18,7 @@ function loadDataTable() {
                 data: 'id',
                 render: data => `
                     <div class="w-75 btn-group" role="group">
-                        <a href="/admin/evaluator/reviewitem?id=${data}" class="btn btn-primary mx-2">
+                        <a href="/admin/pohead/reviewitem?id=${data}" class="btn btn-primary mx-2">
                             <i class="bi bi-pencil-square"></i>Review
                         </a>
                     </div>`,
@@ -34,11 +34,11 @@ function getAntiForgeryToken() {
 var pro_eval = {
     update: {
         status: function (button, recommendation) {
-            var formData = $("#evalform").serialize();
+            var formData = $("#poheadevalform").serialize();
 
             $.ajax({
                 type: "POST",
-                url: `/Admin/Evaluator/EvaluationResult`,
+                url: `/Admin/PoHead/EvaluationResult`,
                 data: formData,
                 headers: {
                     'RequestVerificationToken': getAntiForgeryToken()
@@ -54,7 +54,7 @@ var pro_eval = {
                             allowOutsideClick: false,
                         }).then((result) => {
                             if (result.isConfirmed) {
-                                window.location.href = "/admin/evaluator/review";
+                                window.location.href = "/admin/pohead/poheadreview";
                             }
                         });
                     }

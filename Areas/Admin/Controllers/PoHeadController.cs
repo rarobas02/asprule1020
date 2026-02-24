@@ -9,7 +9,7 @@ using System.Security.Claims;
 namespace asprule1020.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    [Authorize(SD.Role_Po_Head)]
+    [Authorize(Roles = SD.Role_Po_Head)]
     public class PoHeadController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
@@ -44,10 +44,10 @@ namespace asprule1020.Areas.Admin.Controllers
         }
         #region API CALLS
         [HttpGet]
-        public IActionResult GetAllForReview(string status)
+        public IActionResult GetAllForApprovalAndReapply(string status)
         {
             var province = User.FindFirstValue("EstProvince");
-            List<Register> objRegisterList = _unitOfWork.Register.GetAll(u => u.EstProvince == province && u.EstStatus == "For Review").ToList();
+            List<Register> objRegisterList = _unitOfWork.Register.GetAll(u => u.EstProvince == province && (u.EstStatus == SD.StatusForApproval || u.EstStatus == SD.StatusForReapplication)).ToList();
             return Json(new { data = objRegisterList });
         }
         [HttpPost]
@@ -69,7 +69,7 @@ namespace asprule1020.Areas.Admin.Controllers
                     ?? "Evaluator";
             }
 
-            _unitOfWork.Register.UpdateEvaluator(register, evaluatorFullName);
+            _unitOfWork.Register.UpdatePoHead(register, evaluatorFullName);
             _unitOfWork.Save();
             try
             {
