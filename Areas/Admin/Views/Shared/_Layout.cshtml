@@ -97,6 +97,16 @@
                     </a>
                 </li>
             }
+            <!-- Nav Item - PO Head Evaluation Page -->
+            @if (User.IsInRole(SD.Role_Po_Head))
+            {
+                <li class="nav-item">
+                    <a class="nav-link" asp-area="Admin" asp-controller="Evaluator" asp-action="Updating">
+                        <i class="fas fa-sync-alt"></i>
+                        <span>Updating</span>
+                    </a>
+                </li>
+            }
 
 
             <!-- Divider -->

@@ -143,7 +143,7 @@ namespace asprule1020.Areas.Identity.Pages.Account
                 }
                 if (await _signInManager.UserManager.IsInRoleAsync(user, SD.Role_Po_Head))
                 {
-                    return RedirectToAction("PoHeadReview", "User", new { area = "Admin" });
+                    return RedirectToAction("PoHeadReview", "PoHead", new { area = "Admin" });
                 }
                 if (await _signInManager.UserManager.IsInRoleAsync(user, SD.Role_Region_Focal))
                 {

@@ -9,20 +9,22 @@ using System.Security.Claims;
 namespace asprule1020.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    [Authorize(SD.Role_Evaluator)]
-    public class EvaluatorController : Controller
+    [Authorize(SD.Role_Po_Head)]
+    public class PoHeadController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IWebHostEnvironment _webHostEnvironment;
-        public EvaluatorController(IUnitOfWork unitOfWork, IWebHostEnvironment webHostEnvironment)
+        public PoHeadController(IUnitOfWork unitOfWork, IWebHostEnvironment webHostEnvironment)
         {
             _unitOfWork = unitOfWork;
             _webHostEnvironment = webHostEnvironment;
         }
-        public IActionResult Review()
+        [Area("Admin")]
+        public IActionResult PoHeadReview()
         {
             return View();
         }
+
         public IActionResult ReviewItem(Guid? id)
         {
             if (id == null || id == Guid.Empty)
@@ -37,14 +39,6 @@ namespace asprule1020.Areas.Admin.Controllers
             return View(registerVM);
         }
         public IActionResult Approved()
-        {
-            return View();
-        }
-        public IActionResult Reapplication()
-        {
-            return View();
-        }
-        public IActionResult Updating()
         {
             return View();
         }
@@ -81,13 +75,11 @@ namespace asprule1020.Areas.Admin.Controllers
             {
                 return Json(new { success = true, message = "Evaluation updated successfully" });
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return Json(new { success = false, message = Convert.ToString(ex) });
             }
         }
         #endregion API CALLS
-
     }
 }
-
