@@ -32,3 +32,71 @@ function loadDataTable() {
         ]
     });
 }
+function getAntiForgeryToken() {
+    return $('#ajaxAntiForgeryForm input[name="__RequestVerificationToken"]').val();
+}
+
+var pro_eval = {
+    update: {
+        status: function (button, recommendation) {
+            var formData = $("#evalform").serialize();
+
+            $.ajax({
+                type: "POST",
+                url: `/Admin/Evaluator/EvaluationResult`,
+                data: formData,
+                headers: {
+                    'RequestVerificationToken': getAntiForgeryToken()
+                },
+                success: function (response) {
+                    if (response.success) {
+                        Swal.fire({
+                            title: "Success!",
+                            html: `<span>Application Number <strong>${response.trans_no}</strong> is recommended <strong>${response.recommendation}</strong></span>`,
+                            icon: "success",
+                            confirmButtonColor: "#dc3545",
+                            confirmButtonText: "Close",
+                            allowOutsideClick: false,
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                window.location.href = "/admin/evaluator/review";
+                            }
+                        });
+                    }
+                    button.html("Submit");
+                    button.prop("disabled", false);
+                    recommendation.value = "";
+                },
+                error: function (error) {
+                    console.error("Error:", error);
+                },
+            });
+        },
+    },
+};
+
+$("#submit").click(function () {
+    const recommendation = document.getElementById("recom");
+
+    if (!recommendation.value) {
+        Swal.fire({
+            title: "Invalid",
+            text: "Please select a recommendation before proceeding.",
+            icon: "error",
+        });
+        return;
+    }
+
+    const button = $(this);
+    button.html('<i class="fas fa-spinner fa-spin"></i> Loading');
+    button.prop("disabled", true);
+    pro_eval.update.status(button, recommendation);
+});
+
+$(".remarks-check-box").change(function () {
+    const textBox = $(this).closest("dd").find(".input-remarks");
+
+    textBox.prop("disabled", this.checked);
+    textBox.val("");
+});
+
