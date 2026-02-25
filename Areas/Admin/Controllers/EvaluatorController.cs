@@ -3,6 +3,7 @@ using asprule1020.Models;
 using asprule1020.Models.ViewModel;
 using asprule1020.Utility;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
@@ -14,10 +15,12 @@ namespace asprule1020.Areas.Admin.Controllers
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IWebHostEnvironment _webHostEnvironment;
-        public EvaluatorController(IUnitOfWork unitOfWork, IWebHostEnvironment webHostEnvironment)
+        private readonly UserManager<ApplicationUser> _userManager;
+        public EvaluatorController(IUnitOfWork unitOfWork, IWebHostEnvironment webHostEnvironment, UserManager<ApplicationUser> userManager)
         {
             _unitOfWork = unitOfWork;
             _webHostEnvironment = webHostEnvironment;
+            _userManager = userManager;
         }
         public IActionResult Review()
         {
@@ -58,14 +61,16 @@ namespace asprule1020.Areas.Admin.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult EvaluationResult(Register register)
+        public async Task<IActionResult> EvaluationResult(Register register)
         {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var evaluator = await _userManager.FindByIdAsync(userId);
             var evaluatorFullName = string.Join(" ", new[]
             {
-                User.FindFirstValue("FirstName")?.Trim(),
-                User.FindFirstValue("MiddleName")?.Trim(),
-                User.FindFirstValue("LastName")?.Trim()
-            }.Where(part => !string.IsNullOrWhiteSpace(part)));
+        evaluator?.FirstName?.Trim(),
+        evaluator?.MiddleName?.Trim(),
+        evaluator?.LastName?.Trim()
+    }.Where(part => !string.IsNullOrWhiteSpace(part)));
 
             _unitOfWork.Register.UpdateEvaluator(register, evaluatorFullName);
             _unitOfWork.Save();
