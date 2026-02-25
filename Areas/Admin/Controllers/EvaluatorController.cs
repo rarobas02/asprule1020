@@ -67,14 +67,6 @@ namespace asprule1020.Areas.Admin.Controllers
                 User.FindFirstValue("LastName")?.Trim()
             }.Where(part => !string.IsNullOrWhiteSpace(part)));
 
-            if (string.IsNullOrWhiteSpace(evaluatorFullName))
-            {
-                evaluatorFullName = User.Identity?.Name
-                    ?? User.FindFirstValue(ClaimTypes.Name)
-                    ?? User.FindFirstValue(ClaimTypes.Email)
-                    ?? "Evaluator";
-            }
-
             _unitOfWork.Register.UpdateEvaluator(register, evaluatorFullName);
             _unitOfWork.Save();
             try
