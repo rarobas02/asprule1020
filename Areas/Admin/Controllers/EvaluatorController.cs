@@ -43,6 +43,32 @@ namespace asprule1020.Areas.Admin.Controllers
         {
             return View();
         }
+        public IActionResult ApprovedItem(Guid? id)
+        {
+            if (id == null || id == Guid.Empty)
+            {
+                return NotFound();
+            }
+            RegisterVM registerVM = new RegisterVM()
+            {
+                Register = new Register(),
+            };
+            registerVM.Register = _unitOfWork.Register.Get(u => u.Id == id);
+            return View(registerVM);
+        }
+        public IActionResult UpdateItem(Guid? id)
+        {
+            if (id == null || id == Guid.Empty)
+            {
+                return NotFound();
+            }
+            RegisterVM registerVM = new RegisterVM()
+            {
+                Register = new Register(),
+            };
+            registerVM.Register = _unitOfWork.Register.Get(u => u.Id == id);
+            return View(registerVM);
+        }
         public IActionResult Reapplication()
         {
             return View();
@@ -52,11 +78,33 @@ namespace asprule1020.Areas.Admin.Controllers
             return View();
         }
         #region API CALLS
+
+        //TODO: Refactor the API calls to a single method with a parameter for status to avoid code duplication
         [HttpGet]
         public IActionResult GetAllForReview(string status)
         {
             var province = User.FindFirstValue("EstProvince");
             List<Register> objRegisterList = _unitOfWork.Register.GetAll(u => u.EstProvince == province && u.EstStatus == SD.StatusForReview).ToList();
+            return Json(new { data = objRegisterList });
+        }
+        [HttpGet]
+        public IActionResult GetAllApproved(string status)
+        {
+            var province = User.FindFirstValue("EstProvince");
+            List<Register> objRegisterList = _unitOfWork.Register.GetAll(u => u.EstProvince == province && u.EstStatus == SD.StatusApproved).ToList();
+            return Json(new { data = objRegisterList });
+        }
+        [HttpGet]
+        public IActionResult GetAllForReapplication(string status)
+        {
+            var province = User.FindFirstValue("EstProvince");
+            List<Register> objRegisterList = _unitOfWork.Register.GetAll(u => u.EstProvince == province && u.EstStatus == SD.StatusForReapplication).ToList();
+            return Json(new { data = objRegisterList });
+        }
+        public IActionResult GetAllForUpdating(string status)
+        {
+            var province = User.FindFirstValue("EstProvince");
+            List<Register> objRegisterList = _unitOfWork.Register.GetAll(u => u.EstProvince == province && u.EstStatus == SD.StatusForUpdate).ToList();
             return Json(new { data = objRegisterList });
         }
         [HttpPost]

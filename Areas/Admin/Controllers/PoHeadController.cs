@@ -27,7 +27,7 @@ namespace asprule1020.Areas.Admin.Controllers
         {
             return View();
         }
-
+        //TODO: Refactor the API calls to a single method with a parameter for status to avoid code duplication
         public IActionResult ReviewItem(Guid? id)
         {
             if (id == null || id == Guid.Empty)
@@ -45,12 +45,32 @@ namespace asprule1020.Areas.Admin.Controllers
         {
             return View();
         }
+        public IActionResult ApprovedItem(Guid? id)
+        {
+            if (id == null || id == Guid.Empty)
+            {
+                return NotFound();
+            }
+            RegisterVM registerVM = new RegisterVM()
+            {
+                Register = new Register(),
+            };
+            registerVM.Register = _unitOfWork.Register.Get(u => u.Id == id);
+            return View(registerVM);
+        }
         #region API CALLS
         [HttpGet]
         public IActionResult GetAllForApprovalAndReapply(string status)
         {
             var province = User.FindFirstValue("EstProvince");
             List<Register> objRegisterList = _unitOfWork.Register.GetAll(u => u.EstProvince == province && (u.EstStatus == SD.StatusForApproval || u.EstStatus == SD.StatusForReapplication)).ToList();
+            return Json(new { data = objRegisterList });
+        }
+        [HttpGet]
+        public IActionResult GetAllApproved(string status)
+        {
+            var province = User.FindFirstValue("EstProvince");
+            List<Register> objRegisterList = _unitOfWork.Register.GetAll(u => u.EstProvince == province && u.EstStatus == SD.StatusApproved).ToList();
             return Json(new { data = objRegisterList });
         }
         [HttpPost]
