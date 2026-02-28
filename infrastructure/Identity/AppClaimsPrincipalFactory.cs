@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using System.Security.Claims;
 
-namespace asprule1020.infrastructure.Identity
+namespace asprule1020.Infrastructure.Identity
 {
     public class AppClaimsPrincipalFactory : UserClaimsPrincipalFactory<ApplicationUser, IdentityRole>
     {
@@ -17,6 +17,10 @@ namespace asprule1020.infrastructure.Identity
             var identity = await base.GenerateClaimsAsync(user);
 
             identity.AddClaim(new Claim("EstProvince", user.EstProvince ?? ""));
+            identity.AddClaim(new Claim("FirstName", user.FirstName ?? ""));
+            identity.AddClaim(new Claim("MiddleName", user.MiddleName ?? ""));
+            identity.AddClaim(new Claim("LastName", user.LastName ?? ""));
+            identity.AddClaim(new Claim("Email", user.Email ?? ""));
 
             return identity;
         }

@@ -2,7 +2,7 @@ using asprule1020.Areas.Identity.Pages.Account;
 using asprule1020.DataAccess.Data;
 using asprule1020.DataAccess.Repository;
 using asprule1020.DataAccess.Repository.IRepository;
-using asprule1020.infrastructure.Identity;
+using asprule1020.Infrastructure.Identity;
 using asprule1020.Models;
 using asprule1020.Utility;
 using BulkyBook.DataAccess.DbInitializer;
