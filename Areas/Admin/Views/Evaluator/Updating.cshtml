@@ -1,1 +1,21 @@
-﻿<h1>Updating - Evaluator page</h1>
+﻿@{
+    ViewData["Title"] = "Update";
+}
+<div class="container mb-3">
+    <table id="tblUpdate" class="table table-responsive table-bordered table-striped w-100">
+        <thead>
+            <tr>
+                <th>Trans. Id</th>
+                <th>Establishment Name</th>
+                <th>Name of Previous Evaluator</th>
+                <th>Registration Date</th>
+                <th>Approved Date</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+    </table>
+</div>
+@section Scripts {
+    <script src="~/js/Evaluator/update.js"></script>
+}

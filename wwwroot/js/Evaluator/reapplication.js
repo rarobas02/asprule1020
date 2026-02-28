@@ -5,9 +5,9 @@ $(document).ready(function () {
 })
 
 function loadDataTable() {
-    dataTable = $('#tblApproved').DataTable({
+    dataTable = $('#tblReapplication').DataTable({
         responsive: true,
-        ajax: { url: '/admin/evaluator/GetAllApproved' },
+        ajax: { url: '/admin/evaluator/GetAllForReapplication' },
         columns: [
             { data: 'transId', width: '25%' },
             { data: 'estName', width: '15%' },
@@ -18,7 +18,7 @@ function loadDataTable() {
                 data: 'id',
                 render: data => `
                     <div class="w-75 btn-group" role="group">
-                        <a href="/admin/evaluator/approveditem?id=${data}" class="btn btn-primary mx-2">
+                        <a href="/admin/evaluator/reviewitem?id=${data}" class="btn btn-primary mx-2">
                             <i class="bi bi-pencil-square"></i>Review
                         </a>
                     </div>`,
@@ -26,4 +26,7 @@ function loadDataTable() {
             }
         ]
     });
+}
+function getAntiForgeryToken() {
+    return $('#ajaxAntiForgeryForm input[name="__RequestVerificationToken"]').val();
 }

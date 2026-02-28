@@ -5,14 +5,15 @@ $(document).ready(function () {
 })
 
 function loadDataTable() {
-    dataTable = $('#tblApproved').DataTable({
+    dataTable = $('#tblUpdate').DataTable({
         responsive: true,
-        ajax: { url: '/admin/evaluator/GetAllApproved' },
+        ajax: { url: '/admin/evaluator/GetAllForUpdate' },
         columns: [
-            { data: 'transId', width: '25%' },
-            { data: 'estName', width: '15%' },
+            { data: 'transId', width: '15%' },
+            { data: 'estName', width: '25%' },
             { data: 'estEvalName', width: '10%' },
             { data: 'estRegistrationDate', width: '15%' },
+            { data: 'estPoHeadEvalDate', width: '10%' },
             { data: 'estStatus', width: '10%' },
             {
                 data: 'id',

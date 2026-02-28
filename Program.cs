@@ -2,7 +2,7 @@ using asprule1020.Areas.Identity.Pages.Account;
 using asprule1020.DataAccess.Data;
 using asprule1020.DataAccess.Repository;
 using asprule1020.DataAccess.Repository.IRepository;
-using asprule1020.Infrastruture.Identity;
+using asprule1020.infrastructure.Identity;
 using asprule1020.Models;
 using asprule1020.Utility;
 using BulkyBook.DataAccess.DbInitializer;
@@ -78,17 +78,6 @@ void SeedDatabase()
 {
     using (var scope = app.Services.CreateScope())
     {
-        //var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-        
-        //if (!roleManager.RoleExistsAsync(SD.Role_Client).GetAwaiter().GetResult())
-        //{
-        //    roleManager.CreateAsync(new IdentityRole(SD.Role_Client)).GetAwaiter().GetResult();
-        //    roleManager.CreateAsync(new IdentityRole(SD.Role_Evaluator)).GetAwaiter().GetResult();
-        //    roleManager.CreateAsync(new IdentityRole(SD.Role_Po_Head)).GetAwaiter().GetResult();
-        //    roleManager.CreateAsync(new IdentityRole(SD.Role_Region_Focal)).GetAwaiter().GetResult();
-        //    roleManager.CreateAsync(new IdentityRole(SD.Role_Admin)).GetAwaiter().GetResult();
-        //}
-        
         var dbInitializer = scope.ServiceProvider.GetRequiredService<IDbInitializer>();
         dbInitializer.Initialize();
     }

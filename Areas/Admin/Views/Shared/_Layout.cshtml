@@ -117,7 +117,15 @@
                     </a>
                 </li>
             }
-
+            @if (User.IsInRole(SD.Role_Evaluator) || User.IsInRole(SD.Role_Po_Head))
+            {
+                <li class="nav-item">
+                    <a class="nav-link" asp-area="Admin" asp-controller="Evaluator" asp-action="ViewAll">
+                        <i class="fas fa-database"></i>
+                        <span>View All</span>
+                    </a>
+                </li>
+            }
             <!-- Sidebar Toggler (Sidebar) -->
             <div class="text-center d-none d-md-inline">
                 <button class="rounded-circle border-0" id="sidebarToggle"></button>
