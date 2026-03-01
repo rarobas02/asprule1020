@@ -14,20 +14,27 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
+using asprule1020.DataAccess.Data;
 using asprule1020.Models;
 using asprule1020.Utility;
+using Microsoft.EntityFrameworkCore;
 
 namespace asprule1020.Areas.Identity.Pages.Account
 {
     public class LoginModel : PageModel
     {
-        private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly ApplicationDbContext _dbContext;
         private readonly ILogger<LoginModel> _logger;
+        private readonly SignInManager<ApplicationUser> _signInManager;
 
-        public LoginModel(SignInManager<ApplicationUser> signInManager, ILogger<LoginModel> logger)
+        public LoginModel(
+            SignInManager<ApplicationUser> signInManager,
+            ILogger<LoginModel> logger,
+            ApplicationDbContext dbContext)
         {
             _signInManager = signInManager;
             _logger = logger;
+            _dbContext = dbContext;
         }
 
         /// <summary>
@@ -133,9 +140,36 @@ namespace asprule1020.Areas.Identity.Pages.Account
             {
                 _logger.LogInformation("User logged in.");
 
+                var registerId = user.RegisterId?.ToString();
+
                 if (await _signInManager.UserManager.IsInRoleAsync(user, SD.Role_Client))
                 {
-                    return LocalRedirect(returnUrl);
+                    if (!user.RegisterId.HasValue)
+                    {
+                        await _signInManager.SignOutAsync();
+                        ModelState.AddModelError(string.Empty, "Your account is not linked to any registration yet.");
+                        return Page();
+                    }
+
+                    var register = await _dbContext.Registers.AsNoTracking()
+                        .FirstOrDefaultAsync(r => r.Id == user.RegisterId.Value);
+
+                    if (register is null)
+                    {
+                        await _signInManager.SignOutAsync();
+                        ModelState.AddModelError(string.Empty, "Unable to locate your registration record. Please contact support.");
+                        return Page();
+                    }
+
+                    if (!string.Equals(register.EstStatus, "Approved", StringComparison.OrdinalIgnoreCase))
+                    {
+                        await _signInManager.SignOutAsync();
+                        var statusLabel = string.IsNullOrWhiteSpace(register.EstStatus) ? "review" : register.EstStatus;
+                        ModelState.AddModelError(string.Empty, $"Your Registration Status is still {statusLabel}, only Approved Application is allowed to update. Create new Registration For Re-application");
+                        return Page();
+                    }
+
+                    return RedirectToAction("Index", "Update", new { area = "Client", registerId });
                 }
                 if (await _signInManager.UserManager.IsInRoleAsync(user, SD.Role_Evaluator))
                 {

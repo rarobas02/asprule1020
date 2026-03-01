@@ -16,11 +16,12 @@ namespace asprule1020.Infrastructure.Identity
         {
             var identity = await base.GenerateClaimsAsync(user);
 
-            identity.AddClaim(new Claim("EstProvince", user.EstProvince ?? ""));
-            identity.AddClaim(new Claim("FirstName", user.FirstName ?? ""));
-            identity.AddClaim(new Claim("MiddleName", user.MiddleName ?? ""));
-            identity.AddClaim(new Claim("LastName", user.LastName ?? ""));
-            identity.AddClaim(new Claim("Email", user.Email ?? ""));
+            identity.AddClaim(new Claim("EstProvince", user.EstProvince ?? string.Empty));
+            identity.AddClaim(new Claim("FirstName", user.FirstName ?? string.Empty));
+            identity.AddClaim(new Claim("MiddleName", user.MiddleName ?? string.Empty));
+            identity.AddClaim(new Claim("LastName", user.LastName ?? string.Empty));
+            identity.AddClaim(new Claim("Email", user.Email ?? string.Empty));
+            identity.AddClaim(new Claim("RegisterId", user.RegisterId?.ToString() ?? string.Empty));
 
             return identity;
         }

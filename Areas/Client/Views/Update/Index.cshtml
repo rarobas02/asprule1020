@@ -1,0 +1,664 @@
+﻿@{
+    ViewData["Title"] = "Update";
+}
+@model RegisterVM
+<h1>Welcome to update page</h1>
+<div class="container">
+    <form method="post" id="update_form" class="needs-validation" enctype="multipart/form-data">
+        <div class="text-center mb-4">
+            <div class="row-mb-4">
+                <div class="text-center mb-4">
+                </div>
+            </div>
+        </div>
+        <fieldset id="step1">
+            <div class="row mb-2">
+                <div class="col-lg-6 col-sm-12">
+                    <label asp-for="Register.EstName" class="form-label">
+                        Establishment
+                        Name: <span class="text-danger fw-bolder"> *</span>
+                    </label>
+                    <div class="input-group has-validation">
+                        <input asp-for="Register.EstName" type="text" placeholder="New Establishment Name" class="form-control"
+                               maxlength="100" required>
+                        <div class="invalid-feedback">Please provide the New Establishment Name</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-6 col-sm-12">
+                    <label asp-for="Register.EstRegion" class="form-label">
+                        Region: <span class="text-danger fw-bolder">*</span>
+                    </label>
+                    <div class="input-group has-validation">
+                        <select asp-for="Register.EstRegion" class="form-control" required>
+                            <option value="">Select Region</option>
+                        </select>
+                        <div class="invalid-feedback">
+                            Please provide a Region.
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-sm-12">
+                    <label asp-for="Register.EstProvince" class="form-label">
+                        Province: <span class="text-danger fw-bolder">*</span>
+                    </label>
+                    <div class="input-group has-validation">
+                        <select asp-for="Register.EstProvince" class="form-control" required>
+                            <option value="">Select Province</option>
+                        </select>
+                        <div class="invalid-feedback">
+                            Please provide a Province.
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row mb-2 ">
+                <div class="col-lg-4 col-sm-12">
+                    <label asp-for="Register.EstCityMun" class="form-label">
+                        City/Municipality: <span class="text-danger fw-bolder"> *</span>
+                    </label>
+                    <div class="input-group has-validation">
+                        <select asp-for="Register.EstCityMun" class="form-control" required>
+                            <option value="">Select City/Municipality</option>
+                        </select>
+                        <div class="invalid-feedback">
+                            Please provide a City/Municipality.
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-sm-12">
+                    <label asp-for="Register.EstBrgy" class="form-label">
+                        Barangay: <span class="text-danger fw-bolder">
+                            *
+                        </span>
+                    </label>
+                    <div class="input-group has-validation">
+                        <select asp-for="Register.EstBrgy" class="form-control" required>
+                            <option value="">Select Barangay</option>
+                        </select>
+                        <div class="invalid-feedback">
+                            Please provide a Barangay.
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-sm-12">
+                    <label asp-for="Register.EstStreet" class="form-label">
+                        Location: <span class="text-danger fw-bolder">
+                            *
+                        </span>
+                    </label>
+                    <input asp-for="Register.EstStreet" class="form-control" type="text" placeholder="New Address" required>
+                </div>
+            </div>
+            <div class="row mb-2">
+
+                <div class="col-lg-4 col-sm-12">
+                    <label asp-for="Register.EstOwnerFirst" class="form-label">
+                        Owner / Manager
+                        First
+                        Name: <span class="text-danger fw-bolder"> *</span>
+                    </label>
+                    <div class="input-group has-validation">
+                        <input asp-for="Register.EstOwnerFirst" type="text" class="form-control" placeholder="New Owner" required>
+                        <div class="invalid-feedback">Please provide New Owner First Name</div>
+
+                    </div>
+                </div>
+                <div class="col-lg-4 col-sm-12">
+                    <label asp-for="Register.EstOwnerMid" class="form-label">
+                        Owner / Manager
+                        Middle
+                        Name:
+                    </label>
+                    <div class="input-group has-validation">
+                        <input asp-for="Register.EstOwnerMid" type="text" class="form-control" placeholder="New Owner">
+                        <div class="invalid-feedback">
+                            Please provide New Owner Middle Name
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-sm-12">
+                    <label asp-for="Register.EstOwnerLast" class="form-label">
+                        Owner / Manager
+                        Last
+                        Name: <span class="text-danger fw-bolder"> *</span>
+                    </label>
+                    <div class="input-group has-validation">
+                        <input asp-for="Register.EstOwnerLast" type="text" class="form-control" placeholder="New Owner" required>
+                        <div class="invalid-feedback">Please provide New Owner Last Name</div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="row mb-2">
+                <div class="col-lg-4 col-sm-12">
+                    <label asp-for="Register.EstMaleCount" class="form-label">
+                        Number of Male Employees: <span class="text-danger fw-bolder"> *</span>
+                    </label>
+                    <div class="input-group has-validation">
+                        <input asp-for="Register.EstMaleCount" class="form-control numbersOnly"
+                               type="number" placeholder="Male Employees" required>
+                        <div class="invalid-feedback">
+                            Please provide the Number of Male Employees
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-sm-12">
+                    <label asp-for="Register.EstFemaleCount" class="form-label">
+                        Number of female Employees: <span class="text-danger fw-bolder"> *</span>
+                    </label>
+                    <div class="input-group has-validation">
+                        <input asp-for="Register.EstFemaleCount" class="form-control uppercasetextnum" type="number"
+                               placeholder="Female Employees" required>
+                        <div class="invalid-feedback">Please provide the Number of Female Employees</div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-sm-12">
+                    <label asp-for="Register.EstTotalEmployees" class="form-label">
+                        Total Number of Employees: <span class="text-danger fw-bolder"> *</span>
+                    </label>
+                    <div class="input-group has-validation">
+                        <input asp-for="Register.EstTotalEmployees" class="form-control" type="number"
+                               placeholder="Total Employees" readonly required>
+                        <div class="invalid-feedback">Please provide the Total Number of Employees</div>
+                    </div>
+                </div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-lg-4 col-sm-12">
+                    <label asp-for="Register.Email" class="form-label">
+                        Email Address: <span class="text-danger fw-bolder"> *</span>
+                    </label>
+                    <div class="input-group has-validation">
+                        <input asp-for="Register.Email" type="email" class="form-control uppercasetextnum"
+                               placeholder="ex: juandelacruz@gmail.com" required>
+                        <div class="invalid-feedback">Please provide an Email Address</div>
+                    </div>
+                </div>
+            </div>
+            <div class="card my-4">
+                <div class="card-body">
+                    <input type="checkbox" name="est_closed" id="est_closed">
+                    <label class="form-label ml-3 text-primary" for="est_closed">
+                        Does your Establishment
+                        Previously Closed? <span class="text-muted fw-lighter">
+                            (Please Specify the
+                            Date)
+                        </span>
+                    </label>
+                    <div class="card-body bg-light rounded my-3" id="estabClosed" style="display: none">
+                        <div class="row mb-2">
+                            <div class="col-lg-4 col-sm-12">
+                                <label asp-for="Register.EstClosureDate" class="form-label">
+                                    Date of Temporary closure: <span class="text-muted fw-lighter">if previously closed</span>
+                                </label>
+                                <div class="input-group has-validation">
+                                    <input asp-for="Register.EstClosureDate" type="date" class="form-control">
+                                    <div class="invalid-feedback">Please provide a Date of Closure</div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-sm-12">
+                                <label asp-for="Register.EstReopeningDate" class="form-label">
+                                    Re-opening date: <span class="text-muted fw-lighter">if previously closed</span>
+                                </label>
+                                <div class="input-group has-validation">
+                                    <input asp-for="Register.EstReopeningDate" class="form-control " type="date">
+                                    <div class="invalid-feedback">Please provide a Re-opening Date</div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-sm-12">
+                                <label class="form-label" for="est_datefil">
+                                    Date
+                                    Filed Closure: <span class="text-muted fw-lighter">
+                                        if previously
+                                        closed
+                                    </span>
+                                </label>
+                                <div class="input-group has-validation">
+                                    <input type="date" class="form-control" id="est_datefil" name="est_datefil">
+                                    <div class="invalid-feedback">Please provide a Date Filed Closure</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex gap-4 my-4">
+                <button type="button" id="open_branch_modal_btn"
+                        class="btn btn-warning bg-gradient text-white btn-block mt-3 w-100"
+                        style="display: none;">
+                    <span class="fas fa-edit"></span> Update Branch Unit/s
+                </button>
+                <button type="button" id="open_labor_union_modal_btn"
+                        class="btn btn-warning bg-gradient text-white btn-block mt-3 w-100">
+                    <span class="fas fa-edit"></span> Update Registered Labor Union/s
+                </button>
+            </div>
+
+            <div class="row mb-2">
+                <div class="col-lg-12 col-sm-12">
+                    <label asp-for="Register.EstReasonForUpdate" class="form-label">Remarks: </label>
+                    <textarea asp-for="Register.EstReasonForUpdate" cols="30" rows="5"
+                              class="form-control"></textarea>
+                </div>
+            </div>
+
+
+            <div class="mb-2 mt-3 p-2 bg-primary text-center text-light rounded">
+                <h4>Attachments</h4>
+            </div>
+            <div class="text-center">
+                <h5>Duly Accomplished and Signed Registration of Establishment Form</h5>
+            </div>
+            <hr class="color-primary text-primary text-bold">
+            <h3 class="color-primary text-primary text-bold">
+                SEC / DTI REGISTRATION
+            </h3>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="card bg-transparent border-0">
+                        <div class="input-group has-validation">
+                            <label asp-for="Register.EstSECNumber" class="form-label">
+                                SEC Registration Number / DTI
+                                Business Name No. <span class="text-danger fw-bolder"> *</span>
+                            </label>
+                            <div class="input-group has-validation">
+                                <input asp-for="Register.EstSECNumber" type="text" class="form-control" required>
+                                <div class="invalid-feedback">
+                                    Please Provide the SEC Number of the Attachment.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="card bg-transparent border-0">
+                        <label asp-for="Register.EstSECFile" class="form-label ">
+                            Scanned or Photocopy of SEC Registration or DTI Certificate: <span class="text-danger fw-bolder"> *</span>
+                            <h6 class="text-info" style="color:#ab1414!important;">
+                                <small>
+                                    <i>
+                                        Attach PDF with a maximum upload file
+                                        size of 25MB
+                                    </i>
+                                </small>
+                            </h6>
+                        </label>
+                        <div class="input-group has-validation">
+                            <input asp-for="Register.EstSECFile" type="file"
+                                   accept="application/pdf" required>
+                            <div class="invalid-feedback">
+                                Please Provide the Attachment.
+                            </div>
+                        </div>
+                        <small id="error-message1" class="text-danger"></small>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6  mt-4">
+                    <div class="card bg-transparent border-0">
+                        <label asp-for="Register.EstSECDateIssued" class="form-label ">
+                            Date Issued: <span class="text-danger fw-bolder"> *</span>
+                        </label>
+                        <div class="input-group has-validation">
+                            <input asp-for="Register.EstSECDateIssued" type="date" class="form-control"
+                                   required>
+                            <div class="invalid-feedback">
+                                Please Provide the Date SEC Issued.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <hr class="color-primary text-primary text-bold">
+            <h3 class="color-primary text-primary text-bold">
+                BUSINESS / MAYOR'S PERMIT
+            </h3>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="card bg-transparent border-0">
+                        <label asp-for="Register.EstBisPermitNumber" class="form-label ">
+                            Business/Mayor's Permit
+                            Number: <span class="text-danger fw-bolder"> *</span>
+                        </label>
+                        <div class="input-group has-validation">
+                            <input asp-for="Register.EstBisPermitNumber" type="text" class="form-control" required>
+                            <div class="invalid-feedback">
+                                Please Provide the Business/Mayor's Permit Number.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="card bg-transparent border-0">
+                        <label asp-for="Register.EstBisPermitFile" class="form-label ">
+                            Scanned or Photocopy of Business / Mayor's Permit: <span class="text-danger fw-bolder"> *</span>
+                            <h6 class="text-info" style="color:#ab1414!important;">
+                                <small>
+                                    <i>
+                                        Attach PDF with a maximum upload file
+                                        size of 25MB
+                                    </i>
+                                </small>
+                            </h6>
+                        </label>
+                        <div class="input-group has-validation">
+                            <input asp-for="Register.EstBisPermitFile" type="file" accept="application/pdf"
+                                   required>
+                            <div class="invalid-feedback">
+                                Please Provide the Attachment.
+                            </div>
+                        </div>
+                    </div>
+                    <small id="error-message2" class="text-danger"></small>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6 mt-4">
+                    <div class="card bg-transparent border-0">
+                        <label asp-for="Register.EstBisPermitDateIssued" class="form-label ">
+                            Date Issued: <span class="text-danger fw-bolder"> *</span>
+                        </label>
+                        <div class="input-group has-validation">
+                            <input asp-for="Register.EstBisPermitDateIssued" type="date" class="form-control"
+                                   required>
+                            <div class="invalid-feedback">
+                                Please Provide the Date Business/Mayor's Permit Issued.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6 mt-4">
+                    <div class="card bg-transparent border-0">
+                        <label asp-for="Register.EstBisPermitValidityDate" class="form-label ">
+                            Validity Date: <span class="text-danger fw-bolder"> *</span>
+                        </label>
+                        <div class="input-group has-validation">
+                            <input asp-for="Register.EstBisPermitValidityDate" type="date" class="form-control">
+                            <div class="invalid-feedback">
+                                Please Provide the Date Business/Mayor's Permit Validity.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr class="color-primary text-primary text-bold">
+            <h3 class="color-primary text-primary text-bold">
+                VALID ID - FROM OWNER / MANAGER
+            </h3>
+            <div class="row mb-4">
+                <div class="col-sm-6">
+                    <div class="card bg-transparent border-0">
+                        <label asp-for="Register.EstOwnerValidIDNumber" class="form-label ">
+                            Valid National ID Number: <span class="text-danger fw-bolder"> *</span>
+                        </label>
+                        <div class="input-group has-validation">
+                            <input asp-for="Register.EstOwnerValidIDNumber" type="text" class="form-control" required>
+                            <div class="invalid-feedback">
+                                Please Provide the Valid National ID Number.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm-4">
+                    <div class="card bg-transparent border-0">
+                        <label asp-for="Register.EstOwnerValidIDFile" class="form-label ">
+                            Scanned or Photocopy of Valid National Government ID: <span class="text-danger fw-bolder"> *</span><br>
+                            <h6 class="text-info " style="color:#ab1414!important;">
+                                <small>
+                                    <i>
+                                        Attach PDF with a maximum upload file
+                                        size of 25MB
+                                    </i>
+                                </small>
+                            </h6>
+                        </label>
+                        <div class="input-group has-validation">
+                            <input asp-for="Register.EstOwnerValidIDFile" type="file" accept=".pdf" required>
+                            <div class="invalid-feedback">
+                                Please Provide the Attachment.
+                            </div>
+                        </div>
+                        <small id="error-message3" class="text-danger"></small>
+                    </div>
+                </div>
+                <div class="div col-sm-2 d-flex justify-content-center align-items-center">
+                    <a type="button"
+                       class="btn btn-block bg-primary btn-primary text-wrap text-white d-inline-flex d-flex justify-content-center align-items-center"
+                       data-bs-toggle="modal" data-bs-target="#valiaydi">
+                        <div class="row">
+                            <span class="col-lg-2 icon text-white d-flex text-center justify-content-center align-items-center">
+                                <i class="p-2 far fa-address-card"></i>
+                            </span>
+                            <span class="col-lg-10 d-flex justify-content-center align-items-center">
+                                List
+                                of Valid ID
+                            </span>
+                        </div>
+                    </a>
+                </div>
+                <div class="modal fade" id="valiaydi" data-bs-backdrop="static" data-bs-keyboard="false"
+                     tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="staticBackdropLabel">
+                                    List of Valid National
+                                    Government ID
+                                </h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <ul>
+                                    <li>Philippines National ID (PhilSys)</li>
+                                    <li>Current Valid Passport</li>
+                                    <li>Driver's License</li>
+                                    <li>Professional Regulation Commission (PRC) ID</li>
+                                    <li>Senior Citizen ID</li>
+                                    <li>PWD ID</li>
+                                    <li>UMID</li>
+                                    <li>SSS ID</li>
+                                    <li>Pag Ibig ID</li>
+                                    <li>GSIS</li>
+                                </ul>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-danger"
+                                        data-bs-dismiss="modal">
+                                    Close
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row mb-4">
+                <div class="col-sm-6">
+                    <div class="card bg-transparent border-0">
+                        <label asp-for="Register.EstOwnerValidIDDateIssued" class="form-label ">
+                            Issued Date: <span class="text-danger fw-bolder"> *</span>
+                        </label>
+                        <div class="input-group has-validation">
+                            <input asp-for="Register.EstOwnerValidIDDateIssued" type="date" class="form-control"
+                                   required>
+                            <div class="invalid-feedback">
+                                Please Provide the Date Valid National Government ID Issued.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="card bg-transparent border-0">
+                        <label asp-for="Register.EstOwnerValidIDDateExpire" class="form-label ">Validity Date:</label>
+                        <div class="input-group has-validation">
+                            <input asp-for="Register.EstOwnerValidIDDateExpire" type="date" class="form-control">
+                            <div class="invalid-feedback">
+                                Please Provide the Date Valid National Government ID Validity.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <button type="button" class="next btn btn-primary col text-white w-100">NEXT</button>
+        </fieldset>
+
+        <fieldset id="step2" class="d-none">
+            <div class="card card-secondary">
+                <div class="card-header">
+                    <h5 class="card-title">Establishment Updated Application Profile</h5>
+                </div>
+                <div class="card-body">
+                    <dl class="row">
+                        <dt class="col-sm-12 col-lg-4">Registration Number:</dt>
+                        <dd class="col-sm-12 col-lg-8" id="review_transNo"></dd>
+                        <dt class="col-sm-12 col-lg-4">Establishment Name:</dt>
+                        <dd class="col-sm-12 col-lg-8" id="review_est_name_estab"></dd>
+                        <dt class="col-sm-12 col-lg-4">Region:</dt>
+                        <dd class="col-sm-12 col-lg-8" id="review_est_region"></dd>
+                        <dt class="col-sm-12 col-lg-4">Province:</dt>
+                        <dd class="col-sm-12 col-lg-8" id="review_est_province"></dd>
+                        <dt class="col-sm-12 col-lg-4">City/Municipality:</dt>
+                        <dd class="col-sm-12 col-lg-8" id="review_est_citymun"></dd>
+                        <dt class="col-sm-12 col-lg-4">Barangay:</dt>
+                        <dd class="col-sm-12 col-lg-8" id="review_est_barangay"></dd>
+                        <dt class="col-sm-12 col-lg-4">Location:</dt>
+                        <dd class="col-sm-12 col-lg-8" id="review_est_adress"></dd>
+                        <dt class="col-sm-12 col-lg-4">Owner/Manager(First):</dt>
+                        <dd class="col-sm-12 col-lg-8" id="review_est_manag_first"></dd>
+                        <dt class="col-sm-12 col-lg-4">Owner/Manager(Middle):</dt>
+                        <dd class="col-sm-12 col-lg-8" id="review_est_manag_mid"></dd>
+                        <dt class="col-sm-12 col-lg-4">Owner/Manager(Last):</dt>
+                        <dd class="col-sm-12 col-lg-8" id="review_est_manag_last"></dd>
+                        <dt class="col-sm-12 col-lg-4">Male Worker(s):</dt>
+                        <dd class="col-sm-12 col-lg-8" id="review_est_male_worker"></dd>
+                        <dt class="col-sm-12 col-lg-4">Female Worker(s):</dt>
+                        <dd class="col-sm-12 col-lg-8" id="review_est_female_worker"></dd>
+                        <dt class="col-sm-12 col-lg-4">Total Worker(s):</dt>
+                        <dd class="col-sm-12 col-lg-8" id="review_est_total_worker"></dd>
+                        <dt class="col-sm-12 col-lg-4">Email Address:</dt>
+                        <dd class="col-sm-12 col-lg-8" id="review_est_email"></dd>
+                        <dt class="col-sm-12 col-lg-4">Date of Closure:</dt>
+                        <dd class="col-sm-12 col-lg-8" id="review_est_efdate"></dd>
+                        <dt class="col-sm-12 col-lg-4">Re-opening date:</dt>
+                        <dd class="col-sm-12 col-lg-8" id="review_est_reopendate"></dd>
+                        <dt class="col-sm-12 col-lg-4">Date filed:</dt>
+                        <dd class="col-sm-12 col-lg-8" id="review_est_datefil"></dd>
+                        <dt class="col-sm-12 col-lg-4">SEC Registration Number / DTI Business Name No.:</dt>
+                        <dd class="col-sm-12 col-lg-8" id="review_est_sec_number"></dd>
+                        <dt class="col-sm-12 col-lg-4">SEC / DTI Date Issued:</dt>
+                        <dd class="col-sm-12 col-lg-8" id="review_est_sec_dateiss"></dd>
+                        <dt class="col-sm-12 col-lg-4">SEC / DTI file:</dt>
+                        <dd class="col-sm-12 col-lg-8" id="review_est_sec_permit"></dd>
+                        <dt class="col-sm-12 col-lg-4">Business/Mayor's Permit Number/ID:</dt>
+                        <dd class="col-sm-12 col-lg-8" id="review_est_business_permit"></dd>
+                        <dt class="col-sm-12 col-lg-4">Business/Mayor's Permit Date Issued:</dt>
+                        <dd class="col-sm-12 col-lg-8" id="review_est_bperm_dateiss"></dd>
+                        <dt class="col-sm-12 col-lg-4">Business/Mayor's Permit Validity:</dt>
+                        <dd class="col-sm-12 col-lg-8" id="review_est_bperm_validity"></dd>
+                        <dt class="col-sm-12 col-lg-4">Business/Mayor's Permit File:</dt>
+                        <dd class="col-sm-12 col-lg-8" id="review_est_bus_perm"></dd>
+                        <dt class="col-sm-12 col-lg-4">Valid National Government ID Number:</dt>
+                        <dd class="col-sm-12 col-lg-8" id="review_est_valid_number"></dd>
+                        <dt class="col-sm-12 col-lg-4">Valid National Government ID Date Issued:</dt>
+                        <dd class="col-sm-12 col-lg-8" id="review_est_valid_dateiss"></dd>
+                        <dt class="col-sm-12 col-lg-4">Valid National Government ID Validity:</dt>
+                        <dd class="col-sm-12 col-lg-8" id="review_est_valid_validity"></dd>
+                        <dt class="col-sm-12 col-lg-4">Valid National Government ID File:</dt>
+                        <dd class="col-sm-12 col-lg-8" id="review_est_validID"></dd>
+                        <dt class="col-sm-12 col-lg-4">Remarks:</dt>
+                        <dd class="col-sm-12 col-lg-8" id="review_reason_for_update"></dd>
+                    </dl>
+                </div>
+                <div class="container mt-3 bg-light p-3" id="review_branch_unit_container"
+                     style="display: none;">
+                    <h5 class="text-muted">Branch Unit</h5>
+                    <table class="table table-bordered" id="est_branch_table">
+                        <thead>
+                            <tr>
+                                <th class="text-center">Rule 1020 Application #</th>
+                                <th class="text-center">Branch Establishment Name</th>
+                                <th class="text-center">Location</th>
+                            </tr>
+                        </thead>
+                        <tbody id="review_est_branch_body">
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="container mt-3 bg-light p-3" id="review_labor_union_container"
+                     style="display: none;">
+                    <h5 class="text-muted">Labor Union</h5>
+                    <table class="table table-bordered" id="est_union_table">
+                        <thead>
+                            <tr>
+                                <th class="text-center">Name of Labor union</th>
+                                <th class="text-center">Address of Labor union</th>
+                                <th class="text-center">BLR Registration number</th>
+                            </tr>
+                        </thead>
+                        <tbody id="review_est_union_body">
+                        </tbody>
+                    </table>
+                </div>
+                <div class="alert alert-info">
+                    <div class="form-check">
+                        <input type="checkbox" id="certify" name="certify_agreement" class="form-check-input"
+                               value="true" required>
+                        <label for="certify" class="form-check-label">
+                            &nbsp;&nbsp;&nbsp;&nbsp; I HEREBY: 1)Certify the truthfulness of the above-mentioned
+                            information based on my own personal knowledge and authentic records;
+                            2)Commit to strictly implement the herein attached designed for this specific
+                            establishment and comply with occupational and health
+                            standard required by law;
+                            and 3)Be responsible for any accident that will happen during the operation of the
+                            Establishment
+                            especially for the welfare of the workers who are employed to perform the duties.
+                        </label>
+                    </div>
+                </div>
+                <div class="alert alert-info">
+                    <div class="form-check">
+                        <input type="checkbox" id="certifydpa" name="certify_agreement" class="form-check-input"
+                               value="true" required>
+                        <label for="certify_dpa" class="form-check-label">
+                            &nbsp;&nbsp;&nbsp;&nbsp; CONSENT NOTICE: The Department of Labor and Employment
+                            Regional Office No. IV-A values and is committed to comply with Republic Act No.
+                            10173
+                            otherwise known as the Philippine Data Privacy Act of 2012 (“Data Privacy Act”) to
+                            protect and safeguard your privacy. By accomplishing this form, you signify your
+                            acceptance
+                            to provide pertinent and personal information about you or data establishment. All
+                            information that will be collected through this form will be used for the sole
+                            purpose of monitoring
+                            and fulfilling the functions of this Office. We may only keep your information until
+                            such time that we have attained the purpose by which we collect them and when the
+                            information is no longer required
+                            the DOLE RO IVA procedure will be followed to dispose of said data. Under the
+                            foregoing circumstances and to the extent permissible by applicable law. You agree
+                            not to take action against DOLE RO IVA for the
+                            disclosure and retention of your information.
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="d-flex gap-2 mt-3">
+                <button type="button" name="previous"
+                        class="previous btn btn-secondary btn-block w-50">
+                    Previous
+                </button>
+                <button type="button" name="update_company_details_btn" class="btn btn-success btn-block w-50"
+                        id="update_company_details_btn">
+                    Submit
+                </button>
+            </div>
+        </fieldset>
+    </form>
+</div>
