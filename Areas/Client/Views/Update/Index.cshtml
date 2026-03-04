@@ -4,7 +4,7 @@
 @model RegisterVM
 <h1>Welcome to update page</h1>
 <div class="container">
-    <form method="post" id="update_form" class="needs-validation" enctype="multipart/form-data">
+    <form method="post" id="Rule1020UpdateForm" class="needs-validation" enctype="multipart/form-data">
         <div class="text-center mb-4">
             <div class="row-mb-4">
                 <div class="text-center mb-4">
@@ -19,7 +19,7 @@
                         Name: <span class="text-danger fw-bolder"> *</span>
                     </label>
                     <div class="input-group has-validation">
-                        <input asp-for="Register.EstName" type="text" placeholder="New Establishment Name" class="form-control"
+                        <input asp-for="Register.EstName" data-element="EstName" type="text" placeholder="New Establishment Name" class="form-control"
                                maxlength="100" required>
                         <div class="invalid-feedback">Please provide the New Establishment Name</div>
                     </div>
@@ -32,8 +32,9 @@
                         Region: <span class="text-danger fw-bolder">*</span>
                     </label>
                     <div class="input-group has-validation">
-                        <select asp-for="Register.EstRegion" class="form-control" required>
-                            <option value="">Select Region</option>
+                        <select asp-for="Register.EstRegion" class="form-control" data-element="EstRegion" required>
+                            <option value="" selected>Select Region</option>
+                            <option value="Region IV-A (CALABARZON)">Region IV-A (CALABARZON)</option>
                         </select>
                         <div class="invalid-feedback">
                             Please provide a Region.
@@ -45,7 +46,7 @@
                         Province: <span class="text-danger fw-bolder">*</span>
                     </label>
                     <div class="input-group has-validation">
-                        <select asp-for="Register.EstProvince" class="form-control" required>
+                        <select asp-for="Register.EstProvince" class="form-control" data-element="EstProvince" required>
                             <option value="">Select Province</option>
                         </select>
                         <div class="invalid-feedback">
@@ -60,7 +61,7 @@
                         City/Municipality: <span class="text-danger fw-bolder"> *</span>
                     </label>
                     <div class="input-group has-validation">
-                        <select asp-for="Register.EstCityMun" class="form-control" required>
+                        <select asp-for="Register.EstCityMun" class="form-control" data-element="EstCityMun" required>
                             <option value="">Select City/Municipality</option>
                         </select>
                         <div class="invalid-feedback">
@@ -75,7 +76,7 @@
                         </span>
                     </label>
                     <div class="input-group has-validation">
-                        <select asp-for="Register.EstBrgy" class="form-control" required>
+                        <select asp-for="Register.EstBrgy" class="form-control" data-element="EstBrgy" required>
                             <option value="">Select Barangay</option>
                         </select>
                         <div class="invalid-feedback">
@@ -89,7 +90,7 @@
                             *
                         </span>
                     </label>
-                    <input asp-for="Register.EstStreet" class="form-control" type="text" placeholder="New Address" required>
+                    <input asp-for="Register.EstStreet" data-element="EstStreet" class="form-control" type="text" placeholder="New Address" required>
                 </div>
             </div>
             <div class="row mb-2">
@@ -101,7 +102,7 @@
                         Name: <span class="text-danger fw-bolder"> *</span>
                     </label>
                     <div class="input-group has-validation">
-                        <input asp-for="Register.EstOwnerFirst" type="text" class="form-control" placeholder="New Owner" required>
+                        <input asp-for="Register.EstOwnerFirst" data-element="EstOwnerFirst" type="text" class="form-control" placeholder="New Owner" required>
                         <div class="invalid-feedback">Please provide New Owner First Name</div>
 
                     </div>
@@ -113,7 +114,7 @@
                         Name:
                     </label>
                     <div class="input-group has-validation">
-                        <input asp-for="Register.EstOwnerMid" type="text" class="form-control" placeholder="New Owner">
+                        <input asp-for="Register.EstOwnerMid" data-element="EstOwnerMid" type="text" class="form-control" placeholder="New Owner">
                         <div class="invalid-feedback">
                             Please provide New Owner Middle Name
                         </div>
@@ -126,7 +127,7 @@
                         Name: <span class="text-danger fw-bolder"> *</span>
                     </label>
                     <div class="input-group has-validation">
-                        <input asp-for="Register.EstOwnerLast" type="text" class="form-control" placeholder="New Owner" required>
+                        <input asp-for="Register.EstOwnerLast" data-element="EstOwnerLast" type="text" class="form-control" placeholder="New Owner" required>
                         <div class="invalid-feedback">Please provide New Owner Last Name</div>
                     </div>
                 </div>
@@ -138,8 +139,8 @@
                         Number of Male Employees: <span class="text-danger fw-bolder"> *</span>
                     </label>
                     <div class="input-group has-validation">
-                        <input asp-for="Register.EstMaleCount" class="form-control numbersOnly"
-                               type="number" placeholder="Male Employees" required>
+                        <input asp-for="Register.EstMaleCount" data-element="EstMaleCount" class="form-control numbersOnly"
+                               type="text" placeholder="Male Employees" required>
                         <div class="invalid-feedback">
                             Please provide the Number of Male Employees
                         </div>
@@ -150,7 +151,7 @@
                         Number of female Employees: <span class="text-danger fw-bolder"> *</span>
                     </label>
                     <div class="input-group has-validation">
-                        <input asp-for="Register.EstFemaleCount" class="form-control uppercasetextnum" type="number"
+                        <input asp-for="Register.EstFemaleCount" data-element="EstFemaleCount" class="form-control uppercasetextnum" type="text"
                                placeholder="Female Employees" required>
                         <div class="invalid-feedback">Please provide the Number of Female Employees</div>
                     </div>
@@ -160,7 +161,7 @@
                         Total Number of Employees: <span class="text-danger fw-bolder"> *</span>
                     </label>
                     <div class="input-group has-validation">
-                        <input asp-for="Register.EstTotalEmployees" class="form-control" type="number"
+                        <input asp-for="Register.EstTotalEmployees" data-element="EstTotalEmployees" class="form-control" type="text"
                                placeholder="Total Employees" readonly required>
                         <div class="invalid-feedback">Please provide the Total Number of Employees</div>
                     </div>
@@ -172,7 +173,7 @@
                         Email Address: <span class="text-danger fw-bolder"> *</span>
                     </label>
                     <div class="input-group has-validation">
-                        <input asp-for="Register.Email" type="email" class="form-control uppercasetextnum"
+                        <input asp-for="Register.Email" data-element="Email" type="email" class="form-control uppercasetextnum"
                                placeholder="ex: juandelacruz@gmail.com" required>
                         <div class="invalid-feedback">Please provide an Email Address</div>
                     </div>
@@ -195,7 +196,7 @@
                                     Date of Temporary closure: <span class="text-muted fw-lighter">if previously closed</span>
                                 </label>
                                 <div class="input-group has-validation">
-                                    <input asp-for="Register.EstClosureDate" type="date" class="form-control">
+                                    <input asp-for="Register.EstClosureDate" data-element="EstClosureDate" type="date" class="form-control">
                                     <div class="invalid-feedback">Please provide a Date of Closure</div>
                                 </div>
                             </div>
@@ -204,12 +205,12 @@
                                     Re-opening date: <span class="text-muted fw-lighter">if previously closed</span>
                                 </label>
                                 <div class="input-group has-validation">
-                                    <input asp-for="Register.EstReopeningDate" class="form-control " type="date">
+                                    <input asp-for="Register.EstReopeningDate" data-element="EstReopeningDate" class="form-control " type="date">
                                     <div class="invalid-feedback">Please provide a Re-opening Date</div>
                                 </div>
                             </div>
                             <div class="col-lg-4 col-sm-12">
-                                <label class="form-label" for="est_datefil">
+                                <label asp-for="Register.EstFiledClosureDate" class="form-label" for="est_datefil">
                                     Date
                                     Filed Closure: <span class="text-muted fw-lighter">
                                         if previously
@@ -217,7 +218,7 @@
                                     </span>
                                 </label>
                                 <div class="input-group has-validation">
-                                    <input type="date" class="form-control" id="est_datefil" name="est_datefil">
+                                    <input asp-for="Register.EstFiledClosureDate" data-element="EstFiledClosureDate" type="date" class="form-control">
                                     <div class="invalid-feedback">Please provide a Date Filed Closure</div>
                                 </div>
                             </div>
@@ -241,7 +242,7 @@
             <div class="row mb-2">
                 <div class="col-lg-12 col-sm-12">
                     <label asp-for="Register.EstReasonForUpdate" class="form-label">Remarks: </label>
-                    <textarea asp-for="Register.EstReasonForUpdate" cols="30" rows="5"
+                    <textarea asp-for="Register.EstReasonForUpdate" data-element="EstReasonForUpdate" cols="30" rows="5"
                               class="form-control"></textarea>
                 </div>
             </div>
@@ -266,7 +267,7 @@
                                 Business Name No. <span class="text-danger fw-bolder"> *</span>
                             </label>
                             <div class="input-group has-validation">
-                                <input asp-for="Register.EstSECNumber" type="text" class="form-control" required>
+                                <input asp-for="Register.EstSECNumber" data-element="EstSECNumber" type="text" class="form-control" required>
                                 <div class="invalid-feedback">
                                     Please Provide the SEC Number of the Attachment.
                                 </div>
@@ -274,28 +275,18 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-sm-6">
-                    <div class="card bg-transparent border-0">
-                        <label asp-for="Register.EstSECFile" class="form-label ">
-                            Scanned or Photocopy of SEC Registration or DTI Certificate: <span class="text-danger fw-bolder"> *</span>
-                            <h6 class="text-info" style="color:#ab1414!important;">
-                                <small>
-                                    <i>
-                                        Attach PDF with a maximum upload file
-                                        size of 25MB
-                                    </i>
-                                </small>
-                            </h6>
-                        </label>
-                        <div class="input-group has-validation">
-                            <input asp-for="Register.EstSECFile" type="file"
-                                   accept="application/pdf" required>
-                            <div class="invalid-feedback">
-                                Please Provide the Attachment.
-                            </div>
-                        </div>
-                        <small id="error-message1" class="text-danger"></small>
-                    </div>
+                <div class="col-md-6">
+                    <label asp-for="Register.EstSECFile" class="form-label">
+                        Scanned or Photocopy of <span>SEC Registration or DTI Certificate</span>: <span class="text-danger fw-bolder"> *</span>
+                        <small class="text-info">
+                            <i>
+                                Attach PDF file with a maximum upload file size of 25
+                                megabytes
+                            </i>
+                        </small>
+                    </label>
+                    <input asp-for="Register.EstSECFile" type="file" class="form-control" data-element="EstSECFile" required />
+                    <small id="EstSECFileErrorMessege" class="text-danger"></small>
                 </div>
             </div>
             <div class="row">
@@ -305,7 +296,7 @@
                             Date Issued: <span class="text-danger fw-bolder"> *</span>
                         </label>
                         <div class="input-group has-validation">
-                            <input asp-for="Register.EstSECDateIssued" type="date" class="form-control"
+                            <input asp-for="Register.EstSECDateIssued" data-element="EstSECDateIssued" type="date" class="form-control"
                                    required>
                             <div class="invalid-feedback">
                                 Please Provide the Date SEC Issued.
@@ -320,6 +311,23 @@
                 BUSINESS / MAYOR'S PERMIT
             </h3>
             <div class="row">
+                <div class="col-12 mt-3">
+                    <div class="bg-body-secondary rounded p-3">
+                        <div class="form-check d-flex align-items-start">
+                            <input asp-for="Register.EstIsPeza"
+                                   class="form-check-input me-2"
+                                   type="checkbox"
+                                   data-element="EstIsPeza">
+
+                            <label class="form-check-label" for="EstIsPeza">
+                                Does your Establishment / Organization Registered in PEZA?
+                                <span class="text-muted fw-lighter">
+                                    (Please check this and attach your PEZA certificate and Date Issued)
+                                </span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
                 <div class="col-sm-6">
                     <div class="card bg-transparent border-0">
                         <label asp-for="Register.EstBisPermitNumber" class="form-label ">
@@ -327,64 +335,42 @@
                             Number: <span class="text-danger fw-bolder"> *</span>
                         </label>
                         <div class="input-group has-validation">
-                            <input asp-for="Register.EstBisPermitNumber" type="text" class="form-control" required>
+                            <input asp-for="Register.EstBisPermitNumber" data-element="EstBisPermitNumber" type="text" class="form-control" required>
                             <div class="invalid-feedback">
                                 Please Provide the Business/Mayor's Permit Number.
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-sm-6">
-                    <div class="card bg-transparent border-0">
-                        <label asp-for="Register.EstBisPermitFile" class="form-label ">
-                            Scanned or Photocopy of Business / Mayor's Permit: <span class="text-danger fw-bolder"> *</span>
-                            <h6 class="text-info" style="color:#ab1414!important;">
-                                <small>
-                                    <i>
-                                        Attach PDF with a maximum upload file
-                                        size of 25MB
-                                    </i>
-                                </small>
-                            </h6>
-                        </label>
-                        <div class="input-group has-validation">
-                            <input asp-for="Register.EstBisPermitFile" type="file" accept="application/pdf"
-                                   required>
-                            <div class="invalid-feedback">
-                                Please Provide the Attachment.
-                            </div>
-                        </div>
-                    </div>
-                    <small id="error-message2" class="text-danger"></small>
+                <div class="col-md-6">
+                    <label asp-for="Register.EstBisPermitFile" class="form-label">
+                        Scanned or Photocopy of <span class="EstBisPermitNumberLabelText">Business or Mayor's Permit</span> <span class="text-danger fw-bolder"> *</span>
+                        <small class="text-info">
+                            <i>
+                                Attach PDF file with a maximum upload file size of 25
+                                megabytes
+                            </i>
+                        </small>
+                    </label>
+                    <input asp-for="Register.EstBisPermitFile" type="file" class="form-control" data-element="EstBisPermitFile" required />
+                    <div class="invalid-feedback"><span class="EstBisPermitNumberLabelText">Business or Mayor's Permit</span> is required.</div>
+                    <small id="EstBisPermitFileErrorMessege" class="text-danger"></small>
                 </div>
             </div>
             <div class="row">
-                <div class="col-sm-6 mt-4">
-                    <div class="card bg-transparent border-0">
-                        <label asp-for="Register.EstBisPermitDateIssued" class="form-label ">
-                            Date Issued: <span class="text-danger fw-bolder"> *</span>
-                        </label>
-                        <div class="input-group has-validation">
-                            <input asp-for="Register.EstBisPermitDateIssued" type="date" class="form-control"
-                                   required>
-                            <div class="invalid-feedback">
-                                Please Provide the Date Business/Mayor's Permit Issued.
-                            </div>
-                        </div>
-                    </div>
+                <div class="col-md-6">
+                    <label asp-for="Register.EstBisPermitDateIssued" class="form-label">
+                        <span class="EstBisPermitNumberLabelText">Business or Mayor's Permit</span> Issued Date
+                    </label>
+                    <input asp-for="Register.EstBisPermitDateIssued" type="date" class="form-control" data-element="EstBisPermitDateIssued" required />
+                    <div class="invalid-feedback"><span class="EstBisPermitNumberLabelText">Business or Mayor's Permit</span> is required.</div>
                 </div>
-                <div class="col-sm-6 mt-4">
-                    <div class="card bg-transparent border-0">
-                        <label asp-for="Register.EstBisPermitValidityDate" class="form-label ">
-                            Validity Date: <span class="text-danger fw-bolder"> *</span>
-                        </label>
-                        <div class="input-group has-validation">
-                            <input asp-for="Register.EstBisPermitValidityDate" type="date" class="form-control">
-                            <div class="invalid-feedback">
-                                Please Provide the Date Business/Mayor's Permit Validity.
-                            </div>
-                        </div>
-                    </div>
+                <div class="col-md-6" id="EstPezaNoExpiry">
+                    <label asp-for="Register.EstBisPermitValidityDate" class="form-label" id="EstBisPermitValidityDateLabel">
+                        <span class="EstBisPermitNumberLabelText">Business or Mayor's Permit</span> Validity Date<span class="text-danger fw-bolder" id="EstBisPermitValidityDateRequiredSign"> *</span>
+                    </label>
+                    <input asp-for="Register.EstBisPermitValidityDate" type="date" class="form-control" data-element="EstBisPermitValidityDate" />
+                    <div class="invalid-feedback"><span class="EstBisPermitNumberLabelText">Business or Mayor's Permit</span> is required.</div>
                 </div>
             </div>
             <hr class="color-primary text-primary text-bold">
@@ -398,35 +384,26 @@
                             Valid National ID Number: <span class="text-danger fw-bolder"> *</span>
                         </label>
                         <div class="input-group has-validation">
-                            <input asp-for="Register.EstOwnerValidIDNumber" type="text" class="form-control" required>
+                            <input asp-for="Register.EstOwnerValidIDNumber" data-element="EstOwnerValidIDNumber" type="text" class="form-control" required>
                             <div class="invalid-feedback">
                                 Please Provide the Valid National ID Number.
                             </div>
                         </div>
                     </div>
                 </div>
-
-                <div class="col-sm-4">
-                    <div class="card bg-transparent border-0">
-                        <label asp-for="Register.EstOwnerValidIDFile" class="form-label ">
-                            Scanned or Photocopy of Valid National Government ID: <span class="text-danger fw-bolder"> *</span><br>
-                            <h6 class="text-info " style="color:#ab1414!important;">
-                                <small>
-                                    <i>
-                                        Attach PDF with a maximum upload file
-                                        size of 25MB
-                                    </i>
-                                </small>
-                            </h6>
-                        </label>
-                        <div class="input-group has-validation">
-                            <input asp-for="Register.EstOwnerValidIDFile" type="file" accept=".pdf" required>
-                            <div class="invalid-feedback">
-                                Please Provide the Attachment.
-                            </div>
-                        </div>
-                        <small id="error-message3" class="text-danger"></small>
-                    </div>
+                <div class="col-md-6">
+                    <label asp-for="Register.EstOwnerValidIDFile" class="form-label">
+                        Scanned or Photocopy of <span>Valid ID</span>: <span class="text-danger fw-bolder"> *</span>
+                        <small class="text-info">
+                            <i>
+                                Attach PDF file with a maximum upload file size of 25
+                                megabytes
+                            </i>
+                        </small>
+                    </label>
+                    <input asp-for="Register.EstOwnerValidIDFile" type="file" class="form-control" data-element="EstOwnerValidIDFile" required />
+                    <div class="invalid-feedback">Valid ID is required.</div>
+                    <small id="EstOwnerValidIDFileErrorMessege" class="text-danger"></small>
                 </div>
                 <div class="div col-sm-2 d-flex justify-content-center align-items-center">
                     <a type="button"
@@ -486,7 +463,7 @@
                             Issued Date: <span class="text-danger fw-bolder"> *</span>
                         </label>
                         <div class="input-group has-validation">
-                            <input asp-for="Register.EstOwnerValidIDDateIssued" type="date" class="form-control"
+                            <input asp-for="Register.EstOwnerValidIDDateIssued" data-element="EstOwnerValidIDDateIssued" type="date" class="form-control"
                                    required>
                             <div class="invalid-feedback">
                                 Please Provide the Date Valid National Government ID Issued.
@@ -498,7 +475,7 @@
                     <div class="card bg-transparent border-0">
                         <label asp-for="Register.EstOwnerValidIDDateExpire" class="form-label ">Validity Date:</label>
                         <div class="input-group has-validation">
-                            <input asp-for="Register.EstOwnerValidIDDateExpire" type="date" class="form-control">
+                            <input asp-for="Register.EstOwnerValidIDDateExpire" data-element="EstOwnerValidIDDateExpire" type="date" class="form-control">
                             <div class="invalid-feedback">
                                 Please Provide the Date Valid National Government ID Validity.
                             </div>
@@ -654,7 +631,7 @@
                         class="previous btn btn-secondary btn-block w-50">
                     Previous
                 </button>
-                <button type="button" name="update_company_details_btn" class="btn btn-success btn-block w-50"
+                <button type="button" name="update_company_details_btn" class="btn btn-success btn-block w-50 ladda-button"
                         id="update_company_details_btn">
                     Submit
                 </button>
@@ -662,3 +639,8 @@
         </fieldset>
     </form>
 </div>
+@section Scripts {
+    <script src="~/js/Register.js"></script>
+    <script src="~/js/Update.js"></script>
+    <partial name="_ValidationScriptsPartial" />
+}

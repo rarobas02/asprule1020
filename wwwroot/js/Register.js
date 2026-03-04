@@ -7,10 +7,7 @@ const register = {
         Email: "reviewEmail"
     },
     getField: function (key) {
-        if (!key) {
-            return null;
-        }
-
+        if (!key) return null;
         return document.querySelector(`[data-element="${key}"]`);
     },
     togglePasswordVisibility: function (toggleId, inputKey) {
@@ -66,9 +63,11 @@ const register = {
         barangay: 'Select Barangay'
     },
     review: function () {
-        // Get the form element
-        const form = document.getElementById("Rule1020RegistrationForm");
-
+        let form = document.getElementById("Rule1020RegistrationForm");
+        if (!form) {
+            let form = document.getElementById("Rule1020UpdateForm");
+            return;
+        }
         // Get all input and select elements inside the form
         const form_elements = form.querySelectorAll("input, select");
 
@@ -784,7 +783,10 @@ const register = {
     }
 };
 
-Ladda.bind(".ladda-button");
+if (typeof Ladda !== "undefined" && typeof Ladda.bind === "function") {
+    Ladda.bind(".ladda-button");
+}
+
 register.location();
 
 register.toggleDivAndRequired({
@@ -808,8 +810,8 @@ register.toggleDivOnCheckbox("EstIsHaveBranchUnits", "EstBranchUnitContent");
 register.toggleDivOnCheckbox("EstIsHaveLaborUnion", "EstLaborUnionContent");
 register.preventFutureDate("EstSECDateIssued");
 register.preventFutureDate("EstBisPermitDateIssued");
-register.preventPastDate("EstBisPermitValidityDate");
 register.preventFutureDate("EstOwnerValidIDDateIssued");
+register.preventPastDate("EstBisPermitValidityDate");
 register.preventPastDate("EstOwnerValidIDDateExpire");
 register.stepper();
 
