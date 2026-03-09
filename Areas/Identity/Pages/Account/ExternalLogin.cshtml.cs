@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
@@ -121,6 +122,7 @@ namespace asprule1020.Areas.Identity.Pages.Account
                 ErrorMessage = $"Error from external provider: {remoteError}";
                 return RedirectToPage("./Login", new { ReturnUrl = returnUrl });
             }
+
             var info = await _signInManager.GetExternalLoginInfoAsync();
             if (info == null)
             {
@@ -128,51 +130,58 @@ namespace asprule1020.Areas.Identity.Pages.Account
                 return RedirectToPage("./Login", new { ReturnUrl = returnUrl });
             }
 
-            // Sign in the user with this external login provider if the user already has a login.
-            var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false, bypassTwoFactor: true);
+            var result = await _signInManager.ExternalLoginSignInAsync(
+                info.LoginProvider, info.ProviderKey, isPersistent: false, bypassTwoFactor: true);
+
             if (result.Succeeded)
             {
-                _logger.LogInformation("{Name} logged in with {LoginProvider} provider.", info.Principal.Identity.Name, info.LoginProvider);
-                return LocalRedirect(returnUrl);
+                _logger.LogInformation("{Name} logged in with {LoginProvider} provider.", info.Principal.Identity?.Name, info.LoginProvider);
+
+                var user = await _userManager.FindByLoginAsync(info.LoginProvider, info.ProviderKey);
+                if (user is null)
+                {
+                    return LocalRedirect(GetSafeReturnUrl(returnUrl));
+                }
+
+                return await RedirectByRoleAsync(user, returnUrl);
             }
+
             if (result.IsLockedOut)
             {
                 return RedirectToPage("./Lockout");
             }
-            else
-            {
-                // If the user does not have an account, then ask the user to create an account.
-                ReturnUrl = returnUrl;
-                ProviderDisplayName = info.ProviderDisplayName;
-                // Ensure roles exist - if not exist, the condition will create the USER roles
-                if (!_roleManager.RoleExistsAsync(SD.Role_Client).GetAwaiter().GetResult())
-                {
-                    _roleManager.CreateAsync(new IdentityRole(SD.Role_Client)).GetAwaiter().GetResult();
-                    _roleManager.CreateAsync(new IdentityRole(SD.Role_Evaluator)).GetAwaiter().GetResult();
-                    _roleManager.CreateAsync(new IdentityRole(SD.Role_Po_Head)).GetAwaiter().GetResult();
-                    _roleManager.CreateAsync(new IdentityRole(SD.Role_Region_Focal)).GetAwaiter().GetResult();
-                    _roleManager.CreateAsync(new IdentityRole(SD.Role_Admin)).GetAwaiter().GetResult();
-                }
-                EnsureInputInitialized();
-                if (info.Principal.HasClaim(c => c.Type == ClaimTypes.Email))
-                {
-                    Input.Email = info.Principal.FindFirstValue(ClaimTypes.Email);
-                }
 
-                return Page();
+            ReturnUrl = returnUrl;
+            ProviderDisplayName = info.ProviderDisplayName;
+
+            if (!await _roleManager.RoleExistsAsync(SD.Role_Client))
+            {
+                await _roleManager.CreateAsync(new IdentityRole(SD.Role_Client));
+                await _roleManager.CreateAsync(new IdentityRole(SD.Role_Evaluator));
+                await _roleManager.CreateAsync(new IdentityRole(SD.Role_Po_Head));
+                await _roleManager.CreateAsync(new IdentityRole(SD.Role_Region_Focal));
+                await _roleManager.CreateAsync(new IdentityRole(SD.Role_Admin));
             }
+
+            EnsureInputInitialized();
+            if (info.Principal.HasClaim(c => c.Type == ClaimTypes.Email))
+            {
+                Input.Email = info.Principal.FindFirstValue(ClaimTypes.Email);
+            }
+
+            return Page();
         }
 
         public async Task<IActionResult> OnPostConfirmationAsync(string returnUrl = null)
         {
             returnUrl = returnUrl ?? Url.Content("~/");
-            // Get the information about the user from the external login provider
             var info = await _signInManager.GetExternalLoginInfoAsync();
             if (info == null)
             {
                 ErrorMessage = "Error loading external login information during confirmation.";
                 return RedirectToPage("./Login", new { ReturnUrl = returnUrl });
             }
+
             EnsureInputInitialized();
             PopulateTransId();
             NormalizeConditionalFields();
@@ -188,15 +197,14 @@ namespace asprule1020.Areas.Identity.Pages.Account
 
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
+
                 var result = await _userManager.CreateAsync(user);
                 if (result.Succeeded)
                 {
                     result = await _userManager.AddLoginAsync(user, info);
                     if (result.Succeeded)
                     {
-                        _logger.LogInformation("User created an account using {Name} provider.", info.LoginProvider);
-                        
-                        await _userManager.AddToRoleAsync(user, SD.Role_Client); // Assign the "Client" role to the newly registered user
+                        await _userManager.AddToRoleAsync(user, SD.Role_Client);
 
                         var registerEntity = Input.Register!;
                         registerEntity.TransId ??= $"TR-{DateTime.UtcNow:yyyyMMddHHmmssfff}";
@@ -211,28 +219,16 @@ namespace asprule1020.Areas.Identity.Pages.Account
                         user.RegisterId = registerEntity.Id;
                         await _userManager.UpdateAsync(user);
 
-                        var userId = await _userManager.GetUserIdAsync(user);
-                        var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                        code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-                        var callbackUrl = Url.Page(
-                            "/Account/ConfirmEmail",
-                            pageHandler: null,
-                            values: new { area = "Identity", userId = userId, code = code },
-                            protocol: Request.Scheme);
-
-                        await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
-                            $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
-
-                        // If account confirmation is required, we need to show the link if we don't have a real email sender
                         if (_userManager.Options.SignIn.RequireConfirmedAccount)
                         {
                             return RedirectToPage("./RegisterConfirmation", new { Email = Input.Email });
                         }
 
                         await _signInManager.SignInAsync(user, isPersistent: false, info.LoginProvider);
-                        return LocalRedirect(returnUrl);
+                        return await RedirectByRoleAsync(user, returnUrl);
                     }
                 }
+
                 foreach (var error in result.Errors)
                 {
                     ModelState.AddModelError(string.Empty, error.Description);
@@ -325,6 +321,81 @@ namespace asprule1020.Areas.Identity.Pages.Account
             ModelState.Remove("Input.Register.EstSECFile");
             ModelState.Remove("Input.Register.EstBisPermitFile");
             ModelState.Remove("Input.Register.EstOwnerValidIDFile");
+        }
+        private async Task<string> GetRoleRedirectUrlAsync(ApplicationUser user, string returnUrl)
+        {
+            var safeReturnUrl = GetSafeReturnUrl(returnUrl);
+            var roles = await _userManager.GetRolesAsync(user);
+
+            if (roles.Contains(SD.Role_Admin))
+                return Url.Content("~/Admin"); //change to admin dashboard when implemented
+            if (roles.Contains(SD.Role_Region_Focal))
+                return Url.Content("~/RegionFocal");
+            if (roles.Contains(SD.Role_Po_Head))
+                return Url.Content("~/PoHead");
+            if (roles.Contains(SD.Role_Evaluator))
+                return Url.Content("~/Evaluator");
+            if (roles.Contains(SD.Role_Client))
+                return Url.Content("~/Client/Update");
+
+            return safeReturnUrl;
+        }
+
+        private string GetSafeReturnUrl(string returnUrl)
+        {
+            if (!string.IsNullOrWhiteSpace(returnUrl) && Url.IsLocalUrl(returnUrl))
+                return returnUrl;
+
+            return Url.Content("~/");
+        }
+
+        private async Task<IActionResult> RedirectByRoleAsync(ApplicationUser user, string returnUrl)
+        {
+            var registerId = user.RegisterId?.ToString();
+
+            if (await _userManager.IsInRoleAsync(user, SD.Role_Client))
+            {
+                if (!user.RegisterId.HasValue)
+                {
+                    await _signInManager.SignOutAsync();
+                    ModelState.AddModelError(string.Empty, "Your account is not linked to any registration yet.");
+                    return Page();
+                }
+
+                var register = await _db.Registers.AsNoTracking()
+                    .FirstOrDefaultAsync(r => r.Id == user.RegisterId.Value);
+
+                if (register is null)
+                {
+                    await _signInManager.SignOutAsync();
+                    ModelState.AddModelError(string.Empty, "Unable to locate your registration record. Please contact support.");
+                    return Page();
+                }
+
+                if (!string.Equals(register.EstStatus, "Approved", StringComparison.OrdinalIgnoreCase))
+                {
+                    await _signInManager.SignOutAsync();
+                    var statusLabel = string.IsNullOrWhiteSpace(register.EstStatus) ? "review" : register.EstStatus;
+                    ModelState.AddModelError(string.Empty, $"Your Registration Status is still {statusLabel}, only Approved Application is allowed to update. Create new Registration For Re-application");
+                    return Page();
+                }
+
+                return RedirectToAction("Index", "Update", new { area = "Client", registerId });
+            }
+
+            if (await _userManager.IsInRoleAsync(user, SD.Role_Evaluator))
+                return RedirectToAction("Review", "Evaluator", new { area = "Admin" });
+
+            if (await _userManager.IsInRoleAsync(user, SD.Role_Po_Head))
+                return RedirectToAction("PoHeadReview", "PoHead", new { area = "Admin" });
+
+            if (await _userManager.IsInRoleAsync(user, SD.Role_Region_Focal))
+                return RedirectToAction("RegionReview", "User", new { area = "Admin" });
+
+            if (await _userManager.IsInRoleAsync(user, SD.Role_Admin))
+                return RedirectToAction("ManageUser", "User", new { area = "Admin" });
+
+            return LocalRedirect(GetSafeReturnUrl(returnUrl));
         }
     }
 }
