@@ -33,3 +33,26 @@
 
     document.addEventListener("DOMContentLoaded", resetLocationPlaceholders);
 })();
+
+$(document)
+    .off("click", "#est_closed")
+    .on("click", "#est_closed", function () {
+        const isClosed = $(this).is(":checked");
+        const closureSection = $("#estabClosed");
+        const dateFields = [
+            '[data-element="EstClosureDate"]',
+            '[data-element="EstReopeningDate"]',
+            '[data-element="EstFiledClosureDate"]'
+        ];
+
+        closureSection.toggleClass("d-none", !isClosed);
+
+        dateFields.forEach((selector) => {
+            const field = $(selector);
+            field.prop("required", isClosed);
+
+            if (!isClosed) {
+                field.val("");
+            }
+        });
+    });
