@@ -1,7 +1,7 @@
 ﻿@{
     ViewData["Title"] = "Update";
 }
-@model RegisterVM
+@model UpdateVM
 <h1>Welcome to update page</h1>
 <div class="container">
     <form method="post" id="Rule1020UpdateForm" class="needs-validation" enctype="multipart/form-data">
@@ -169,11 +169,11 @@
             </div>
             <div class="row mb-2">
                 <div class="col-lg-4 col-sm-12">
-                    <label asp-for="Register.Email" class="form-label">
+                    <label asp-for="ApplicationUser.Email" class="form-label">
                         Email Address: <span class="text-danger fw-bolder"> *</span>
                     </label>
                     <div class="input-group has-validation">
-                        <input asp-for="Register.Email" data-element="Email" type="email" class="form-control uppercasetextnum"
+                        <input asp-for="ApplicationUser.Email" data-element="Email" type="email" class="form-control uppercasetextnum"
                                placeholder="ex: juandelacruz@gmail.com" required>
                         <div class="invalid-feedback">Please provide an Email Address</div>
                     </div>
