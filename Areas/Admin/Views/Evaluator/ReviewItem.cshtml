@@ -439,9 +439,9 @@
                         <div class="col-lg-12 col-sm-12">
                             <select asp-for="Register.EstStatus" class="form-control" id="recom" required>
                                 <option selected disabled value="">Select recommendation below (required)</option>
-                                <option value="For Approval">For Approval</option>
-                                <option value="For Re-application">For Reapplication</option>
-                                <option value="Duplicate">Duplicate</option>
+                                <option value="@SD.StatusForApproval">@SD.StatusForApproval</option>
+                                <option value="@SD.StatusForReapplication">@SD.StatusForReapplication</option>
+                                <option value="@SD.StatusDuplicate">@SD.StatusDuplicate</option>
                             </select>
                         </div>
                     </div>
