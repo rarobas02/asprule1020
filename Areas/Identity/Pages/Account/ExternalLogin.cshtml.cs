@@ -138,6 +138,15 @@ namespace asprule1020.Areas.Identity.Pages.Account
                 _logger.LogInformation("{Name} logged in with {LoginProvider} provider.", info.Principal.Identity?.Name, info.LoginProvider);
 
                 var user = await _userManager.FindByLoginAsync(info.LoginProvider, info.ProviderKey);
+                if (user is null && info.Principal.HasClaim(c => c.Type == ClaimTypes.Email))
+                {
+                    var email = info.Principal.FindFirstValue(ClaimTypes.Email)?.Trim();
+                    if (!string.IsNullOrWhiteSpace(email))
+                    {
+                        user = await _userManager.FindByEmailAsync(email);
+                    }
+                }
+
                 if (user is null)
                 {
                     return LocalRedirect(GetSafeReturnUrl(returnUrl));
@@ -149,6 +158,32 @@ namespace asprule1020.Areas.Identity.Pages.Account
             if (result.IsLockedOut)
             {
                 return RedirectToPage("./Lockout");
+            }
+
+            if (result.IsNotAllowed)
+            {
+                ErrorMessage = "Please confirm your email address before logging in.";
+                return RedirectToPage("./Login", new { ReturnUrl = returnUrl });
+            }
+
+            // If external login is not linked yet, try linking to an existing account by email first.
+            if (info.Principal.HasClaim(c => c.Type == ClaimTypes.Email))
+            {
+                var email = info.Principal.FindFirstValue(ClaimTypes.Email)?.Trim();
+                if (!string.IsNullOrWhiteSpace(email))
+                {
+                    var existingUser = await _userManager.FindByEmailAsync(email);
+                    if (existingUser != null)
+                    {
+                        var addLoginResult = await _userManager.AddLoginAsync(existingUser, info);
+                        if (addLoginResult.Succeeded)
+                        {
+                            await _signInManager.SignInAsync(existingUser, isPersistent: false, info.LoginProvider);
+                            _logger.LogInformation("Linked {LoginProvider} login to existing user {Email}.", info.LoginProvider, email);
+                            return await RedirectByRoleAsync(existingUser, returnUrl);
+                        }
+                    }
+                }
             }
 
             ReturnUrl = returnUrl;
@@ -321,24 +356,6 @@ namespace asprule1020.Areas.Identity.Pages.Account
             ModelState.Remove("Input.Register.EstSECFile");
             ModelState.Remove("Input.Register.EstBisPermitFile");
             ModelState.Remove("Input.Register.EstOwnerValidIDFile");
-        }
-        private async Task<string> GetRoleRedirectUrlAsync(ApplicationUser user, string returnUrl)
-        {
-            var safeReturnUrl = GetSafeReturnUrl(returnUrl);
-            var roles = await _userManager.GetRolesAsync(user);
-
-            if (roles.Contains(SD.Role_Admin))
-                return Url.Content("~/Admin"); //change to admin dashboard when implemented
-            if (roles.Contains(SD.Role_Region_Focal))
-                return Url.Content("~/RegionFocal");
-            if (roles.Contains(SD.Role_Po_Head))
-                return Url.Content("~/PoHead");
-            if (roles.Contains(SD.Role_Evaluator))
-                return Url.Content("~/Evaluator");
-            if (roles.Contains(SD.Role_Client))
-                return Url.Content("~/Client/Update");
-
-            return safeReturnUrl;
         }
 
         private string GetSafeReturnUrl(string returnUrl)
