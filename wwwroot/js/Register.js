@@ -1,6 +1,8 @@
 ﻿let Branches = []
 let LaborUnion = []
-
+const isUpdatePage =
+    window.location.pathname.toLowerCase() === "/client/update" &&
+    new URLSearchParams(window.location.search).has("registerId");
 
 const register = {
     reviewTargets: {
@@ -71,7 +73,7 @@ const register = {
         // Get all input and select elements inside the form
         const form_elements = form.querySelectorAll("input, select");
 
-        const excluded_keys = ["password","confirmPassword","EstTechInfo1OtherCheckBox", "EstTechInfo2OtherCheckBox", "EstIsHaveLaborUnion", "EstIsHaveBranchUnits", "certify", "certifydpa"];
+        const excluded_keys = ["password", "confirmPassword", "EstTechInfo1OtherCheckBox", "EstTechInfo2OtherCheckBox", "EstIsHaveLaborUnion", "EstIsHaveBranchUnits", "certify", "certifydpa"];
         const excluded_names = ["EstBranchRule1020Number[]", "EstBranchName[]", "EstBranchEstName[]", "EstUnionName[]", "EstUnionAddress[]", "EstUnionBLR[]"];
 
         const no_input_text = "No Input";
@@ -247,82 +249,83 @@ const register = {
                 queryParam: "UserName",
                 unavailableMessage: "Username is already taken."
             });
-
         }
 
-		const emailInput = this.getField("Email");
-        if (emailInput) {
+        const emailInput = this.getField("Email");
+        if (emailInput && !isUpdatePage) {
             register.attachAvailabilityValidation({
                 input: emailInput,
                 endpoint: register.endpoints.emailIsExist,
-				queryParam: "EstEmail",
+                queryParam: "EstEmail",
                 unavailableMessage: "Establishment email is already taken."
             });
         }
 
-		$(".next").click(async function () {
+        $(".next").click(async function () {
             let current = $(this).closest("fieldset");
             let next = current.next("fieldset");
             if (!next.length) {
                 return;
             }
 
-			const usernameInputEl = register.getField("UserName");
-			const emailInputEl = register.getField("Email");
+            const usernameInputEl = register.getField("UserName");
+            const emailInputEl = register.getField("Email");
 
-			const isUsernameAvailable = await register.validateAvailability({
-				input: usernameInputEl,
-				endpoint: register.endpoints.usernameIsExist,
-				queryParam: "UserName",
-				unavailableMessage: "Username is already taken."
-			});
+            const isUsernameAvailable = await register.validateAvailability({
+                input: usernameInputEl,
+                endpoint: register.endpoints.usernameIsExist,
+                queryParam: "UserName",
+                unavailableMessage: "Username is already taken."
+            });
 
-			if (isUsernameAvailable) {
-				const message = usernameInputEl?.dataset?.availabilityMessage || "Username is already taken.";
-				register.showAvailabilityError?.(message);
-				if (typeof Swal !== "undefined") {
-					Swal.fire({
-						title: "Error!",
-						theme: "bootstrap-5",
-						html: `<span><strong>${message}</strong></span>`,
-						icon: "error",
-						confirmButtonColor: "#dc3545",
-						confirmButtonText: "Close",
-						allowOutsideClick: false
-					});
-				}
-				usernameInputEl?.focus();
-				return;
-			}
+            if (!isUpdatePage && isUsernameAvailable ) {
+                const message = usernameInputEl?.dataset?.availabilityMessage || "Username is already taken.";
+                register.showAvailabilityError?.(message);
+                if (typeof Swal !== "undefined") {
+                    Swal.fire({
+                        title: "Error!",
+                        theme: "bootstrap-5",
+                        html: `<span><strong>${message}</strong></span>`,
+                        icon: "error",
+                        confirmButtonColor: "#dc3545",
+                        confirmButtonText: "Close",
+                        allowOutsideClick: false
+                    });
+                }
+                usernameInputEl?.focus();
+                return;
+            }
 
-			const isEmailAvailable = await register.validateAvailability({
-				input: emailInputEl,
-				endpoint: register.endpoints.emailIsExist,
-				queryParam: "EstEmail",
-				unavailableMessage: "Establishment email is already taken."
-			});
+            const isEmailAvailable = !isUpdatePage
+                ? await register.validateAvailability({
+                    input: emailInputEl,
+                    endpoint: register.endpoints.emailIsExist,
+                    queryParam: "EstEmail",
+                    unavailableMessage: "Establishment email is already taken."
+                })
+                : false;
 
-			if (isEmailAvailable) {
-				const message = emailInputEl?.dataset?.availabilityMessage || "Establishment email is already taken.";
-				if (typeof Swal !== "undefined") {
-					Swal.fire({
-						title: "Error!",
-						theme: "bootstrap-5",
-						html: `<span><strong>${message}</strong></span>`,
-						icon: "error",
-						confirmButtonColor: "#dc3545",
-						confirmButtonText: "Close",
-						allowOutsideClick: false
-					});
-				}
-				emailInputEl?.focus();
-				return;
-			}
+            if (!isUpdatePage && isEmailAvailable) {
+                const message = emailInputEl?.dataset?.availabilityMessage || "Establishment email is already taken.";
+                if (typeof Swal !== "undefined") {
+                    Swal.fire({
+                        title: "Error!",
+                        theme: "bootstrap-5",
+                        html: `<span><strong>${message}</strong></span>`,
+                        icon: "error",
+                        confirmButtonColor: "#dc3545",
+                        confirmButtonText: "Close",
+                        allowOutsideClick: false
+                    });
+                }
+                emailInputEl?.focus();
+                return;
+            }
+
 
             let branches = register.branch_unit();
             let laborUnions = register.labor_union();
-            if (branches.length > 0)
-            {
+            if (branches.length > 0) {
                 let branchContainer = document.getElementById("review_branch_unit_container");
                 branchContainer.classList.remove("d-none");
                 branchContainer.style.display = "block";
@@ -338,8 +341,7 @@ const register = {
                 // Append the array of rows to the table body
                 $("#review_est_branch_body").html(rows.join(""));
             }
-            else
-            {
+            else {
                 const branchContainer = document.getElementById("review_branch_unit_container");
                 branchContainer.classList.add("d-none");
                 branchContainer.style.display = "none";
@@ -361,20 +363,19 @@ const register = {
                 // Append the array of rows to the table body
                 $("#review_est_union_body").html(rows_union.join(""));
             }
-            else
-            {
+            else {
                 const laborContainer = document.getElementById("review_labor_union_container");
                 laborContainer.classList.add("d-none");
                 laborContainer.style.display = "none";
                 $("#review_est_union_body").html("");
             }
-			if (!validateRequiredFields(current)) {
-				return;
-			}
+            if (!validateRequiredFields(current)) {
+                return;
+            }
 
-			register.review();
-			current.addClass("d-none");
-			next.removeClass("d-none");
+            register.review();
+            current.addClass("d-none");
+            next.removeClass("d-none");
         });
 
         $(".previous").click(function () {
