@@ -1,0 +1,37 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+<div class="container-sm my-5" aria-hidden="true">
+    <div class="col-1 col-md-1 text-right mb-2">
+        <a asp-area="Client" asp-controller="Register" asp-action="Index" class="btn btn-outline-info form-control btn-sm">Back to Home</a>
+    </div>
+    <div class="shadow p-3 bg-body rounded">
+
+        <div class="my-4 mb-4 text-center">
+            <img class="w-25" src="~/img/Client/track_status.svg" alt="track application image" draggable="false">
+            <h2 class="text-muted mt-4 mb-0">APPLICATION STATUS TRACKER</h2>
+            <small class="text-muted">Easily follow each phase of your application process</small>
+        </div>
+        <div class="d-flex justify-content-center mb-4">
+            <form class="w-100">
+                <div class="input-group input-group">
+                    <input type="text" class="form-control" id="ref_no" name="ref_no" required="">
+                    <button type="submit" class="btn btn-primary" id="search_btn"><span class="spinner-border spinner-border-sm visually-hidden" role="status" aria-hidden="true" id="spinner"></span> Search</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="d-flex justify-content-center mb-5">
+            <div class="bg-body-secondary w-100">
+                <div class="tracking-list">
+                    <div class="text-center">
+                        <i class="fas fa-search fs-4 p-2"></i>
+                        <p class="text-muted">Enter your reference number to track the status of your application</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
