@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
+using System.Net;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,11 +23,22 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
 
-builder.Services.AddAuthentication().AddFacebook(options =>
-{
-    options.AppId = builder.Configuration["Authentication:Facebook:AppId"] ?? string.Empty;
-    options.AppSecret = builder.Configuration["Authentication:Facebook:AppSecret"] ?? string.Empty;
-});
+builder.Services.AddAuthentication()
+    .AddFacebook(options =>
+    {
+        options.AppId = builder.Configuration["Authentication:Facebook:AppId"] ?? string.Empty;
+        options.AppSecret = builder.Configuration["Authentication:Facebook:AppSecret"] ?? string.Empty;
+
+        options.Events.OnRemoteFailure = context =>
+        {
+            var message = "Facebook sign-in was cancelled or denied.";
+            var redirectUrl = $"/Identity/Account/Login?externalError={WebUtility.UrlEncode(message)}";
+
+            context.Response.Redirect(redirectUrl);
+            context.HandleResponse(); // prevent exception from bubbling
+            return Task.CompletedTask;
+        };
+    });
 // Session Configuration - Add Session Services
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
