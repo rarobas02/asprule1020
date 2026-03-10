@@ -1,0 +1,39 @@
+@model Register?
+
+@{
+    ViewData["Title"] = "Application Details";
+}
+
+<div class="container my-4">
+    <h3>Application Details</h3>
+    <hr />
+
+    @if (Model == null)
+    {
+        <div class="alert alert-warning">
+            @ViewData["LookupMessage"]
+            @if (ViewData["SearchedTransId"] != null)
+            {
+                <div><strong>Reference No:</strong> @ViewData["SearchedTransId"]</div>
+            }
+        </div>
+    }
+    else
+    {
+        <dl class="row">
+            <dt class="col-sm-4">Reference No.</dt>
+            <dd class="col-sm-8">@Model.TransId</dd>
+
+            <dt class="col-sm-4">Establishment Name</dt>
+            <dd class="col-sm-8">@Model.EstName</dd>
+
+            <dt class="col-sm-4">Status</dt>
+            <dd class="col-sm-8">@Model.EstStatus</dd>
+
+            <dt class="col-sm-4">Registered On</dt>
+            <dd class="col-sm-8">@Model.EstRegistrationDate.ToString("MMMM dd, yyyy")</dd>
+        </dl>
+    }
+
+    <a asp-area="Client" asp-controller="Verify" asp-action="Index" class="btn btn-secondary">Back</a>
+</div>
