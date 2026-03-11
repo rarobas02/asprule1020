@@ -8,8 +8,10 @@
     string FormatBool(bool? value) => value switch { true => "Yes", false => "No", _ => "N/A" };
     string FormatNumber(int? value) => value.HasValue ? value.Value.ToString("N0") : "N/A";
     string FormatList(List<string>? values) => values is { Count: > 0 } ? string.Join(", ", values) : "N/A";
-    string BuildFileUrl(string folder, string? fileName) =>
-        string.IsNullOrWhiteSpace(fileName) ? string.Empty : Url.Content($"~/Uploads/{folder}/{fileName}");
+    string BuildAttachmentUrl(Guid? registerId, string type, string? storedPath) =>
+        !registerId.HasValue || string.IsNullOrWhiteSpace(storedPath)
+            ? string.Empty
+            : Url.Action("ViewAttachment", "PoHead", new { area = "Admin", id = registerId.Value, type }) ?? string.Empty;
 }
 
 <ul class="nav nav-tabs" id="action_tab" role="tablist">
@@ -304,7 +306,7 @@
                         <dt class="col-sm-12 col-lg">SEC / DTI Attachment:</dt>
                         <dd class="col-sm-12 col-lg">
                             @{
-                                var secFileUrl = BuildFileUrl("sec_dti", register?.EstSECFile);
+                                var secFileUrl = BuildAttachmentUrl(register?.Id, "sec_dti", register?.EstSECFile);
                             }
                             @if (string.IsNullOrEmpty(secFileUrl))
                             {
@@ -312,7 +314,7 @@
                             }
                             else
                             {
-                                <a href="@secFileUrl" target="_blank">View SEC registration/DTI certificate Attachment</a>
+                                <a href="@secFileUrl" target="_blank" rel="noopener noreferrer">View SEC registration/DTI certificate Attachment</a>
                             }
                         </dd>
                         <dd class="col-sm-12 col-lg">
@@ -361,7 +363,7 @@
                         <dt class="col-sm-12 col-lg">Business or Mayor's Permit / PEZA Certificate Attachment:</dt>
                         <dd class="col-sm-12 col-lg">
                             @{
-                                var permitFileUrl = BuildFileUrl("bus_perm", register?.EstBisPermitFile);
+                                var permitFileUrl = BuildAttachmentUrl(register?.Id, "bus_perm", register?.EstBisPermitFile);
                             }
                             @if (string.IsNullOrEmpty(permitFileUrl))
                             {
@@ -369,7 +371,7 @@
                             }
                             else
                             {
-                                <a href="@permitFileUrl" target="_blank">View Business or Mayor's Permit / PEZA Certificate Attachment</a>
+                                <a href="@permitFileUrl" target="_blank" rel="noopener noreferrer">View Business or Mayor's Permit / PEZA Certificate Attachment</a>
                             }
                         </dd>
                         <dd class="col-sm-12 col-lg">
@@ -409,7 +411,7 @@
                         <dt class="col-sm-12 col-lg">Valid ID Attachment:</dt>
                         <dd class="col-sm-12 col-lg">
                             @{
-                                var validIdUrl = BuildFileUrl("valid_id", register?.EstOwnerValidIDFile);
+                                var validIdUrl = BuildAttachmentUrl(register?.Id, "valid_id", register?.EstOwnerValidIDFile);
                             }
                             @if (string.IsNullOrEmpty(validIdUrl))
                             {
@@ -417,7 +419,7 @@
                             }
                             else
                             {
-                                <a href="@validIdUrl" target="_blank">View Valid ID</a>
+                                <a href="@validIdUrl" target="_blank" rel="noopener noreferrer">View Valid ID</a>
                             }
                         </dd>
                         <dd class="col-sm-12 col-lg">
