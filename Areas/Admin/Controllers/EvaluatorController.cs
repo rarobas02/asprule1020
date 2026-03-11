@@ -5,6 +5,7 @@ using asprule1020.Utility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.StaticFiles;
 using System.Data;
 using System.Security.Claims;
 
@@ -157,6 +158,55 @@ namespace asprule1020.Areas.Admin.Controllers
             {
                 return Json(new { success = false, message = Convert.ToString(ex) });
             }
+        }
+        [Authorize(Roles = SD.Role_Evaluator)]
+        [HttpGet]
+        public IActionResult ViewAttachment(Guid id, string type)
+        {
+            if (id == Guid.Empty || string.IsNullOrWhiteSpace(type))
+            {
+                return NotFound();
+            }
+
+            var register = _unitOfWork.Register.Get(u => u.Id == id);
+            if (register is null)
+            {
+                return NotFound();
+            }
+
+            var key = type.Trim().ToLowerInvariant();
+            var (folder, storedPath) = key switch
+            {
+                "sec_dti" => ("sec_dti", register.EstSECFile),
+                "bus_perm" => ("bus_perm", register.EstBisPermitFile),
+                "valid_id" => ("valid_id", register.EstOwnerValidIDFile),
+                _ => (string.Empty, string.Empty)
+            };
+
+            if (string.IsNullOrWhiteSpace(folder) || string.IsNullOrWhiteSpace(storedPath))
+            {
+                return NotFound();
+            }
+
+            var fileName = Path.GetFileName(storedPath);
+            if (string.IsNullOrWhiteSpace(fileName))
+            {
+                return NotFound();
+            }
+
+            var fullPath = Path.Combine(_webHostEnvironment.ContentRootPath, "Uploads", folder, fileName);
+            if (!System.IO.File.Exists(fullPath))
+            {
+                return NotFound();
+            }
+
+            var provider = new FileExtensionContentTypeProvider();
+            if (!provider.TryGetContentType(fullPath, out var contentType))
+            {
+                contentType = "application/octet-stream";
+            }
+
+            return PhysicalFile(fullPath, contentType, enableRangeProcessing: true);
         }
     #endregion API CALLS
 

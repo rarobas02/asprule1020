@@ -8,6 +8,12 @@
 <h2>Enter your email.</h2>
 <hr />
 <div class="row">
+    <div class="col-1 col-md-1 text-right mb-2">
+        <a asp-area="Client" asp-controller="Register" asp-action="Index" class="btn btn-outline-primary form-control btn-sm">Back to Home</a>
+    </div>
+</div>
+
+<div class="row">
     <div class="col-md-4">
         <form method="post">
             <div asp-validation-summary="All" class="text-danger" role="alert"></div>
