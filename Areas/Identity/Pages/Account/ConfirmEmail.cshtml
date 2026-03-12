@@ -3,6 +3,11 @@
 @{
     ViewData["Title"] = "Confirm email";
 }
+<div class="row">
+    <div class="col-1 col-md-1 text-right mb-2">
+        <a asp-area="Client" asp-controller="Register" asp-action="Index" class="btn btn-outline-primary form-control btn-sm">Back to Home</a>
+    </div>
+</div>
 
 <h1>@ViewData["Title"]</h1>
 <partial name="_StatusMessage" model="Model.StatusMessage" />
