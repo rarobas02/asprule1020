@@ -166,7 +166,7 @@ namespace asprule1020.Areas.Identity.Pages.Account
                     {
                         await _signInManager.SignOutAsync();
                         var statusLabel = string.IsNullOrWhiteSpace(register.EstStatus) ? "review" : register.EstStatus;
-                        ModelState.AddModelError(string.Empty, $"Your Registration Status is still {statusLabel}, only Approved Application is allowed to update. Create new Registration For Re-application");
+                        ModelState.AddModelError(string.Empty, $"Your Registration Status is still {statusLabel}, only Approved Applications are allowed to update. Create new Registration For Re-application");
                         return Page();
                     }
 

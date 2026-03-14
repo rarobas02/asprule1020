@@ -19,7 +19,7 @@ function loadDataTable() {
                 data: 'id',
                 render: data => `
                     <div class="w-75 btn-group" role="group">
-                        <a href="/admin/evaluator/approveditem?id=${data}" class="btn btn-primary mx-2">
+                        <a href="/admin/evaluator/updateitem?id=${data}" class="btn btn-primary mx-2">
                             <i class="bi bi-pencil-square"></i>Review
                         </a>
                     </div>`,
