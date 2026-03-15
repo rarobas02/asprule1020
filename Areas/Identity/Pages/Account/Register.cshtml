@@ -20,6 +20,8 @@
         "Forklift",
         "Cranes"
     };
+    var selectedTechInfo1 = Model?.Input?.Register?.EstTechInfo1 ?? new List<string>();
+    var selectedTechInfo2 = Model?.Input?.Register?.EstTechInfo2 ?? new List<string>();
 }
 
 <div class="row">
@@ -54,11 +56,11 @@
                 <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
                     <div>
                         <p>
-                        <div class="d-grid">
-                            @foreach (var provider in Model.ExternalLogins!)
-                            {
-                                <button type="submit" class="btn btn-primary" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.DisplayName</button>
-                            }
+                            <div class="d-grid">
+                                @foreach (var provider in Model.ExternalLogins!)
+                                {
+                                    <button type="submit" class="btn btn-primary" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.DisplayName</button>
+                                }
                             </div>
                         </p>
                     </div>
@@ -193,7 +195,7 @@
                             <select asp-for="Input.Register.EstBrgy"
                                     class="form-select "
                                     data-element="EstBrgy"
-                                    disabled >
+                                    disabled>
                                 <option value="" disabled selected>Select Barangay</option>
                             </select>
                             <div class="invalid-feedback">Barangay is required.</div>
@@ -344,28 +346,34 @@
                             <input asp-for="Input.Register.EstTotalEmployees" type="text" class="form-control" data-element="EstTotalEmployees" required readonly />
                             <div class="invalid-feedback">Number of Total Employee is required.</div>
                         </div>
+                        @{
+                            
+                        }
                         <div class="row mb-2">
                             <div class="col-lg-12">
                                 <br>
                                 <div class="d-flex flex-wrap gap-4 rounded p-2 bg-body-secondary bg-gradient">
                                     @foreach (var option in techInfo1Options)
                                     {
-                                        var checkboxId = $"techInfo1_{option.Replace(" ", "")}";
+                                        var checkboxId = $"techInfo1_{option.Replace(" ", "").Replace("/", "")}";
                                         <div class="form-check">
                                             <input type="checkbox"
                                                    class="form-check-input"
-                                                   name="EstTechInfo1"
+                                                   id="@checkboxId"
+                                                   name="Input.Register.EstTechInfo1"
                                                    value="@option"
-                                                   @(Model?.Input.Register.EstTechInfo1?.Contains(option) == true ? "checked" : null) />
+                                                   @(selectedTechInfo1.Contains(option) ? "checked" : null) />
                                             <label class="form-check-label" for="@checkboxId">@option</label>
                                         </div>
                                     }
+
                                     <div class="form-check">
                                         <input type="checkbox"
                                                class="form-check-input"
                                                id="EstTechInfo1OtherCheckBox"
-                                               name="EstTechInfo1"
-                                               value="Others" />
+                                               name="Input.Register.EstTechInfo1"
+                                               value="Others"
+                                               @(selectedTechInfo1.Contains("Others") ? "checked" : null) />
                                         <label class="form-check-label" for="EstTechInfo1OtherCheckBox">Others, Please Specify</label>
                                     </div>
                                 </div>
@@ -383,22 +391,25 @@
                                 <div class="d-flex flex-wrap gap-4 rounded p-2 bg-body-secondary bg-gradient">
                                     @foreach (var option in techInfo2Options)
                                     {
-                                        var checkboxId = $"techInfo2_{option.Replace(" ", "")}";
+                                        var checkboxId = $"techInfo2_{option.Replace(" ", "").Replace("/", "")}";
                                         <div class="form-check">
                                             <input type="checkbox"
-                                                   class="form-check-input ml-2"
-                                                   name="EstTechInfo2"
+                                                   class="form-check-input"
+                                                   id="@checkboxId"
+                                                   name="Input.Register.EstTechInfo2"
                                                    value="@option"
-                                                   @(Model?.Input.Register.EstTechInfo2?.Contains(option) == true ? "checked" : null) />
+                                                   @(selectedTechInfo2.Contains(option) ? "checked" : null) />
                                             <label class="form-check-label" for="@checkboxId">@option</label>
                                         </div>
                                     }
+
                                     <div class="form-check">
                                         <input type="checkbox"
-                                               class="form-check-input ml-2"
+                                               class="form-check-input"
                                                id="EstTechInfo2OtherCheckBox"
-                                               name="EstTechInfo2"
-                                               value="Others" />
+                                               name="Input.Register.EstTechInfo1"
+                                               value="Others"
+                                               @(selectedTechInfo2.Contains("Others") ? "checked" : null) />
                                         <label class="form-check-label" for="EstTechInfo2OtherCheckBox">Others, Please Specify</label>
                                     </div>
                                 </div>
