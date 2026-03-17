@@ -209,12 +209,14 @@ const register = {
 
         document.querySelectorAll("#EstBranchDiv .branch-unit-div").forEach((row) => {
             const rowValues = {
-                EstBranchRule1020Number: row.querySelector('[name="EstBranchRule1020Number[]"]')?.value?.trim() || "",
-                EstBranchName: row.querySelector('[name="EstBranchName[]"]')?.value?.trim() || "",
-                EstBranchEstName: row.querySelector('[name="EstBranchEstName[]"]')?.value?.trim() || ""
+                EstBranchRule1020Number: row.querySelector(".EstBranchRule1020Number")?.value?.trim() || "",
+                EstBranchName: row.querySelector(".EstBranchName")?.value?.trim() || "",
+                EstBranchEstName: row.querySelector(".EstBranchEstName")?.value?.trim() || ""
             };
 
-            values.push(rowValues);
+            if (rowValues.EstBranchRule1020Number || rowValues.EstBranchName || rowValues.EstBranchEstName) {
+                values.push(rowValues);
+            }
         });
 
         return values;
@@ -224,12 +226,14 @@ const register = {
 
         document.querySelectorAll("#EstLaborUnionDiv .labor-union-div").forEach((row) => {
             const EstUnionRowValues = {
-                EstUnionName: row.querySelector('[name="EstUnionName[]"]')?.value?.trim() || "",
-                EstUnionAddress: row.querySelector('[name="EstUnionAddress[]"]')?.value?.trim() || "",
-                EstUnionBLR: row.querySelector('[name="EstUnionBLR[]"]')?.value?.trim() || ""
+                EstUnionName: row.querySelector(".EstUnionName")?.value?.trim() || "",
+                EstUnionAddress: row.querySelector(".EstUnionAddress")?.value?.trim() || "",
+                EstUnionBLR: row.querySelector(".EstUnionBLR")?.value?.trim() || ""
             };
 
-            uvalues.push(EstUnionRowValues);
+            if (EstUnionRowValues.EstUnionName || EstUnionRowValues.EstUnionAddress || EstUnionRowValues.EstUnionBLR) {
+                uvalues.push(EstUnionRowValues);
+            }
         });
 
         return uvalues;
@@ -781,6 +785,19 @@ const register = {
         } else {
             $(errorMessageId).text(''); // Clear any previous error messages
         }
+    },
+    reindexDynamicRows: function () {
+        document.querySelectorAll("#EstBranchDiv .branch-unit-div").forEach((row, i) => {
+            row.querySelector(".EstBranchRule1020Number")?.setAttribute("name", `Input.BranchUnits[${i}].Rule1020Number`);
+            row.querySelector(".EstBranchName")?.setAttribute("name", `Input.BranchUnits[${i}].BranchName`);
+            row.querySelector(".EstBranchEstName")?.setAttribute("name", `Input.BranchUnits[${i}].BranchAddress`);
+        });
+
+        document.querySelectorAll("#EstLaborUnionDiv .labor-union-div").forEach((row, i) => {
+            row.querySelector(".EstUnionName")?.setAttribute("name", `Input.LaborUnions[${i}].UnionName`);
+            row.querySelector(".EstUnionAddress")?.setAttribute("name", `Input.LaborUnions[${i}].UnionAddress`);
+            row.querySelector(".EstUnionBLR")?.setAttribute("name", `Input.LaborUnions[${i}].UnionBLR`);
+        });
     }
 };
 
@@ -949,12 +966,13 @@ $(document)
             </div>
           </div>
   `;
-
+        
         // Append the new div to the subcontractorContainer
         document.getElementById("EstBranchDiv").prepend(branchUnitDiv);
-
+        register.reindexDynamicRows();
         branchUnitDiv.querySelector('.removeBranchUnitBtn').addEventListener('click', function () {
             branchUnitDiv.remove();
+            register.reindexDynamicRows();
         });
     })
     .off("click", "#EstAddUnionBtn")
@@ -993,8 +1011,10 @@ $(document)
 
         // Append the new div to the subcontractorContainer
         document.getElementById("EstLaborUnionDiv").prepend(laborUnionDiv);
+        register.reindexDynamicRows();
         laborUnionDiv.querySelector('.removeLaborUniohnBtn').addEventListener('click', function () {
             laborUnionDiv.remove();
+            register.reindexDynamicRows();
         });
     })
     .off("click", "#EstIsHaveBranchUnits")

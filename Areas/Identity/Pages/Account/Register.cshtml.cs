@@ -122,9 +122,24 @@ namespace asprule1020.Areas.Identity.Pages.Account
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; }
             public Register Register { get; set; }
+            public List<BranchUnitInput> BranchUnits { get; set; } = [];
+            public List<LaborUnionInput> LaborUnions { get; set; } = [];
             public IFormFile EstSECFileUpload { get; set; }
             public IFormFile EstBisPermitFileUpload { get; set; }
             public IFormFile EstOwnerValidIdFileUpload { get; set; }
+        }
+        public class BranchUnitInput
+        {
+            public string? Rule1020Number { get; set; }
+            public string? BranchName { get; set; }
+            public string? BranchAddress { get; set; }
+        }
+
+        public class LaborUnionInput
+        {
+            public string? UnionName { get; set; }
+            public string? UnionAddress { get; set; }
+            public string? UnionBLR { get; set; }
         }
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
@@ -164,6 +179,44 @@ namespace asprule1020.Areas.Identity.Pages.Account
                 registerEntity.EstOwnerValidIDFile = await SavePdfAsync(Input.EstOwnerValidIdFileUpload, "valid_id", "-validid");
 
                 _db.Registers.Add(registerEntity);
+                await _db.SaveChangesAsync();
+
+                var branchEntities = Input.BranchUnits
+                    .Where(branchUnit => !string.IsNullOrWhiteSpace(branchUnit.Rule1020Number)
+                             || !string.IsNullOrWhiteSpace(branchUnit.BranchName)
+                             || !string.IsNullOrWhiteSpace(branchUnit.BranchAddress))
+                    .Select(branchUnit => new BranchUnit
+                    {
+                        RegisterId = registerEntity.Id,
+                        Rule1020Number = branchUnit.Rule1020Number?.Trim(),
+                        BranchName = branchUnit.BranchName?.Trim(),
+                        BranchAddress = branchUnit.BranchAddress?.Trim()
+                    })
+                    .ToList();
+
+                if (branchEntities.Count > 0)
+                {
+                    _db.BranchUnits.AddRange(branchEntities);
+                }
+
+                var laborUnionEntities = Input.LaborUnions
+                    .Where(laborUnion => !string.IsNullOrWhiteSpace(laborUnion.UnionName)
+                             || !string.IsNullOrWhiteSpace(laborUnion.UnionAddress)
+                             || !string.IsNullOrWhiteSpace(laborUnion.UnionBLR))
+                    .Select(laborUnion => new LaborUnion
+                    {
+                        RegisterId = registerEntity.Id,
+                        UnionName = laborUnion.UnionName?.Trim(),
+                        UnionAddress = laborUnion.UnionAddress?.Trim(),
+                        UnionBLR = laborUnion.UnionBLR?.Trim()
+                    })
+                    .ToList();
+
+                if (laborUnionEntities.Count > 0)
+                {
+                    _db.LaborUnions.AddRange(laborUnionEntities);
+                }
+
                 await _db.SaveChangesAsync();
 
                 user.RegisterId = registerEntity.Id;
@@ -256,6 +309,7 @@ namespace asprule1020.Areas.Identity.Pages.Account
             return fileName;                    // <-- only the file name
             // return Path.Combine(Path.DirectorySeparatorChar + subFolder, fileName); // <-- if you prefer relative path
         }
+
 
         private void PopulateTransId()
         {

@@ -347,7 +347,7 @@
                             <div class="invalid-feedback">Number of Total Employee is required.</div>
                         </div>
                         @{
-                            
+
                         }
                         <div class="row mb-2">
                             <div class="col-lg-12">
@@ -407,7 +407,7 @@
                                         <input type="checkbox"
                                                class="form-check-input"
                                                id="EstTechInfo2OtherCheckBox"
-                                               name="Input.Register.EstTechInfo1"
+                                               name="Input.Register.EstTechInfo2"
                                                value="Others"
                                                @(selectedTechInfo2.Contains("Others") ? "checked" : null) />
                                         <label class="form-check-label" for="EstTechInfo2OtherCheckBox">Others, Please Specify</label>
@@ -708,7 +708,12 @@
                     </div>
                     <div class="container mt-3 bg-light p-3 d-none" id="review_branch_unit_container">
                         <h5 class="text-muted">Branch Unit</h5>
-                        <table class="table table-bordered" id="est_branch_table">
+                        <table class="table table-bordered" id="est_branch_table" style="table-layout: fixed; width: 100%;">
+                            <colgroup>
+                                <col style="width: 33.3333%;" />
+                                <col style="width: 33.3333%;" />
+                                <col style="width: 33.3334%;" />
+                            </colgroup>
                             <thead>
                                 <tr>
                                     <th class="text-center">Rule 1020 Application #</th>
