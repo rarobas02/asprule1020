@@ -125,5 +125,20 @@ namespace asprule1020.Areas.Client.Controllers
             }
             return Json(new { status = true, data = true });
         }
+        public IActionResult RegisterConfirmation(Guid id)
+        {
+            var register = _unitOfWork.Register.Get(r => r.Id == id, tracked: false);
+            if (register is null)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            var registerVM = new RegisterVM
+            {
+                Register = register
+            };
+
+            return View(registerVM);
+        }
     }
 }

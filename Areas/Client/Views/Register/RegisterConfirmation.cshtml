@@ -1,0 +1,64 @@
+﻿@model RegisterVM
+@{
+    ViewData["Title"] = "Registration Confirmation";
+
+    var fullName = string.Join(" ", new[]
+    {
+        Model?.Register?.EstOwnerFirst,
+        Model?.Register?.EstOwnerMid,
+        Model?.Register?.EstOwnerLast
+    }.Where(x => !string.IsNullOrWhiteSpace(x)));
+
+    var fullAddress = string.Join(", ", new[]
+    {
+        Model?.Register?.EstStreet,
+        Model?.Register?.EstBrgy,
+        Model?.Register?.EstCityMun,
+        Model?.Register?.EstProvince,
+        Model?.Register?.EstRegion
+    }.Where(x => !string.IsNullOrWhiteSpace(x)));
+}
+<div class="d-flex justify-content-center align-items-center">
+    <div class="card shadow text-center">
+        <div class="card-body" style="font-size: 1.28rem;">
+            <div class="mb-3">
+                <img src="~/img/_Layout/undraw_profile.svg" class="rounded-circle" alt="Icon" width="80" height="80">
+            </div>
+            <h1 class="card-title mb-3 fs-1">Registration Details</h1>
+
+            <div class="alert alert-primary d-flex align-items-center" role="alert">
+                <i class="me-2 bi bi-exclamation-triangle-fill"></i>
+                <div>
+                    To complete your Registration, please confirm it via the link we sent to your Email.
+                </div>
+            </div>
+            <div class="alert alert-primary d-flex align-items-center" role="alert">
+                <i class="me-2 bi bi-exclamation-triangle-fill"></i>
+                <div>
+                    Enter your Transaction ID <a asp-area="Client" asp-controller="Verify" asp-action="Index" class="alert-link">here</a> to track your Registration
+                </div>
+            </div>
+
+            <dl class="row text-start mb-0">
+                <dt class="col-sm-4">Transaction ID</dt>
+                <dd class="col-sm-8">@Model?.Register?.TransId</dd>
+
+                <dt class="col-sm-4">Establishment Name</dt>
+                <dd class="col-sm-8">@Model?.Register?.EstName</dd>
+
+                <dt class="col-sm-4">Address</dt>
+                <dd class="col-sm-8">@fullAddress</dd>
+
+                <dt class="col-sm-4">Registration Status</dt>
+                <dd class="col-sm-8"></><span class="badge text-bg-primary">@Model?.Register?.EstStatus</span></dd>
+            </dl>
+
+            <div class="d-grid mt-4">
+                <a asp-area="Client" asp-controller="Register" asp-action="Index" class="btn btn-primary">
+                    <i class="bi bi-house-door-fill me-2"></i>
+                    Back to Home
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
