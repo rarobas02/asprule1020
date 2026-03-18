@@ -1,0 +1,68 @@
+﻿@model UpdateVM
+@{
+    ViewData["Title"] = "Update Confirmation";
+
+    var fullName = string.Join(" ", new[]
+    {
+        Model?.Register?.EstOwnerFirst,
+        Model?.Register?.EstOwnerMid,
+        Model?.Register?.EstOwnerLast
+    }.Where(x => !string.IsNullOrWhiteSpace(x)));
+
+    var fullAddress = string.Join(", ", new[]
+    {
+        Model?.Register?.EstStreet,
+        Model?.Register?.EstBrgy,
+        Model?.Register?.EstCityMun,
+        Model?.Register?.EstProvince,
+        Model?.Register?.EstRegion
+    }.Where(x => !string.IsNullOrWhiteSpace(x)));
+
+    var email = Model?.ApplicationUser?.Email ?? Model?.Register?.Email;
+}
+
+<div class="d-flex justify-content-center align-items-center">
+    <div class="card shadow text-center" style="max-width: 40rem; width: 100%;">
+        <div class="card-body" style="font-size: 1.08rem;">
+            <div class="mb-3">
+                <img src="~/img/_Layout/undraw_profile.svg" class="rounded-circle" alt="Icon" width="80" height="80">
+            </div>
+
+            <div class="alert alert-success d-flex align-items-center" role="alert">
+                <i class="me-2 bi bi-check-circle-fill"></i>
+                <div>Your update request has been submitted. A confirmation email was sent.</div>
+            </div>
+
+            <h5 class="card-title mb-3 fs-4">Updated Information</h5>
+
+            <dl class="row text-start mb-0">
+                <dt class="col-sm-4">Transaction ID</dt>
+                <dd class="col-sm-8">@Model?.Register?.TransId</dd>
+
+                <dt class="col-sm-4">Establishment</dt>
+                <dd class="col-sm-8">@Model?.Register?.EstName</dd>
+
+                <dt class="col-sm-4">Name</dt>
+                <dd class="col-sm-8">@fullName</dd>
+
+                <dt class="col-sm-4">Email</dt>
+                <dd class="col-sm-8">@email</dd>
+
+                <dt class="col-sm-4">Phone</dt>
+                <dd class="col-sm-8">@Model?.Register?.EstPhone</dd>
+
+                <dt class="col-sm-4">Address</dt>
+                <dd class="col-sm-8">@fullAddress</dd>
+            </dl>
+
+            <div class="d-grid gap-2 mt-4">
+                <a asp-area="Client" asp-controller="Update" asp-action="Index" asp-route-registerId="@Model?.Register?.Id" class="btn btn-secondary">
+                    Back to Update Form
+                </a>
+                <a asp-area="Client" asp-controller="Register" asp-action="Index" class="btn btn-primary">
+                    Back to Home
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

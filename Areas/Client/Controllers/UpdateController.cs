@@ -4,6 +4,7 @@ using asprule1020.Models.ViewModel;
 using asprule1020.Utility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,15 +17,18 @@ namespace asprule1020.Areas.Client.Controllers
         private readonly IUnitOfWork _unitOfWork;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly IEmailSender _emailSender;
 
         public UpdateController(
             IUnitOfWork unitOfWork,
             UserManager<ApplicationUser> userManager,
-            IWebHostEnvironment webHostEnvironment)
+            IWebHostEnvironment webHostEnvironment,
+            IEmailSender emailSender)
         {
             _unitOfWork = unitOfWork;
             _userManager = userManager;
             _webHostEnvironment = webHostEnvironment;
+            _emailSender = emailSender;
         }
 
         public async Task<IActionResult> Index(Guid? registerId)
@@ -50,11 +54,36 @@ namespace asprule1020.Areas.Client.Controllers
 
             return View(updateVM);
         }
+
+        public async Task<IActionResult> UpdateConfirmation(Guid? registerId)
+        {
+            if (registerId == null || registerId == Guid.Empty)
+            {
+                return NotFound();
+            }
+
+            var register = _unitOfWork.Register.Get(u => u.Id == registerId.Value);
+            if (register == null)
+            {
+                return NotFound();
+            }
+
+            var vm = new UpdateVM
+            {
+                Register = register,
+                ApplicationUser = await _userManager.Users
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(u => u.RegisterId == registerId.Value)
+            };
+
+            return View(vm);
+        }
+
         private async Task<string> UpdateFileAsync(
-    IFormFile file,
-    string subFolder,
-    string? oldFileName,
-    string suffix)
+            IFormFile file,
+            string subFolder,
+            string? oldFileName,
+            string suffix)
         {
             if (file is null || file.Length == 0)
             {
@@ -75,25 +104,18 @@ namespace asprule1020.Areas.Client.Controllers
 
             return fileName;
         }
+
         #region UPDATE API
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Update(UpdateVM updateVM)
         {
-            // the model state is always invalid because there are required tags in register model that is not present in the update form
-            // TODO: bypass required from the db for update
-            //if (!ModelState.IsValid || updateVM.Register == null || updateVM.Register.Id == Guid.Empty)
-            //{
-            //    return View(nameof(Index), updateVM);
-            //}
-
             var existing = _unitOfWork.Register.Get(u => u.Id == updateVM.Register.Id);
             if (existing == null)
             {
                 return NotFound();
             }
 
-            // default: keep old names
             updateVM.Register.EstSECFile = existing.EstSECFile;
             updateVM.Register.EstBisPermitFile = existing.EstBisPermitFile;
             updateVM.Register.EstOwnerValidIDFile = existing.EstOwnerValidIDFile;
@@ -114,11 +136,22 @@ namespace asprule1020.Areas.Client.Controllers
             _unitOfWork.UpdateRegistration.UpdateRegistration(updateVM.Register);
             _unitOfWork.Save();
 
+            var applicationUser = await _userManager.Users
+                .AsNoTracking()
+                .FirstOrDefaultAsync(u => u.RegisterId == updateVM.Register.Id);
+
+            var emailTo = applicationUser?.Email ?? updateVM.ApplicationUser?.Email;
+            if (!string.IsNullOrWhiteSpace(emailTo))
+            {
+                await _emailSender.SendEmailAsync(
+                    emailTo,
+                    $"Rule 1020 Update Confirmation : {existing.TransId}",
+                    $"<p>Good day!</p><p>Your update request for <strong>{updateVM.Register.EstName}</strong> has been submitted successfully.</p><p>Tracking Number: <strong>{existing.TransId}</strong></p><p>Thank you!</p>");
+            }
+
             TempData["success"] = "Establishment Registration Updated Successfully";
-            return RedirectToAction(nameof(Index), new { registerId = updateVM.Register.Id });
+            return RedirectToAction(nameof(UpdateConfirmation), new { registerId = updateVM.Register.Id });
         }
-
         #endregion
-
     }
 }
