@@ -222,7 +222,8 @@ namespace asprule1020.Areas.Identity.Pages.Account
 
                 user.RegisterId = registerEntity.Id;
                 await _userManager.UpdateAsync(user);
-
+                await _emailSender.SendEmailAsync(Input.Email, $"Rule 1020 Tracking Number : {registerEntity.TransId}",
+    $"<p>Good day!</p><p>Your Application has been submitted for your Establishment <strong>{registerEntity.EstName}</strong></p><p>Thank you!</p>");
                 // Redirect to Client confirmation page with submitted registration id.
                 var confirmationUrl = Url.Action(
                     "RegisterConfirmation",
