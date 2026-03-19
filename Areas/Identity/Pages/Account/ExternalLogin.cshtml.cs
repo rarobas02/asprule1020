@@ -152,7 +152,7 @@ namespace asprule1020.Areas.Identity.Pages.Account
                     return LocalRedirect(GetSafeReturnUrl(returnUrl));
                 }
 
-                return await RedirectByRoleAsync(user, returnUrl);
+                return await RedirectByRoleAsync(user, returnUrl, info.ProviderDisplayName);
             }
 
             if (result.IsLockedOut)
@@ -180,7 +180,7 @@ namespace asprule1020.Areas.Identity.Pages.Account
                         {
                             await _signInManager.SignInAsync(existingUser, isPersistent: false, info.LoginProvider);
                             _logger.LogInformation("Linked {LoginProvider} login to existing user {Email}.", info.LoginProvider, email);
-                            return await RedirectByRoleAsync(existingUser, returnUrl);
+                            return await RedirectByRoleAsync(existingUser, returnUrl, info.s);
                         }
                     }
                 }
@@ -376,7 +376,15 @@ namespace asprule1020.Areas.Identity.Pages.Account
             return Url.Content("~/");
         }
 
-        private async Task<IActionResult> RedirectByRoleAsync(ApplicationUser user, string returnUrl)
+        private IActionResult ReturnExternalLoginPage(string providerDisplayName, string returnUrl)
+        {
+            EnsureInputInitialized();
+            ProviderDisplayName = providerDisplayName;
+            ReturnUrl = returnUrl;
+            return Page();
+        }
+
+        private async Task<IActionResult> RedirectByRoleAsync(ApplicationUser user, string returnUrl, string providerDisplayName)
         {
             var registerId = user.RegisterId?.ToString();
 
@@ -386,7 +394,7 @@ namespace asprule1020.Areas.Identity.Pages.Account
                 {
                     await _signInManager.SignOutAsync();
                     ModelState.AddModelError(string.Empty, "Your account is not linked to any registration yet.");
-                    return Page();
+                    return ReturnExternalLoginPage(providerDisplayName, returnUrl);
                 }
 
                 var register = await _db.Registers.AsNoTracking()
@@ -396,7 +404,7 @@ namespace asprule1020.Areas.Identity.Pages.Account
                 {
                     await _signInManager.SignOutAsync();
                     ModelState.AddModelError(string.Empty, "Unable to locate your registration record. Please contact support.");
-                    return Page();
+                    return ReturnExternalLoginPage(providerDisplayName, returnUrl);
                 }
 
                 if (!string.Equals(register.EstStatus, "Approved", StringComparison.OrdinalIgnoreCase))
@@ -404,7 +412,7 @@ namespace asprule1020.Areas.Identity.Pages.Account
                     await _signInManager.SignOutAsync();
                     var statusLabel = string.IsNullOrWhiteSpace(register.EstStatus) ? "review" : register.EstStatus;
                     ModelState.AddModelError(string.Empty, $"Your Registration Status is still {statusLabel}, only Approved Application is allowed to update. Create new Registration For Re-application");
-                    return Page();
+                    return ReturnExternalLoginPage(providerDisplayName, returnUrl);
                 }
 
                 return RedirectToAction("Index", "Update", new { area = "Client", registerId });

@@ -2,13 +2,6 @@
 @{
     ViewData["Title"] = "Registration Confirmation";
 
-    var fullName = string.Join(" ", new[]
-    {
-        Model?.Register?.EstOwnerFirst,
-        Model?.Register?.EstOwnerMid,
-        Model?.Register?.EstOwnerLast
-    }.Where(x => !string.IsNullOrWhiteSpace(x)));
-
     var fullAddress = string.Join(", ", new[]
     {
         Model?.Register?.EstStreet,

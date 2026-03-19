@@ -2,13 +2,6 @@
 @{
     ViewData["Title"] = "Update Confirmation";
 
-    var fullName = string.Join(" ", new[]
-    {
-        Model?.Register?.EstOwnerFirst,
-        Model?.Register?.EstOwnerMid,
-        Model?.Register?.EstOwnerLast
-    }.Where(x => !string.IsNullOrWhiteSpace(x)));
-
     var fullAddress = string.Join(", ", new[]
     {
         Model?.Register?.EstStreet,
@@ -39,29 +32,34 @@
                 <dt class="col-sm-4">Transaction ID</dt>
                 <dd class="col-sm-8">@Model?.Register?.TransId</dd>
 
-                <dt class="col-sm-4">Establishment</dt>
+                <dt class="col-sm-4">Establishment Name</dt>
                 <dd class="col-sm-8">@Model?.Register?.EstName</dd>
-
-                <dt class="col-sm-4">Name</dt>
-                <dd class="col-sm-8">@fullName</dd>
-
-                <dt class="col-sm-4">Email</dt>
-                <dd class="col-sm-8">@email</dd>
-
-                <dt class="col-sm-4">Phone</dt>
-                <dd class="col-sm-8">@Model?.Register?.EstPhone</dd>
 
                 <dt class="col-sm-4">Address</dt>
                 <dd class="col-sm-8">@fullAddress</dd>
+
+                <dt class="col-sm-4">Registration Status</dt>
+                <dd class="col-sm-8"></><span class="badge text-bg-primary">@Model?.Register?.EstStatus</span></dd>
             </dl>
 
             <div class="d-grid gap-2 mt-4">
-                <a asp-area="Client" asp-controller="Update" asp-action="Index" asp-route-registerId="@Model?.Register?.Id" class="btn btn-secondary">
+                <a asp-area="Client"
+                   asp-controller="Update"
+                   asp-action="Index"
+                   asp-route-registerId="@Model?.Register?.Id"
+                   class="btn btn-secondary">
                     Back to Update Form
                 </a>
-                <a asp-area="Client" asp-controller="Register" asp-action="Index" class="btn btn-primary">
-                    Back to Home
-                </a>
+
+                <form asp-area="Identity"
+                      asp-page="/Account/Logout"
+                      asp-route-returnUrl="@Url.Action("Index", "Register", new { area = "Client" })"
+                      method="post"
+                      class="d-grid">
+                    <button type="submit" class="btn btn-primary">
+                        Logout and Back to Home
+                    </button>
+                </form>
             </div>
         </div>
     </div>
