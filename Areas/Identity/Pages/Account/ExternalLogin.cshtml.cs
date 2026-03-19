@@ -180,7 +180,7 @@ namespace asprule1020.Areas.Identity.Pages.Account
                         {
                             await _signInManager.SignInAsync(existingUser, isPersistent: false, info.LoginProvider);
                             _logger.LogInformation("Linked {LoginProvider} login to existing user {Email}.", info.LoginProvider, email);
-                            return await RedirectByRoleAsync(existingUser, returnUrl, info.s);
+                            return await RedirectByRoleAsync(existingUser, returnUrl, info.ProviderDisplayName);
                         }
                     }
                 }
@@ -393,8 +393,8 @@ namespace asprule1020.Areas.Identity.Pages.Account
                 if (!user.RegisterId.HasValue)
                 {
                     await _signInManager.SignOutAsync();
-                    ModelState.AddModelError(string.Empty, "Your account is not linked to any registration yet.");
-                    return ReturnExternalLoginPage(providerDisplayName, returnUrl);
+                    ErrorMessage = "Your account is not linked to any registration yet.";
+                    return RedirectToPage("./Login", new { ReturnUrl = GetSafeReturnUrl(returnUrl) });
                 }
 
                 var register = await _db.Registers.AsNoTracking()
@@ -403,16 +403,18 @@ namespace asprule1020.Areas.Identity.Pages.Account
                 if (register is null)
                 {
                     await _signInManager.SignOutAsync();
-                    ModelState.AddModelError(string.Empty, "Unable to locate your registration record. Please contact support.");
-                    return ReturnExternalLoginPage(providerDisplayName, returnUrl);
+                    ErrorMessage = "Unable to locate your registration record. Please contact support.";
+                    return RedirectToPage("./Login", new { ReturnUrl = GetSafeReturnUrl(returnUrl) });
                 }
 
-                if (!string.Equals(register.EstStatus, "Approved", StringComparison.OrdinalIgnoreCase))
+                var status = register.EstStatus?.Trim();
+
+                if (!string.Equals(status, SD.StatusApproved, StringComparison.OrdinalIgnoreCase))
                 {
                     await _signInManager.SignOutAsync();
-                    var statusLabel = string.IsNullOrWhiteSpace(register.EstStatus) ? "review" : register.EstStatus;
-                    ModelState.AddModelError(string.Empty, $"Your Registration Status is still {statusLabel}, only Approved Application is allowed to update. Create new Registration For Re-application");
-                    return ReturnExternalLoginPage(providerDisplayName, returnUrl);
+                    var statusLabel = string.IsNullOrWhiteSpace(status) ? "review" : status;
+                    ErrorMessage = $"Your Registration Status is still {statusLabel}, only Approved Application is allowed to update. Create new Registration For Re-application";
+                    return RedirectToPage("./Login", new { ReturnUrl = GetSafeReturnUrl(returnUrl) });
                 }
 
                 return RedirectToAction("Index", "Update", new { area = "Client", registerId });
