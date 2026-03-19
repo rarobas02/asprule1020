@@ -242,8 +242,9 @@ namespace asprule1020.Areas.Identity.Pages.Account
                         await _userManager.AddToRoleAsync(user, SD.Role_Client);
 
                         var registerEntity = Input.Register!;
-                        registerEntity.TransId ??= $"TR-{DateTime.UtcNow:yyyyMMddHHmmssfff}";
+                        registerEntity.TransId ??= $"RO4A-1020-{DateTime.UtcNow:yyyyMMddHHmmssfff}";
                         registerEntity.UserName = registerEntity.UserName ?? Input.Email;
+                        registerEntity.Email = Input.Email;
                         registerEntity.EstSECFile = await SavePdfAsync(Input.EstSECFileUpload, "sec_dti", "-sec");
                         registerEntity.EstBisPermitFile = await SavePdfAsync(Input.EstBisPermitFileUpload, "bus_perm", "-bus_permit");
                         registerEntity.EstOwnerValidIDFile = await SavePdfAsync(Input.EstOwnerValidIdFileUpload, "valid_id", "-validid");
@@ -254,13 +255,22 @@ namespace asprule1020.Areas.Identity.Pages.Account
                         user.RegisterId = registerEntity.Id;
                         await _userManager.UpdateAsync(user);
 
-                        if (_userManager.Options.SignIn.RequireConfirmedAccount)
+                        await _emailSender.SendEmailAsync(
+                            Input.Email,
+                            $"Rule 1020 Tracking Number : {registerEntity.TransId}",
+                            $"<p>Good day!</p><p>Your Application has been submitted for your Establishment <strong>{registerEntity.EstName}</strong></p><p>Thank you!</p>");
+
+                        var confirmationUrl = Url.Action(
+                            "RegisterConfirmation",
+                            "Register",
+                            new { area = "Client", id = registerEntity.Id });
+
+                        if (!string.IsNullOrWhiteSpace(confirmationUrl))
                         {
-                            return RedirectToPage("./RegisterConfirmation", new { Email = Input.Email });
+                            return LocalRedirect(confirmationUrl);
                         }
 
-                        await _signInManager.SignInAsync(user, isPersistent: false, info.LoginProvider);
-                        return await RedirectByRoleAsync(user, returnUrl);
+                        return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });
                     }
                 }
 
