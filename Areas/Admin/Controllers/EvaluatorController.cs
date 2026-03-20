@@ -94,14 +94,22 @@ namespace asprule1020.Areas.Admin.Controllers
         {
             return View();
         }
-        public IActionResult GenerateCertificate()
+        public IActionResult GenerateCertificate(Guid? id)
         {
-            //if (id == Guid.Empty)
-            //{
-            //    return NotFound();
-            //}
-            QuestPDF.Settings.License = LicenseType.Community; //license is required
-            var certificateTemplate = new Rule1020Certificate(_webHostEnvironment);
+            if (!id.HasValue || id.Value == Guid.Empty)
+            {
+                return NotFound();
+            }
+
+            Register? registerFromDb = _unitOfWork.Register.Get(u => u.Id == id.Value);
+            if (registerFromDb is null)
+            {
+                return NotFound();
+            }
+
+            QuestPDF.Settings.License = LicenseType.Community;
+
+            var certificateTemplate = new Rule1020Certificate(_webHostEnvironment, registerFromDb);
 
             var document = Document.Create(container =>
             {
@@ -111,7 +119,7 @@ namespace asprule1020.Areas.Admin.Controllers
             using var stream = new MemoryStream();
             document.GeneratePdf(stream);
 
-            return File(stream.ToArray(), "application/pdf", $"Rule1020Certificate.pdf");
+            return File(stream.ToArray(), "application/pdf", "Rule1020Certificate.pdf");
         }
         #region API CALLS
 

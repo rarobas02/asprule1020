@@ -1,4 +1,5 @@
-﻿using QuestPDF.Fluent;
+﻿using asprule1020.Models;
+using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
 
@@ -7,10 +8,12 @@ namespace asprule1020.DataAccess.Documents.Certificate
     public class Rule1020Certificate
     {
         private readonly IWebHostEnvironment _env;
+        private readonly Register _register;
 
-        public Rule1020Certificate(IWebHostEnvironment env)
+        public Rule1020Certificate(IWebHostEnvironment env, Register register)
         {
             _env = env;
+            _register = register;
         }
 
         public DocumentMetadata GetMetadata() => DocumentMetadata.Default;
@@ -23,13 +26,53 @@ namespace asprule1020.DataAccess.Documents.Certificate
             const float headerHeight = 120;
             const float footerHeight = 95;
 
-            string transId = "RO4A-1234-1431-4646";
-            var estName = "BSKP CONSTRUCTION ASDFSDFDASDASDASDASDASDASDASDASDASDASDASDASDASDASDASDASDASDASDASDASDASDASDASDASDASDASDASDAS";
-            var estAddress = "Apple st. California, United States of America";
 
-            DateTime regDate = DateTime.Now;
-            var givenDateText = $"Given this day 5th of {regDate:MMMM yyyy}, Sta.Mesa, Manila.";
-            string directorName = "done done";
+            var registeredProvince = _register.EstProvince;
+
+            string officePlace = string.Empty;
+            string pdname = string.Empty;
+            string provdir = string.Empty;
+
+            switch (registeredProvince)
+            {
+                case "Cavite":
+                    officePlace = "Trece Martirez City, Cavite";
+                    pdname = "MARIVIC B. MARTINEZ";
+                    provdir = "Cavite Provincial Director";
+                    break;
+
+                case "Laguna":
+                    officePlace = "Calamba City, Laguna";
+                    pdname = "GUIDO R. RECIO";
+                    provdir = "Laguna Provincial Director";
+                    break;
+
+                case "Batangas":
+                    officePlace = "Lipa City, Batangas";
+                    pdname = "PREDELMA M. TAN";
+                    provdir = "Batangas Provincial Director";
+                    break;
+
+                case "Rizal":
+                    officePlace = "Cainta, Rizal";
+                    pdname = "CELIA G. ARIOLA";
+                    provdir = "Head, Rizal Provincial Office";
+                    break;
+
+                case "Quezon":
+                    officePlace = "Lucena City, Quezon";
+                    pdname = "CRISTINA H. BARAYANG";
+                    provdir = "OIC Head, Quezon Provincial Office";
+                    break;
+            }
+            string transId = _register.TransId;
+            var estName = _register.EstName;
+            var estAddress = $"{_register.EstStreet}, {_register.EstBrgy}, {_register.EstCityMun}, {_register.EstProvince}";
+
+            DateTime approvedDate = _register.EstPoHeadEvalDate ?? DateTime.Now;
+            var approvedDay = ApprovedDayToOrdinal(approvedDate.Day);
+
+            var givenDateText = $"Given this day {approvedDay} of {approvedDate:MMMM yyyy}, {officePlace}.";
 
             container.Page(page =>
             {
@@ -94,10 +137,10 @@ namespace asprule1020.DataAccess.Documents.Certificate
 
                         col.Item().PaddingTop(70);
 
-                        col.Item().AlignCenter().Text(directorName.ToUpper())
+                        col.Item().AlignCenter().Text(pdname.ToUpper())
                             .FontSize(11.97f).Bold();
 
-                        col.Item().AlignCenter().Text("Director")
+                        col.Item().AlignCenter().Text(provdir)
                             .FontSize(11.97f).Bold();
 
                         col.Item().PaddingTop(18);
@@ -111,6 +154,23 @@ namespace asprule1020.DataAccess.Documents.Certificate
                         });
                     });
             });
+        }
+        private static string ApprovedDayToOrdinal(int number)
+        {
+            if (number <= 0)
+                return number.ToString();
+
+            var lastTwo = number % 100;
+            if (lastTwo is 11 or 12 or 13)
+                return $"{number}th";
+
+            return (number % 10) switch
+            {
+                1 => $"{number}st",
+                2 => $"{number}nd",
+                3 => $"{number}rd",
+                _ => $"{number}th"
+            };
         }
     }
 }

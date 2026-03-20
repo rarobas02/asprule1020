@@ -500,7 +500,7 @@
                             </button>
                         </div>
                         <div class="col-sm-12 col-lg">
-                            <a asp-action="GenerateCertificate" asp-controller="Evaluator" asp-area="Admin"
+                            <a asp-action="GenerateCertificate" asp-controller="Evaluator" asp-area="Admin" asp-route-id="@register?.Id"
                                     class="btn btn-primary bg-gradient btn-block">
                                 Print Certificate
                                 (PDF)
