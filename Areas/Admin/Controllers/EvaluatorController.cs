@@ -1,4 +1,5 @@
-﻿using asprule1020.DataAccess.Repository.IRepository;
+﻿using asprule1020.DataAccess.Documents.Certificate;
+using asprule1020.DataAccess.Repository.IRepository;
 using asprule1020.Models;
 using asprule1020.Models.ViewModel;
 using asprule1020.Utility;
@@ -8,6 +9,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.StaticFiles;
 using System.Data;
 using System.Security.Claims;
+using QuestPDF.Fluent;
+using QuestPDF.Infrastructure;
+using System.IO;
 
 namespace asprule1020.Areas.Admin.Controllers
 {
@@ -89,6 +93,25 @@ namespace asprule1020.Areas.Admin.Controllers
         public IActionResult ViewAll()
         {
             return View();
+        }
+        public IActionResult GenerateCertificate()
+        {
+            //if (id == Guid.Empty)
+            //{
+            //    return NotFound();
+            //}
+            QuestPDF.Settings.License = LicenseType.Community; //license is required
+            var certificateTemplate = new Rule1020Certificate(_webHostEnvironment);
+
+            var document = Document.Create(container =>
+            {
+                certificateTemplate.Compose(container);
+            });
+
+            using var stream = new MemoryStream();
+            document.GeneratePdf(stream);
+
+            return File(stream.ToArray(), "application/pdf", $"Rule1020Certificate.pdf");
         }
         #region API CALLS
 

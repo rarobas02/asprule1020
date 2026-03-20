@@ -375,15 +375,6 @@ namespace asprule1020.Areas.Identity.Pages.Account
 
             return Url.Content("~/");
         }
-
-        private IActionResult ReturnExternalLoginPage(string providerDisplayName, string returnUrl)
-        {
-            EnsureInputInitialized();
-            ProviderDisplayName = providerDisplayName;
-            ReturnUrl = returnUrl;
-            return Page();
-        }
-
         private async Task<IActionResult> RedirectByRoleAsync(ApplicationUser user, string returnUrl, string providerDisplayName)
         {
             var registerId = user.RegisterId?.ToString();
