@@ -906,6 +906,24 @@ $(document)
             $(this).val(''); // Clear input if invalid
         }
     })
+    .off("input.positiveInt", '[data-element="EstTaxIdentificationNumber"]')
+    .on("input.positiveInt", '[data-element="EstTaxIdentificationNumber"]', function () {
+        // Keep digits only
+        let value = this.value.replace(/\D+/g, "");
+
+        // Remove leading zeros
+        value = value.replace(/^0+/, "");
+
+        this.value = value;
+    })
+    .off("blur.positiveInt", '[data-element="EstTaxIdentificationNumber"]')
+    .on("blur.positiveInt", '[data-element="EstTaxIdentificationNumber"]', function () {
+        // Enforce > 0
+        const value = parseInt(this.value, 10);
+        if (!Number.isInteger(value) || value <= 0) {
+            this.value = "";
+        }
+    })
     .off("input", '[data-element="EstCurrentCap"]')
     .on("input", '[data-element="EstCurrentCap"]', function () {
         let EstCurrentCapInput = register.getField("EstCurrentCap");

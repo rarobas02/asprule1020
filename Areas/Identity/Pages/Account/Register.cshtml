@@ -234,6 +234,13 @@
                             <div class="invalid-feedback">Last name of Manager/Owner is required.</div>
                         </div>
                         <div class="col-md-6">
+                            <label asp-for="Input.Register.EstTaxIdentificationNumber" class="form-label">
+                                Tax Identification Number (TIN)
+                            </label>
+                            <input asp-for="Input.Register.EstTaxIdentificationNumber" type="text" class="form-control" data-element="EstTaxIdentificationNumber" required />
+                            <div class="invalid-feedback">Tax Identification Number is required.</div>
+                        </div>
+                        <div class="col-md-6">
                             <label asp-for="Input.Register.EstCurrentCap" class="form-label">
                                 Current Capitalization
                             </label>
