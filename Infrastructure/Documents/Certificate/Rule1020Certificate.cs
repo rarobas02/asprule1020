@@ -65,7 +65,7 @@ namespace asprule1020.DataAccess.Documents.Certificate
                     provdir = "OIC Head, Quezon Provincial Office";
                     break;
             }
-            string transId = _register.TransId;
+            string rule1020Id = _register.Rule1020Id ?? _register.TransId;
             var estName = _register.EstName;
             var estAddress = $"{_register.EstStreet}, {_register.EstBrgy}, {_register.EstCityMun}, {_register.EstProvince}";
 
@@ -103,7 +103,7 @@ namespace asprule1020.DataAccess.Documents.Certificate
                         col.Item().AlignCenter().Text("CERTIFICATE OF REGISTRATION")
                             .FontSize(21.94f).Bold();
 
-                        col.Item().AlignCenter().Text(transId)
+                        col.Item().AlignCenter().Text(rule1020Id)
                             .FontSize(12.63f);
 
                         col.Item().PaddingTop(50);

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.StaticFiles;
+using System.Globalization;
 using System.Security.Claims;
 
 namespace asprule1020.Areas.Admin.Controllers
@@ -28,6 +29,14 @@ namespace asprule1020.Areas.Admin.Controllers
         {
             return View();
         }
+        private static readonly HashSet<string> R4aProvinces = new(StringComparer.OrdinalIgnoreCase)
+        {
+            "Laguna",
+            "Cavite",
+            "Batangas",
+            "Rizal",
+            "Quezon"
+        };
         //TODO: Refactor the API calls to a single method with a parameter for status to avoid code duplication
         public IActionResult ReviewItem(Guid? id)
         {
@@ -59,6 +68,24 @@ namespace asprule1020.Areas.Admin.Controllers
             registerVM.Register = _unitOfWork.Register.Get(u => u.Id == id);
             return View(registerVM);
         }
+        private string? BuildRule1020Number(string? estProvince)
+        {
+            if (string.IsNullOrWhiteSpace(estProvince))
+            {
+                return null;
+            }
+
+            if (!R4aProvinces.Contains(estProvince))
+            {
+                return null;
+            }
+
+            var rowCount = _unitOfWork.Register.GetAll(r => r.EstProvince == estProvince && r.EstStatus == SD.StatusApproved).Count(); // count all approved records from the user province
+            var lastId = rowCount + 1;
+
+            var provinceInitial = estProvince[..1].ToUpper(CultureInfo.InvariantCulture);
+            return $"RO4A-1020-{provinceInitial}PO-{DateTime.Now:MMyy-}{lastId:0000}";
+        }
         #region API CALLS
         [HttpGet]
         public IActionResult GetAllForApprovalAndReapply(string status)
@@ -86,8 +113,13 @@ namespace asprule1020.Areas.Admin.Controllers
         evaluator?.MiddleName?.Trim(),
         evaluator?.LastName?.Trim()
     }.Where(part => !string.IsNullOrWhiteSpace(part)));
+            string? rule1020Id = BuildRule1020Number(register.EstProvince);
 
-            _unitOfWork.Register.UpdatePoHead(register, evaluatorFullName);
+            if (string.IsNullOrEmpty(rule1020Id))
+            {
+                return BadRequest("Invalid province.");
+            }
+            _unitOfWork.Register.UpdatePoHead(register, evaluatorFullName, rule1020Id);
             _unitOfWork.Save();
             try
             {
