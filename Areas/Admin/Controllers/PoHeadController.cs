@@ -105,30 +105,44 @@ namespace asprule1020.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EvaluationResult(Register register)
         {
+            if (register.Id == Guid.Empty)
+            {
+                return BadRequest("Invalid register id.");
+            }
+
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var evaluator = await _userManager.FindByIdAsync(userId);
+            var evaluator = await _userManager.FindByIdAsync(userId!);
             var evaluatorFullName = string.Join(" ", new[]
             {
         evaluator?.FirstName?.Trim(),
         evaluator?.MiddleName?.Trim(),
         evaluator?.LastName?.Trim()
     }.Where(part => !string.IsNullOrWhiteSpace(part)));
-            string? rule1020Id = BuildRule1020Number(register.EstProvince);
 
-            if (string.IsNullOrEmpty(rule1020Id))
+            var registerFromDb = _unitOfWork.Register.Get(u => u.Id == register.Id);
+            if (registerFromDb is null)
+            {
+                return NotFound("Register record not found.");
+            }
+
+            var province = registerFromDb.EstProvince; // <-- province value by Id
+            var rule1020Id = BuildRule1020Number(province);
+
+            if (string.IsNullOrWhiteSpace(rule1020Id))
             {
                 return BadRequest("Invalid province.");
             }
+
             _unitOfWork.Register.UpdatePoHead(register, evaluatorFullName, rule1020Id);
             _unitOfWork.Save();
-            try
+
+            return Json(new
             {
-                return Json(new { success = true, message = "Evaluation updated successfully" });
-            }
-            catch (Exception ex)
-            {
-                return Json(new { success = false, message = Convert.ToString(ex) });
-            }
+                success = true,
+                message = "Evaluation updated successfully",
+                trans_no = registerFromDb.TransId,
+                recommendation = register.EstStatus
+            });
         }
         [HttpGet]
         public IActionResult ViewAttachment(Guid id, string type)

@@ -38,7 +38,7 @@ var pro_eval = {
 
             $.ajax({
                 type: "POST",
-                url: `/Admin/PoHead/EvaluationResult`,
+                url: `/Admin/PoHead/EvaluationResult?id=${document.querySelector(`[data-element="RegisterId"]`).value}`,
                 data: formData,
                 headers: {
                     'RequestVerificationToken': getAntiForgeryToken()
