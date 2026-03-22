@@ -152,6 +152,6 @@ namespace asprule1020.Areas.Client.Controllers
             TempData["success"] = "Establishment Registration Updated Successfully";
             return RedirectToAction(nameof(UpdateConfirmation), new { registerId = updateVM.Register.Id });
         }
-        #endregion
+        #endregion UPDATE API
     }
 }

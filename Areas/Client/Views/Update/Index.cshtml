@@ -15,7 +15,7 @@
         </div>
         <fieldset id="step1">
             <div class="row mb-2">
-                <div class="col-lg-6 col-sm-12">
+                <div class="col-lg-12 col-sm-12">
                     <label asp-for="Register.EstName" class="form-label">
                         Establishment
                         Name: <span class="text-danger fw-bolder"> *</span>
@@ -35,7 +35,7 @@
                     </label>
                     <div class="input-group has-validation">
                         <select asp-for="Register.EstRegion" class="form-control" data-element="EstRegion" required>
-                            <option value="" selected>Select Region</option>
+                            <option value="" disabled selected>Select Region</option>
                             <option value="Region IV-A (CALABARZON)">Region IV-A (CALABARZON)</option>
                         </select>
                         <div class="invalid-feedback">
@@ -191,7 +191,7 @@
                             Date)
                         </span>
                     </label>
-                    <div class="card-body bg-light rounded my-3 d-none" id="estabClosed">
+                    <div class="card-body bg-body-secondary rounded my-3 d-none" id="estabClosed">
                         <div class="row mb-2">
                             <div class="col-lg-4 col-sm-12">
                                 <label asp-for="Register.EstClosureDate" class="form-label">
@@ -231,11 +231,11 @@
 
             <div class="d-flex gap-4 my-4">
                 <button type="button" id="open_branch_modal_btn"
-                        class="btn btn-warning bg-gradient btn-block mt-3 w-100">
+                        class="btn btn-warning bg-gradient btn-block mt-3 w-100" data-bs-target="#branch_modal" data-bs-toggle="modal">
                     <span class="fas fa-edit"></span> Update Branch Unit/s
                 </button>
                 <button type="button" id="open_labor_union_modal_btn"
-                        class="btn btn-warning bg-gradient btn-block mt-3 w-100">
+                        class="btn btn-warning bg-gradient btn-block mt-3 w-100" data-bs-target="#labor_union_modal" data-bs-toggle="modal">
                     <span class="fas fa-edit"></span> Update Registered Labor Union/s
                 </button>
             </div>
@@ -495,64 +495,62 @@
                 </div>
                 <div class="card-body">
                     <dl class="row">
-                        <dt class="col-sm-12 col-lg-4">Registration Number:</dt>
-                        <dd class="col-sm-12 col-lg-8" id="review_transNo"></dd>
                         <dt class="col-sm-12 col-lg-4">Establishment Name:</dt>
-                        <dd class="col-sm-12 col-lg-8" id="review_est_name_estab"></dd>
+                        <dd class="col-sm-12 col-lg-8" id="reviewEstName"></dd>
                         <dt class="col-sm-12 col-lg-4">Region:</dt>
-                        <dd class="col-sm-12 col-lg-8" id="review_est_region"></dd>
+                        <dd class="col-sm-12 col-lg-8" id="reviewEstRegion"></dd>
                         <dt class="col-sm-12 col-lg-4">Province:</dt>
-                        <dd class="col-sm-12 col-lg-8" id="review_est_province"></dd>
+                        <dd class="col-sm-12 col-lg-8" id="reviewEstProvince"></dd>
                         <dt class="col-sm-12 col-lg-4">City/Municipality:</dt>
-                        <dd class="col-sm-12 col-lg-8" id="review_est_citymun"></dd>
+                        <dd class="col-sm-12 col-lg-8" id="reviewEstCityMun"></dd>
                         <dt class="col-sm-12 col-lg-4">Barangay:</dt>
-                        <dd class="col-sm-12 col-lg-8" id="review_est_barangay"></dd>
+                        <dd class="col-sm-12 col-lg-8" id="reviewEstBrgy"></dd>
                         <dt class="col-sm-12 col-lg-4">Location:</dt>
-                        <dd class="col-sm-12 col-lg-8" id="review_est_adress"></dd>
+                        <dd class="col-sm-12 col-lg-8" id="reviewEstStreet"></dd>
                         <dt class="col-sm-12 col-lg-4">Owner/Manager(First):</dt>
-                        <dd class="col-sm-12 col-lg-8" id="review_est_manag_first"></dd>
+                        <dd class="col-sm-12 col-lg-8" id="reviewEstOwnerFirst"></dd>
                         <dt class="col-sm-12 col-lg-4">Owner/Manager(Middle):</dt>
-                        <dd class="col-sm-12 col-lg-8" id="review_est_manag_mid"></dd>
+                        <dd class="col-sm-12 col-lg-8" id="reviewEstOwnerMid"></dd>
                         <dt class="col-sm-12 col-lg-4">Owner/Manager(Last):</dt>
-                        <dd class="col-sm-12 col-lg-8" id="review_est_manag_last"></dd>
+                        <dd class="col-sm-12 col-lg-8" id="reviewEstOwnerLast"></dd>
                         <dt class="col-sm-12 col-lg-4">Male Worker(s):</dt>
-                        <dd class="col-sm-12 col-lg-8" id="review_est_male_worker"></dd>
+                        <dd class="col-sm-12 col-lg-8" id="reviewEstMaleCount"></dd>
                         <dt class="col-sm-12 col-lg-4">Female Worker(s):</dt>
-                        <dd class="col-sm-12 col-lg-8" id="review_est_female_worker"></dd>
+                        <dd class="col-sm-12 col-lg-8" id="reviewEstFemaleCount"></dd>
                         <dt class="col-sm-12 col-lg-4">Total Worker(s):</dt>
-                        <dd class="col-sm-12 col-lg-8" id="review_est_total_worker"></dd>
+                        <dd class="col-sm-12 col-lg-8" id="reviewEstTotalEmployees"></dd>
                         <dt class="col-sm-12 col-lg-4">Email Address:</dt>
-                        <dd class="col-sm-12 col-lg-8" id="review_est_email"></dd>
+                        <dd class="col-sm-12 col-lg-8" id="reviewEmail"></dd>
                         <dt class="col-sm-12 col-lg-4">Date of Closure:</dt>
-                        <dd class="col-sm-12 col-lg-8" id="review_est_efdate"></dd>
+                        <dd class="col-sm-12 col-lg-8" id="reviewEstClosureDate"></dd>
                         <dt class="col-sm-12 col-lg-4">Re-opening date:</dt>
-                        <dd class="col-sm-12 col-lg-8" id="review_est_reopendate"></dd>
+                        <dd class="col-sm-12 col-lg-8" id="reviewEstReopeningDate"></dd>
                         <dt class="col-sm-12 col-lg-4">Date filed:</dt>
-                        <dd class="col-sm-12 col-lg-8" id="review_est_datefil"></dd>
+                        <dd class="col-sm-12 col-lg-8" id="reviewEstFiledClosureDate"></dd>
                         <dt class="col-sm-12 col-lg-4">SEC Registration Number / DTI Business Name No.:</dt>
-                        <dd class="col-sm-12 col-lg-8" id="review_est_sec_number"></dd>
+                        <dd class="col-sm-12 col-lg-8" id="reviewEstSECNumber"></dd>
                         <dt class="col-sm-12 col-lg-4">SEC / DTI Date Issued:</dt>
-                        <dd class="col-sm-12 col-lg-8" id="review_est_sec_dateiss"></dd>
+                        <dd class="col-sm-12 col-lg-8" id="reviewEstSECDateIssued"></dd>
                         <dt class="col-sm-12 col-lg-4">SEC / DTI file:</dt>
-                        <dd class="col-sm-12 col-lg-8" id="review_est_sec_permit"></dd>
+                        <dd class="col-sm-12 col-lg-8" id="reviewEstSECFile"></dd>
                         <dt class="col-sm-12 col-lg-4">Business/Mayor's Permit Number/ID:</dt>
-                        <dd class="col-sm-12 col-lg-8" id="review_est_business_permit"></dd>
+                        <dd class="col-sm-12 col-lg-8" id="reviewEstBisPermitNumber"></dd>
                         <dt class="col-sm-12 col-lg-4">Business/Mayor's Permit Date Issued:</dt>
-                        <dd class="col-sm-12 col-lg-8" id="review_est_bperm_dateiss"></dd>
+                        <dd class="col-sm-12 col-lg-8" id="reviewEstBisPermitDateIssued"></dd>
                         <dt class="col-sm-12 col-lg-4">Business/Mayor's Permit Validity:</dt>
-                        <dd class="col-sm-12 col-lg-8" id="review_est_bperm_validity"></dd>
+                        <dd class="col-sm-12 col-lg-8" id="reviewEstBisPermitValidityDate"></dd>
                         <dt class="col-sm-12 col-lg-4">Business/Mayor's Permit File:</dt>
-                        <dd class="col-sm-12 col-lg-8" id="review_est_bus_perm"></dd>
+                        <dd class="col-sm-12 col-lg-8" id="reviewEstBisPermitFile"></dd>
                         <dt class="col-sm-12 col-lg-4">Valid National Government ID Number:</dt>
-                        <dd class="col-sm-12 col-lg-8" id="review_est_valid_number"></dd>
+                        <dd class="col-sm-12 col-lg-8" id="reviewEstOwnerValidIDNumber"></dd>
                         <dt class="col-sm-12 col-lg-4">Valid National Government ID Date Issued:</dt>
-                        <dd class="col-sm-12 col-lg-8" id="review_est_valid_dateiss"></dd>
+                        <dd class="col-sm-12 col-lg-8" id="reviewEstOwnerValidIDDateIssued"></dd>
                         <dt class="col-sm-12 col-lg-4">Valid National Government ID Validity:</dt>
-                        <dd class="col-sm-12 col-lg-8" id="review_est_valid_validity"></dd>
+                        <dd class="col-sm-12 col-lg-8" id="reviewEstOwnerValidIDDateExpire"></dd>
                         <dt class="col-sm-12 col-lg-4">Valid National Government ID File:</dt>
-                        <dd class="col-sm-12 col-lg-8" id="review_est_validID"></dd>
+                        <dd class="col-sm-12 col-lg-8" id="reviewEstOwnerValidIDFile"></dd>
                         <dt class="col-sm-12 col-lg-4">Remarks:</dt>
-                        <dd class="col-sm-12 col-lg-8" id="review_reason_for_update"></dd>
+                        <dd class="col-sm-12 col-lg-8" id="reviewEstReasonForUpdate"></dd>
                     </dl>
                 </div>
                 <div class="container mt-3 bg-light p-3" id="review_branch_unit_container"
@@ -639,6 +637,166 @@
         </fieldset>
     </form>
 </div>
+<!-- MODAL START-->
+<!-- BRANCH MODAL -->
+<div class="modal fade" tabindex="-1" role="dialog" id="branch_modal">
+    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-primary">Branch Unit/s</h5>
+            </div>
+            <div class="modal-body">
+
+                <div class="row align-items-center mb-4 mt-3 p-2 bg-body-secondary rounded">
+                    <div class="row">
+                        <div class="col-sm">
+                            <label for="rule_1020_no_inp" class="form-label">Rule 1020 Application #</label>
+                            <input type="text" class="form-control" id="rule_1020_no_inp"
+                                   placeholder="Rule 1020 Application #">
+                        </div>
+                        <div class="col-sm">
+                            <label for="branch_name_inp" class="form-label">
+                                Branch Establishment Name <span class="text-danger fw-bolder"> *</span>
+                            </label>
+                            <input type="text" class="form-control" id="branch_name_inp"
+                                   placeholder="Branch Establishment Name (Required)">
+                        </div>
+                        <div class="col-sm">
+                            <label for="branch_location_inp" class="form-label">
+                                Location <span class="text-danger fw-bolder"> *</span>
+                            </label>
+                            <input type="text" class="form-control" id="branch_location_inp"
+                                   placeholder="Location (Required)">
+                        </div>
+                    </div>
+
+                    <div class="row mt-2">
+                        <div class="text-end">
+                            <div class="col-sm-auto" id="branch_add_button_container">
+                                <button type="button" class="btn btn-primary" id="branch_add_button">
+                                    <span class="fas fa-plus"></span> Add
+                                </button>
+                            </div>
+                            <div class="col-sm-auto" id="branch_update_button_container" style="display: none">
+                                <button type="button" class="btn btn-primary" id="branch_update_button">
+                                    <span class="fas fa-edit"></span> Update
+                                </button>
+                                <button type="button" class="btn btn-danger" id="branch_cancel_button">
+                                    <span class="fas fa-times-circle"></span> Cancel
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="row mb-2 justify-content-center">
+                    <div class="col-12">
+                        <div class="table-responsive">
+                            <table class="table table-bordered" id="est_tbl_branch" width="100%" cellspacing="0">
+                                <thead>
+                                    <tr>
+                                        <th scope="col" width="5%" class="text-center">#</th>
+                                        <th scope="col" width="30%" class="text-center">Rule 1020 Application #</th>
+                                        <th scope="col" width="30%" class="text-center">
+                                            Branch Establishment Name
+                                        </th>
+                                        <th scope="col" width="30%" class="text-center">Location</th>
+                                        <th scope="col" width="5%" class="text-center">Delete</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="est_branch_body"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- LABOR UNION MODAL -->
+<div class="modal fade" tabindex="-1" role="dialog" id="labor_union_modal">
+    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-primary">Labor Union</h5>
+            </div>
+            <div class="modal-body">
+                <div class="row align-items-center mb-4 mt-3 p-2 bg-body-secondary rounded">
+                    <div class="row">
+                        <div class="col-sm">
+                            <label for="labor_of_union_inp" class="form-label">
+                                Name of Labor union <span class="text-danger fw-bolder"> *</span>
+                            </label>
+                            <input type="text" class="form-control" id="labor_of_union_inp"
+                                   placeholder="Name of Labor union (Required)">
+                        </div>
+                        <div class="col-sm">
+                            <label for="labor_union_address_inp" class="form-label">
+                                Address of Labor union <span class="text-danger fw-bolder"> *</span>
+                            </label>
+                            <input type="text" class="form-control" id="labor_union_address_inp"
+                                   placeholder="Address of Labor union (Required)">
+                        </div>
+                        <div class="col-sm">
+                            <label for="blr_no_inp" class="form-label">
+                                BLR Registration number <span class="text-danger fw-bolder"> *</span>
+                            </label>
+                            <input type="text" class="form-control" id="blr_no_inp"
+                                   placeholder="BLR Registration number (Required)">
+                        </div>
+                    </div>
+
+                    <div class="row mt-2">
+                        <div class="text-end">
+                            <div class="col-sm-auto" id="labor_union_add_button_container">
+                                <button type="button" class="btn btn-primary" id="labor_union_add_button">
+                                    <span class="fas fa-plus"></span> Add
+                                </button>
+                            </div>
+                            <div class="col-sm-auto" id="labor_union_update_button_container" style="display: none">
+                                <button type="button" class="btn btn-primary" id="labor_union_update_button">
+                                    <span class="fas fa-edit"></span> Update
+                                </button>
+                                <button type="button" class="btn btn-danger" id="labor_union_cancel_button">
+                                    <span class="fas fa-times-circle"></span> Cancel
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mb-2 justify-content-center">
+                    <div class="col-12">
+                        <div class="table-responsive">
+                            <table class="table table-bordered" id="est_tbl_union" width="100%" cellspacing="0">
+                                <thead>
+                                    <tr>
+                                        <th scope="col" width="5%" class="text-center">#</th>
+                                        <th scope="col" width="30%" class="text-center">Name of Labor union</th>
+                                        <th scope="col" width="30%" class="text-center">Address of Labor union</th>
+                                        <th scope="col" width="30%" class="text-center">BLR Registration number</th>
+                                        <th scope="col" width="5%" class="text-center">Delete</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="est_union_body"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODALS END -->
 @section Scripts {
     <script src="~/js/Register.js"></script>
     <script src="~/js/Update.js"></script>

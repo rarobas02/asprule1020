@@ -1,4 +1,5 @@
 ﻿using asprule1020.Models;
+using asprule1020.Utility;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
@@ -28,43 +29,7 @@ namespace asprule1020.DataAccess.Documents.Certificate
 
 
             var registeredProvince = _register.EstProvince;
-
-            string officePlace = string.Empty;
-            string pdname = string.Empty;
-            string provdir = string.Empty;
-
-            switch (registeredProvince)
-            {
-                case "Cavite":
-                    officePlace = "Trece Martirez City, Cavite";
-                    pdname = "MARIVIC B. MARTINEZ";
-                    provdir = "Cavite Provincial Director";
-                    break;
-
-                case "Laguna":
-                    officePlace = "Calamba City, Laguna";
-                    pdname = "GUIDO R. RECIO";
-                    provdir = "Laguna Provincial Director";
-                    break;
-
-                case "Batangas":
-                    officePlace = "Lipa City, Batangas";
-                    pdname = "PREDELMA M. TAN";
-                    provdir = "Batangas Provincial Director";
-                    break;
-
-                case "Rizal":
-                    officePlace = "Cainta, Rizal";
-                    pdname = "CELIA G. ARIOLA";
-                    provdir = "Head, Rizal Provincial Office";
-                    break;
-
-                case "Quezon":
-                    officePlace = "Lucena City, Quezon";
-                    pdname = "CRISTINA H. BARAYANG";
-                    provdir = "OIC Head, Quezon Provincial Office";
-                    break;
-            }
+            var provinceInfo = ProvinceDetails.GetProvinceInfo(registeredProvince);
             string rule1020Id = _register.Rule1020Id ?? _register.TransId;
             var estName = _register.EstName;
             var estAddress = $"{_register.EstStreet}, {_register.EstBrgy}, {_register.EstCityMun}, {_register.EstProvince}";
@@ -72,7 +37,7 @@ namespace asprule1020.DataAccess.Documents.Certificate
             DateTime approvedDate = _register.EstPoHeadEvalDate ?? DateTime.Now;
             var approvedDay = ApprovedDayToOrdinal(approvedDate.Day);
 
-            var givenDateText = $"Given this day {approvedDay} of {approvedDate:MMMM yyyy}, {officePlace}.";
+            var givenDateText = $"Given this day {approvedDay} of {approvedDate:MMMM yyyy}, {provinceInfo.ProvincialOffice}.";
 
             container.Page(page =>
             {
@@ -137,10 +102,10 @@ namespace asprule1020.DataAccess.Documents.Certificate
 
                         col.Item().PaddingTop(70);
 
-                        col.Item().AlignCenter().Text(pdname.ToUpper())
+                        col.Item().AlignCenter().Text(provinceInfo.PdName.ToUpper())
                             .FontSize(11.97f).Bold();
 
-                        col.Item().AlignCenter().Text(provdir)
+                        col.Item().AlignCenter().Text(provinceInfo.ProDir)
                             .FontSize(11.97f).Bold();
 
                         col.Item().PaddingTop(18);

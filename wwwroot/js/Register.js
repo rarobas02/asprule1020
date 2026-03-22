@@ -65,80 +65,93 @@ const register = {
         barangay: 'Select Barangay'
     },
     review: function () {
-        let form = document.getElementById("Rule1020RegistrationForm");
+        const form = isUpdatePage ? document.getElementById("Rule1020UpdateForm") : document.getElementById("Rule1020RegistrationForm");
+
         if (!form) {
-            let form = document.getElementById("Rule1020UpdateForm");
             return;
         }
-        // Get all input and select elements inside the form
-        const form_elements = form.querySelectorAll("input, select");
 
-        const excluded_keys = ["password", "confirmPassword", "EstTechInfo1OtherCheckBox", "EstTechInfo2OtherCheckBox", "EstIsHaveLaborUnion", "EstIsHaveBranchUnits", "certify", "certifydpa"];
-        const excluded_names = ["EstBranchRule1020Number[]", "EstBranchName[]", "EstBranchEstName[]", "EstUnionName[]", "EstUnionAddress[]", "EstUnionBLR[]"];
+        const form_elements = form.querySelectorAll("input, select, textarea");
+
+        const excluded_keys = [
+            "password", "confirmPassword", "EstTechInfo1OtherCheckBox", "EstTechInfo2OtherCheckBox",
+            "EstIsHaveLaborUnion", "EstIsHaveBranchUnits", "certify", "certifydpa"
+        ];
+        const excluded_names = [
+            "EstBranchRule1020Number[]", "EstBranchName[]", "EstBranchEstName[]",
+            "EstUnionName[]", "EstUnionAddress[]", "EstUnionBLR[]"
+        ];
 
         const no_input_text = "No Input";
 
         let tech_info_1_checkbox = [];
         let tech_info_2_checkbox = [];
 
-        // Iterate through each form element and log the ID
         form_elements.forEach(function (element) {
             let value = "";
+
             if (element.type === "checkbox" && element.name === "EstTechInfo1") {
-                // For checkboxes, check if it's checked and add the value to the array
-                if (element.checked) {
-                    tech_info_1_checkbox.push(element.value);
-                }
-            } else if (element.type === "checkbox" && element.name === "EstTechInfo2") {
-                // For checkboxes, check if it's checked and add the value to the array
-                if (element.checked) {
-                    tech_info_2_checkbox.push(element.value);
-                }
+                if (element.checked) tech_info_1_checkbox.push(element.value);
+                return;
+            }
+
+            if (element.type === "checkbox" && element.name === "EstTechInfo2") {
+                if (element.checked) tech_info_2_checkbox.push(element.value);
+                return;
+            }
+
+            const fieldKey = element.dataset?.element ?? element.id;
+            if (!fieldKey) {
+                return;
+            }
+
+            if (excluded_keys.includes(fieldKey) || excluded_names.includes(element.name)) {
+                return;
+            }
+
+            if (element.type === "checkbox") {
+                value = element.checked ? "Yes" : "No";
+            } else if (element.type === "file") {
+                value = (element.value ?? "").split("\\").pop();
             } else {
-                const fieldKey = element.dataset?.element ?? element.id;
-
-                if (!fieldKey) {
-                    return;
-                }
-
                 value = element.value ?? "";
-                // get file name only
-                if (element.type == "file") {
-                    value = value.split("\\").pop();
-                }
+            }
 
-                //console.log(element.id);
-                //console.log({ value });
-                // Exclude specific IDs (customize as needed)
-                if (!excluded_keys.includes(fieldKey) && !excluded_names.includes(element.name)) {
-                    const reviewId = register.reviewTargets[fieldKey] ?? `review${fieldKey}`;
-                    const reviewElement = document.getElementById(reviewId);
-                    // Check if reviewElement is not null or undefined
-                    if (reviewElement) {
-                        if (value.trim() !== "") {
-                            reviewElement.innerHTML = value;
-                        } else {
-                            reviewElement.innerHTML = no_input_text;
-                        }
-                    }
-                }
+            const reviewId = register.reviewTargets[fieldKey] ?? `review${fieldKey}`;
+            const reviewElement = document.getElementById(reviewId);
+
+            if (reviewElement) {
+                reviewElement.innerHTML = value.trim() !== "" ? value : no_input_text;
             }
         });
-        // Display comma-separated list for checked checkboxes
-        if (tech_info_1_checkbox.length > 0) {
-            // console.log(tech_info_1_checkbox.join(", "));
-            document.getElementById("reviewEstTechInfo1").innerHTML = tech_info_1_checkbox.join(", ");
-        } else {
-            document.getElementById("reviewEstTechInfo1").innerHTML = no_input_text;
+
+        const reviewTech1 = document.getElementById("reviewEstTechInfo1");
+        if (reviewTech1) {
+            reviewTech1.innerHTML = tech_info_1_checkbox.length > 0
+                ? tech_info_1_checkbox.join(", ")
+                : no_input_text;
         }
 
-        // Display comma-separated list for checked checkboxes
-        if (tech_info_2_checkbox.length > 0) {
-            // console.log(tech_info_2_checkbox.join(", "));
-            document.getElementById("reviewEstTechInfo2").innerHTML = tech_info_2_checkbox.join(", ");
-        } else {
-            document.getElementById("reviewEstTechInfo2").innerHTML = no_input_text;
+        const reviewTech2 = document.getElementById("reviewEstTechInfo2");
+        if (reviewTech2) {
+            reviewTech2.innerHTML = tech_info_2_checkbox.length > 0
+                ? tech_info_2_checkbox.join(", ")
+                : no_input_text;
         }
+    },
+    endpoints:
+    {
+        province: '/Client/Register/GetProvDist',
+        city: '/Client/Register/GetCityMun',
+        barangay: '/Client/Register/GetBrgy',
+        usernameIsExist: '/Client/Register/IsUsernameExist',
+        emailIsExist: '/Client/Register/IsEmailExist'
+    },
+    placeholders:
+    {
+        province: 'Select Province',
+        city: 'Select City/Municipality',
+        barangay: 'Select Barangay'
     },
     toggleDivAndRequired: function ({
         selectId,
