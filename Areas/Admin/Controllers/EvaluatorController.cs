@@ -4,29 +4,36 @@ using asprule1020.Models;
 using asprule1020.Models.ViewModel;
 using asprule1020.Utility;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.StaticFiles;
-using System.Data;
-using System.Security.Claims;
 using QuestPDF.Fluent;
 using QuestPDF.Infrastructure;
-using System.IO;
+using System.IO.Compression;
+using System.Security.Claims;
 
 namespace asprule1020.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    
     public class EvaluatorController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly UserManager<ApplicationUser> _userManager;
-        public EvaluatorController(IUnitOfWork unitOfWork, IWebHostEnvironment webHostEnvironment, UserManager<ApplicationUser> userManager)
+        private readonly IEmailSender _emailSender;
+
+        public EvaluatorController(
+            IUnitOfWork unitOfWork,
+            IWebHostEnvironment webHostEnvironment,
+            UserManager<ApplicationUser> userManager,
+            IEmailSender emailSender)
         {
             _unitOfWork = unitOfWork;
             _webHostEnvironment = webHostEnvironment;
             _userManager = userManager;
+            _emailSender = emailSender;
         }
         [Authorize(Roles = SD.Role_Evaluator)]
         public IActionResult Review()
@@ -239,8 +246,105 @@ namespace asprule1020.Areas.Admin.Controllers
 
             return PhysicalFile(fullPath, contentType, enableRangeProcessing: true);
         }
-    #endregion API CALLS
+        [Authorize(Roles = SD.Role_Evaluator)]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> SendApprovedEmail(Guid id, string? est_email_message, IFormFile? est_certificate)
+        {
+            if (id == Guid.Empty)
+            {
+                return BadRequest("Invalid record id.");
+            }
 
+            var register = _unitOfWork.Register.Get(u => u.Id == id);
+            if (register is null)
+            {
+                return NotFound();
+            }
+
+            if (string.IsNullOrWhiteSpace(register.Email))
+            {
+                return BadRequest("No recipient email found.");
+            }
+
+            if (est_certificate is null || est_certificate.Length == 0)
+            {
+                return BadRequest("Certificate PDF is required.");
+            }
+
+            var extension = Path.GetExtension(est_certificate.FileName);
+            if (!string.Equals(extension, ".pdf", StringComparison.OrdinalIgnoreCase))
+            {
+                return BadRequest("Only PDF certificate attachment is allowed.");
+            }
+
+            if (_emailSender is not EmailSender attachmentSender)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Email sender service is not configured for attachments.");
+            }
+
+            byte[] certificateBytes;
+            await using (var ms = new MemoryStream())
+            {
+                await est_certificate.CopyToAsync(ms);
+                certificateBytes = ms.ToArray();
+            }
+
+            var userProvince = User.FindFirstValue("EstProvince");
+            var provinceInfo = ProvinceDetails.GetProvinceInfo(userProvince);
+
+            var trimmedMessage = (est_email_message ?? string.Empty).Trim();
+            var managerFullName = BuildManagerName(register.EstOwnerFirst, register.EstOwnerMid, register.EstOwnerLast);
+
+            var body = $"""
+                <div>
+                    <p>Dear Establishment Owner / Manager {managerFullName},</p>
+
+                    <p>Good day!</p>
+
+                    <p>Upon evaluation of the submitted documents, we noted that your Rule 1020 Application is <strong>APPROVED</strong>.</p>
+
+                    <p>You can Track your application using your Application Number: <strong>{register.TransId}</strong></p>
+
+                    <p>You may also contact the provincial office landline {provinceInfo.ProvinceTelNo} or send an email to {provinceInfo.ProvinceEmail}</p>
+
+                    <p>You may also visit {provinceInfo.ProvincialOffice} - {provinceInfo.ProvinceAddress} for inquiries and claim your certificate.</p>
+
+                    <p>{provinceInfo.ProvincialOffice} remarks: <strong>{(string.IsNullOrWhiteSpace(trimmedMessage) ? "N/A" : System.Net.WebUtility.HtmlEncode(trimmedMessage))}</strong></p>
+
+                    <p>Please do not reply on this email.</p>
+
+                    <p>Thank you,<br>DOLE Regional Office 4a : {provinceInfo.ProvincialOffice}</p>
+                </div>
+                """;
+
+            const string emailSubject = "DOLE Rule 1020 - Approved";
+            var attachmentFileName = string.IsNullOrWhiteSpace(est_certificate.FileName) ? "Rule1020-Certificate.pdf" : Path.GetFileName(est_certificate.FileName);
+
+            await attachmentSender.SendEmailAsync(
+                register.Email,
+                emailSubject,
+                body,
+                certificateBytes,
+                attachmentFileName,
+                "application/pdf");
+
+            register.EstIsEmailApprovedSent = true;
+            register.EstEmailApprovedSentDate = DateTime.Now;
+            register.EstEvalEmailSendStatus = emailSubject;
+            _unitOfWork.Save();
+
+            TempData["success"] = "Approved email sent successfully.";
+            return RedirectToAction(nameof(ApprovedItem), new { id });
+        }
+
+        private static string BuildManagerName(string? first, string? middle, string? last)
+        {
+            return string.Join(" ", new[] { first, middle, last }.Where(x => !string.IsNullOrWhiteSpace(x))).Trim();
+        }
+
+
+        #endregion API CALLS
     }
 }
 
