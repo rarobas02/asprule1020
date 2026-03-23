@@ -17,7 +17,7 @@ namespace asprule1020.Areas.Client.Controllers
         {
             return View();
         }
-
+        #region API CALLS
         [HttpGet]
         public IActionResult Details(string transId)
         {
@@ -39,5 +39,6 @@ namespace asprule1020.Areas.Client.Controllers
 
             return View(register);
         }
+        #endregion API CALLS
     }
 }
