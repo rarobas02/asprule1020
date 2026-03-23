@@ -152,46 +152,7 @@ namespace asprule1020.Areas.Client.Controllers
             TempData["success"] = "Establishment Registration Updated Successfully";
             return RedirectToAction(nameof(UpdateConfirmation), new { registerId = updateVM.Register.Id });
         }
-        [HttpGet]
-        public IActionResult GetBranchUnit(Guid Id)
-        {
 
-            var branchUnit = _unitOfWork.BranchUnit.Get(r => r.Id == id, tracked: false);
-            if (branchUnit is null)
-            {
-                return RedirectToAction(nameof(Index));
-            }
-
-            var register = _unitOfWork.Register.Get(x => x.TransId == normalizedTransId);
-
-            return View(register);
-        }
-        [HttpPost, ActionName("DeleteLaborUnion")]
-        public IActionResult DeleteLaborUnion(int? id)
-        {
-            LaborUnion? obj = _unitOfWork.LaborUnion.Get(u => u.Id == id);
-            if (obj == null)
-            {
-                return NotFound();
-            }
-            _unitOfWork.LaborUnion.Remove(obj);
-            _unitOfWork.Save();
-            TempData["success"] = "Labor Union deleted successfully";
-            return RedirectToAction("Index");
-        }
-        [HttpPost, ActionName("DeleteBranchUnit")]
-        public IActionResult DeleteBranchUnit(int? id)
-        {
-            LaborUnion? obj = _unitOfWork.BranchUnit.Get(u => u.Id == id);
-            if (obj == null)
-            {
-                return NotFound();
-            }
-            _unitOfWork.LaborUnion.Remove(obj);
-            _unitOfWork.Save();
-            TempData["success"] = "Labor Union deleted successfully";
-            return RedirectToAction("Index");
-        }
         #endregion UPDATE API
     }
 }

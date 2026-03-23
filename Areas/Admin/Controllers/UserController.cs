@@ -64,7 +64,7 @@ namespace asprule1020.Areas.Admin.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(UserVM? userVM)
+        public async Task<IActionResult> Create(UserVM userVM)
         {
             const string idKey = $"{nameof(UserVM.ApplicationUser)}.{nameof(ApplicationUser.Id)}";
 
@@ -186,7 +186,7 @@ namespace asprule1020.Areas.Admin.Controllers
             }
             else
             {
-                objFromDb.LockoutEnd = DateTime.Now.AddYears(1000);
+                objFromDb.LockoutEnd = DateTime.Now.AddSeconds(30);
             }
             _db.SaveChanges();
             return Json(new { success = true, message = "Operation Successful" });

@@ -6,7 +6,7 @@
 <div class="container">
     <form asp-area="Client" asp-controller="Update" asp-action="Update" method="post" id="Rule1020UpdateForm" class="needs-validation" enctype="multipart/form-data">
         @Html.AntiForgeryToken()
-        <input asp-for="Register.Id" type="hidden" />
+        <input asp-for="Register.Id" data-element="Id" type="hidden" />
         <div class="text-center mb-4">
             <div class="row-mb-4">
                 <div class="text-center mb-4">
@@ -231,11 +231,11 @@
 
             <div class="d-flex gap-4 my-4">
                 <button type="button" id="open_branch_modal_btn"
-                        class="btn btn-warning bg-gradient btn-block mt-3 w-100" data-bs-target="#branch_modal" data-bs-toggle="modal">
+                        class="btn btn-warning bg-gradient btn-block mt-3 w-100 ladda-button" data-bs-target="#branch_modal" data-bs-toggle="modal">
                     <span class="fas fa-edit"></span> Update Branch Unit/s
                 </button>
                 <button type="button" id="open_labor_union_modal_btn"
-                        class="btn btn-warning bg-gradient btn-block mt-3 w-100" data-bs-target="#labor_union_modal" data-bs-toggle="modal">
+                        class="btn btn-warning bg-gradient btn-block mt-3 w-100 ladda-button" data-bs-target="#labor_union_modal" data-bs-toggle="modal">
                     <span class="fas fa-edit"></span> Update Registered Labor Union/s
                 </button>
             </div>
@@ -673,7 +673,7 @@
                     <div class="row mt-2">
                         <div class="text-end">
                             <div class="col-sm-auto" id="branch_add_button_container">
-                                <button type="button" class="btn btn-primary" id="branch_add_button">
+                                <button type="button" class="btn btn-primary ladda-button" id="branch_add_button">
                                     <span class="fas fa-plus"></span> Add
                                 </button>
                             </div>
@@ -798,6 +798,22 @@
 
 <!-- MODALS END -->
 @section Scripts {
+    <script>
+        window.endpoint = {
+            branchUnit: {
+                get: '@Url.Action("GetBranchUnit", "BranchUnit", new { area = "Client" })',
+                remove: '@Url.Action("DeleteBranchUnit", "BranchUnit", new { area = "Client" })',
+                add: '@Url.Action("AddBranchUnit", "BranchUnit", new { area = "Client" })',
+                update: '@Url.Action("UpdateBranchUnit", "BranchUnit", new { area = "Client" })'
+            },
+            laborUnion: {
+                get: '@Url.Action("GetLaborUnion", "LaborUnion", new { area = "Client" })',
+                remove: '@Url.Action("DeleteLaborUnion", "LaborUnion", new { area = "Client" })',
+                add: '@Url.Action("AddLaborUnion", "LaborUnion", new { area = "Client" })',
+                update: '@Url.Action("UpdateLaborUnion", "LaborUnion", new { area = "Client" })'
+            }
+        };
+    </script>
     <script src="~/js/Register.js"></script>
     <script src="~/js/Update.js"></script>
     <partial name="_ValidationScriptsPartial" />
