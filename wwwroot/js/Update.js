@@ -138,11 +138,10 @@ var update = {
     add: {
         branch_unit: function (hidden_trans_no, rule_1020, branch_name, branch_location, callback) {
             const params = {
-                Id: hidden_trans_no,
-                _rule_1020: rule_1020,
-                _branch_name: branch_name,
-                _branch_location: branch_location,
-                //_submit_type: "add_branch_unit",
+                RegisterId: hidden_trans_no,
+                rule1020Number: rule_1020,
+                branchName: branch_name,
+                branchAddress: branch_location,
             };
             update.api_request(api.branchUnit.add, params, "POST", function (resp) {
                 callback(resp);
@@ -150,11 +149,10 @@ var update = {
         },
         labor_union: function (hidden_trans_no, labor_of_union_inp, labor_union_address_inp, blr_no_inp, callback) {
             const params = {
-                Id: hidden_trans_no,
-                _labor_of_union_inp: labor_of_union_inp,
-                _labor_union_address_inp: labor_union_address_inp,
-                _blr_no_inp: blr_no_inp,
-                //_submit_type: "add_labor_union",
+                RegisterId: hidden_trans_no,
+                UnionName: labor_of_union_inp,
+                UnionAddress: labor_union_address_inp,
+                UnionBLR: blr_no_inp,
             };
             update.api_request(api.laborUnion.add, params, "POST", function (resp) {
                 callback(resp);
@@ -164,19 +162,17 @@ var update = {
     delete: {
         branch_unit: function (branch_id, callback) {
             const params = {
-                _branch_id: branch_id,
-                //_submit_type: "remove_branch_unit",
+                id: branch_id,
             };
-            update.api_request(api.branchUnit.remove, params, "POST", function (resp) {
+            update.api_request(api.branchUnit.remove + `?id=${branch_id}`, params, "POST", function (resp) {
                 callback(resp);
             });
         },
         labor_union: function (union_id, callback) {
             const params = {
-                _union_id: union_id,
-                //_submit_type: "remove_labor_union",
+                id: union_id,
             };
-            update.api_request(api.laborUnion.remove, params, "POST", function (resp) {
+            update.api_request(api.laborUnion.remove + `?id=${union_id}`, params, "POST", function (resp) {
                 callback(resp);
             });
         },
@@ -185,7 +181,6 @@ var update = {
         branch_unit: function (trans_no, callback) {
             const params = {
                 Id: trans_no,
-                //_submit_type: "get_branch_unit",
             };
             update.api_request(api.branchUnit.get, params, "GET", function (resp) {
                 callback(resp);
@@ -194,7 +189,6 @@ var update = {
         labor_union: function (trans_no, callback) {
             const params = {
                 Id: trans_no,
-                //_submit_type: "get_labor_union",
             };
             update.api_request(api.laborUnion.get, params, "GET", function (resp) {
                 callback(resp);
@@ -204,25 +198,22 @@ var update = {
     update: {
         branch_unit: function (branch_id, rule_1020_no, branch_name, branch_location, callback) {
             const params = {
-                _branch_id: branch_id,
-                _rule_1020: rule_1020_no,
-                _branch_name: branch_name,
-                _branch_location: branch_location,
-                _trans_no: hidden_trans_no,
-                //_submit_type: "update_branch_unit",
+                id: branch_id,
+                rule1020Number: rule_1020_no,
+                branchName: branch_name,
+                branchAddress: branch_location
             };
+
             update.api_request(api.branchUnit.update, params, "POST", function (resp) {
                 callback(resp);
             });
         },
         labor_union: function (union_id, labor_of_union_inp, labor_union_address_inp, blr_no_inp, callback) {
             const params = {
-                _union_id: union_id,
-                _labor_of_union_inp: labor_of_union_inp,
-                _labor_union_address_inp: labor_union_address_inp,
-                _blr_no_inp: blr_no_inp,
-                Id: hidden_trans_no,
-                //_submit_type: "update_labor_union",
+                Id: union_id,
+                UnionName: labor_of_union_inp,
+                UnionAddress: labor_union_address_inp,
+                UnionBLR: blr_no_inp,
             };
             update.api_request(api.laborUnion.update, params, "POST", function (resp) {
                 callback(resp);
@@ -283,6 +274,7 @@ var update = {
 
                     const row = document.createElement("tr");
                     row.innerHTML = `
+
                 <td class="row-index text-center"><p>${index + 1}</p></td>
                 <td class="row-index text-center">${unionName}</td>
                 <td class="row-index text-center">${unionAddress}</td>
@@ -303,28 +295,29 @@ var update = {
                     tableBody.appendChild(row);
                 });
             });
+        }
+
+    },
+    clear: {
+        branch_input: function () {
+            rule_1020_no_inp.value = "";
+            branch_name_inp.value = "";
+            branch_location_inp.value = "";
         },
-        clear: {
-            branch_input: function () {
-                rule_1020_no_inp.value = "";
-                branch_name_inp.value = "";
-                branch_location_inp.value = "";
-            },
-            labor_union: function () {
-                labor_of_union_inp.value = "";
-                labor_union_address_inp.value = "";
-                blr_no_inp.value = "";
-            },
-            cancel: function () {
-                branch_add_button_container.style.display = "block";
-                branch_update_button_container.style.display = "none";
-                update.clear.branch_input();
-            },
-            cancel_labor_union: function () {
-                labor_union_add_button_container.style.display = "block";
-                labor_union_update_button_container.style.display = "none";
-                update.clear.labor_union();
-            },
+        labor_union: function () {
+            labor_of_union_inp.value = "";
+            labor_union_address_inp.value = "";
+            blr_no_inp.value = "";
+        },
+        cancel: function () {
+            branch_add_button_container.style.display = "block";
+            branch_update_button_container.style.display = "none";
+            update.clear.branch_input();
+        },
+        cancel_labor_union: function () {
+            labor_union_add_button_container.style.display = "block";
+            labor_union_update_button_container.style.display = "none";
+            update.clear.labor_union();
         },
     }
 };
@@ -369,7 +362,7 @@ $(document)
             });
         } else {
             update.add.branch_unit(hidden_trans_no, rule_1020_no_inp.value, branch_name_inp.value, branch_location_inp.value, function (resp) {
-                if (resp.status) {
+                if (resp.success) {
                     Swal.fire({
                         title: "Success",
                         text: resp.message,
@@ -413,7 +406,7 @@ $(document)
                     });
                 } else {
                     update.update.branch_unit(branch_id, rule_1020_no_inp.value, branch_name_inp.value, branch_location_inp.value, function (resp) {
-                        if (resp.status) {
+                        if (resp.success) {
                             Swal.fire({
                                 title: "Success",
                                 text: resp.message,
@@ -471,7 +464,7 @@ $(document)
             });
         } else {
             update.add.labor_union(hidden_trans_no, labor_of_union_inp.value, labor_union_address_inp.value, blr_no_inp.value, function (resp) {
-                if (resp.status) {
+                if (resp.success) {
                     Swal.fire({
                         title: "Success",
                         text: resp.message,
@@ -515,7 +508,7 @@ $(document)
                     });
                 } else {
                     update.update.labor_union(union_id, labor_of_union_inp.value, labor_union_address_inp.value, blr_no_inp.value, function (resp) {
-                        if (resp.status) {
+                        if (resp.success) {
                             Swal.fire({
                                 title: "Success",
                                 text: resp.message,

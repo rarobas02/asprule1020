@@ -18,15 +18,43 @@ namespace asprule1020.Areas.Client.Controllers
         }
         #region API CALLS
         [HttpPost]
-        public IActionResult AddLaborUnion(Guid Id)
+        public IActionResult AddLaborUnion(Guid registerId, string UnionName, string UnionAddress, string UnionBLR)
         {
-            var laborUnion = _unitOfWork.LaborUnion.Get(r => r.Id == Id);
-            if (laborUnion is null)
+            try
             {
-                return RedirectToAction(nameof(Index));
-            }
+                if (registerId == Guid.Empty)
+                {
+                    return Json(new { success = false, message = "Invalid register id." });
+                }
 
-            return View(laborUnion);
+                if (string.IsNullOrWhiteSpace(UnionName) || string.IsNullOrWhiteSpace(UnionAddress))
+                {
+                    return Json(new { success = false, message = "Labor Union name and Labor Union BLR are required." });
+                }
+
+                var laborUnion = new LaborUnion
+                {
+                    Id = Guid.NewGuid(),
+                    RegisterId = registerId,
+                    UnionName = UnionName?.Trim(),
+                    UnionAddress = UnionAddress.Trim(),
+                    UnionBLR = UnionBLR.Trim()
+                };
+
+                _unitOfWork.LaborUnion.Add(laborUnion);
+                _unitOfWork.Save();
+
+                return Json(new
+                {
+                    success = true,
+                    message = "Labor Union created successfully.",
+                    data = laborUnion
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
         }
         [HttpGet]
         public IActionResult GetLaborUnion(Guid id)
@@ -38,18 +66,39 @@ namespace asprule1020.Areas.Client.Controllers
             return Json(new { success = true, data = laborUnion });
         }
         [HttpPost]
-        public IActionResult UpdateLaborUnion() // IN THE PARAMETERS, GET THE INPUTS FROM THE JAVASCRIPT
+        public IActionResult UpdateLaborUnion(Guid id, string UnionName, string UnionAddress, string UnionBLR)
         {
-            //LaborUnion? obj = _unitOfWork.LaborUnion.UpdateLaborUnion(PARAMETERS INPUTS SHOULD GO HERE);
- 
-            _unitOfWork.Save();
             try
             {
-                return Json(new { success = true, message = "Labor Union successfully Updated." });
+                if (id == Guid.Empty)
+                {
+                    return Json(new { success = false, message = "Invalid labor union id." });
+                }
+
+                if (string.IsNullOrWhiteSpace(UnionName) || string.IsNullOrWhiteSpace(UnionAddress)|| string.IsNullOrWhiteSpace(UnionBLR))
+                {
+                    return Json(new { success = false, message = "All Labor Union Inputs are required." });
+                }
+
+                var existing = _unitOfWork.LaborUnion.Get(u => u.Id == id);
+                if (existing == null)
+                {
+                    return Json(new { success = false, message = "Branch unit not found." });
+                }
+
+                _unitOfWork.LaborUnion.UpdateLaborUnion(
+                    id,
+                    UnionName?.Trim() ?? string.Empty,
+                    UnionAddress.Trim(),
+                    UnionBLR.Trim());
+
+                _unitOfWork.Save();
+
+                return Json(new { success = true, message = "Branch Unit updated successfully." });
             }
             catch (Exception ex)
             {
-                return Json(new { success = false, message = Convert.ToString(ex) });
+                return Json(new { success = false, message = ex.Message });
             }
         }
         [HttpPost, ActionName("DeleteLaborUnion")]
