@@ -2,17 +2,148 @@
     ViewData["Title"] = "Approved";
 }
 <div class="container mb-3">
-    <table id="tblApproved" class="table table-responsive table-bordered table-striped w-100">
-        <thead>
-            <tr>
-                <th>Trans. Id</th>
-                <th>Establishment Name</th>
-                <th>Regitration Date</th>
-                <th>Registration Status</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-    </table>
+    <div class="card-body bg-body-secondary p-4">
+        <div class="row mt-5">
+            <div class="col-xl-4 col-md-4 mb-4">
+                <div class="card lift h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters text-center">
+                            <div class="col mr-2">
+                                <div class="font-weight-bold text-primary text-uppercase overview-title">
+                                    @SD.StatusForReview
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row no-gutters text-center d-flex justify-content-center">
+                            <div class="col-auto">
+                                <i class="fa-solid fas fa-eye fa-6x text-primary"></i>
+                            </div>
+                        </div>
+                        <div class="row no-gutters text-center">
+                            <div class="h1 font-weight-bold mb-0" id="company_count">
+                                <div class="text-primary" role="status">60
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-4 col-md-4 mb-4">
+                <div class="card lift h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters text-center">
+                            <div class="col mr-2">
+                                <div class="font-weight-bold text-primary text-uppercase overview-title">
+                                    @SD.StatusApproved
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row no-gutters text-center d-flex justify-content-center">
+                            <div class="col-auto">
+                                <i class="fa-solid fa-thumbs-up fa-6x text-primary"></i>
+                            </div>
+                        </div>
+                        <div class="row no-gutters text-center">
+                            <div class="h1 font-weight-bold mb-0" id="company_count">
+                                <div class="text-primary" role="status">60
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-4 col-md-4 mb-4">
+                <div class="card lift h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters text-center">
+                            <div class="col mr-2">
+                                <div class="font-weight-bold text-primary text-uppercase overview-title">
+                                    Total Transactions
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row no-gutters text-center d-flex justify-content-center">
+                            <div class="col-auto">
+                                <i class="fa-solid fa-handshake fa-6x text-primary"></i>
+                            </div>
+                        </div>
+                        <div class="row no-gutters text-center">
+                            <div class="h1 font-weight-bold mb-0" id="company_count">
+                                <div class="text-primary" role="status">
+                                    120
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-3">
+            <div class="row gap-5 ms-3 d-inline-block bd-highlight">
+                <div class="ms-auto bd-highlight">
+                    <form class="form-inline d-flex align-items-baseline text-primary"
+                          id="generateRule1020MonitoringReportForm"
+                          method="get"
+                          asp-area="Admin"
+                          asp-controller="Evaluator"
+                          asp-action="GenerateRule1020Monitoring"
+                          target="_blank">
+                        <div class="form-group m-2">
+                            <label for="generateSumReportFromDate">From:</label>
+                            <input type="date"
+                                   id="generateSumReportFromDate"
+                                   name="fromDate"
+                                   class="form-control form-control-sm mx-sm-3"
+                                   required>
+                        </div>
+                        <div class="form-group m-2">
+                            <label for="generateSumReportToDate">To:</label>
+                            <input type="date"
+                                   id="generateSumReportToDate"
+                                   name="toDate"
+                                   class="form-control form-control-sm mx-sm-3 ml-2"
+                                   required>
+                        </div>
+                        <div class="form-group m-2">
+                            <label for="Status" class="mr-2">Status: </label>
+                            <select class="form-control form-control-sm mx-sm-3 ml-2"
+                                    id="Status"
+                                    name="status">
+                                <option value="All" selected>All Application</option>
+                                <option value="Approved">Approved</option>
+                                <option value="Re-application">Re-application</option>
+                                <option value="For Approval">For Approval</option>
+                                <option value="For Review">For Review</option>
+                                <option value="For Update">For Update</option>
+                                <option value="For Re-application">For Re-application</option>
+                            </select>
+                        </div>
+                        <div>
+                            <button class="btn btn-sm btn-primary shadow-sm m-2 text-sm"
+                                    type="submit"
+                                    id="generate1020ReportButton">
+                                Generate Report
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <table id="tblApproved" class="table table-responsive table-bordered table-striped w-100">
+            <thead>
+                <tr>
+                    <th>Trans. Id</th>
+                    <th>Establishment Name</th>
+                    <th>Regitration Date</th>
+                    <th>Registration Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
 </div>
 @section Scripts {
     <script src="~/js/Evaluator/approved.js"></script>

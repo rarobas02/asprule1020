@@ -1,5 +1,6 @@
 ﻿using asprule1020.DataAccess.Documents.Certificate;
 using asprule1020.DataAccess.Repository.IRepository;
+using asprule1020.Infrastructure.Documents.Report;
 using asprule1020.Models;
 using asprule1020.Models.ViewModel;
 using asprule1020.Utility;
@@ -13,6 +14,7 @@ using QuestPDF.Fluent;
 using QuestPDF.Infrastructure;
 using System.IO.Compression;
 using System.Security.Claims;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace asprule1020.Areas.Admin.Controllers
 {
@@ -23,17 +25,20 @@ namespace asprule1020.Areas.Admin.Controllers
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IEmailSender _emailSender;
+        private readonly Rule1020Monitoring _rule1020Monitoring;
 
         public EvaluatorController(
             IUnitOfWork unitOfWork,
             IWebHostEnvironment webHostEnvironment,
             UserManager<ApplicationUser> userManager,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            Rule1020Monitoring rule1020Monitoring)
         {
             _unitOfWork = unitOfWork;
             _webHostEnvironment = webHostEnvironment;
             _userManager = userManager;
             _emailSender = emailSender;
+            _rule1020Monitoring = rule1020Monitoring;
         }
         [Authorize(Roles = SD.Role_Evaluator)]
         public IActionResult Review()
@@ -127,6 +132,11 @@ namespace asprule1020.Areas.Admin.Controllers
             document.GeneratePdf(stream);
 
             return File(stream.ToArray(), "application/pdf", "Rule1020Certificate.pdf");
+        }
+
+        private static string BuildManagerName(string? first, string? middle, string? last)
+        {
+            return string.Join(" ", new[] { first, middle, last }.Where(x => !string.IsNullOrWhiteSpace(x))).Trim();
         }
         #region API CALLS
 
@@ -337,10 +347,26 @@ namespace asprule1020.Areas.Admin.Controllers
             TempData["success"] = "Approved email sent successfully.";
             return RedirectToAction(nameof(ApprovedItem), new { id });
         }
-
-        private static string BuildManagerName(string? first, string? middle, string? last)
+        [HttpGet]
+        public IActionResult GenerateRule1020Monitoring(DateTime fromDate, DateTime toDate, string status)
         {
-            return string.Join(" ", new[] { first, middle, last }.Where(x => !string.IsNullOrWhiteSpace(x))).Trim();
+            var province = User.FindFirstValue("EstProvince");
+
+            var items = _unitOfWork.Register
+                .GetAll(r =>
+                    r.EstProvince == province &&
+                    (status == "All" || r.EstStatus == status) &&
+                    r.EstRegistrationDate >= fromDate.Date &&
+                    r.EstRegistrationDate <= toDate)
+                .OrderByDescending(r => r.EstRegistrationDate)
+                .ToList();
+
+            var bytes = _rule1020Monitoring.BuildMonitoringWorkbook(items);
+
+            return File(
+                bytes,
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                $"rule-1020-report-{province?.ToUpper()}.xlsx");
         }
 
 

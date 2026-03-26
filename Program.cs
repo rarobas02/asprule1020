@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
+using asprule1020.Infrastructure.Documents.Report;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -56,7 +57,7 @@ builder.Services.AddScoped<IPasswordHasher<ApplicationUser>,
 builder.Services.AddScoped<
     IUserClaimsPrincipalFactory<ApplicationUser>,
     AppClaimsPrincipalFactory>();
-
+builder.Services.AddScoped<Rule1020Monitoring>();
 
 
 var app = builder.Build();
