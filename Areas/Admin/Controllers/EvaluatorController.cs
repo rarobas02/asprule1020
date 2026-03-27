@@ -361,6 +361,21 @@ namespace asprule1020.Areas.Admin.Controllers
                 .OrderByDescending(r => r.EstRegistrationDate)
                 .ToList();
 
+            var registerIds = items.Select(r => r.Id).ToHashSet();
+
+            var emailByRegisterId = _userManager.Users
+                .Where(u => u.RegisterId.HasValue && registerIds.Contains(u.RegisterId.Value))
+                .Select(u => new { RegisterId = u.RegisterId!.Value, u.Email })
+                .ToDictionary(x => x.RegisterId, x => x.Email ?? string.Empty);
+
+            foreach (var item in items)
+            {
+                if (emailByRegisterId.TryGetValue(item.Id, out var email))
+                {
+                    item.Email = email;
+                }
+            }
+
             var bytes = _rule1020Monitoring.BuildMonitoringWorkbook(items);
 
             return File(
