@@ -36,7 +36,7 @@
 <form method="post" id="evalform" enctype="multipart/form-data">
     <div asp-validation-summary="All"></div>
 
-    <input asp-for="Register.Id" type="hidden" />
+    <input type="hidden" asp-for="Register.Id" />
     <input type="hidden" name="CheckList.RegisterId" value="@register?.Id" />
     <input type="hidden" name="Remarks.RegisterId" value="@register?.Id" />
 

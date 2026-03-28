@@ -44,11 +44,12 @@ namespace asprule1020.Areas.Admin.Controllers
             {
                 return NotFound();
             }
-            RegisterVM registerVM = new RegisterVM()
+            var registerVM = BuildRegisterVm(id.Value);
+            if (registerVM is null)
             {
-                Register = new Register(),
-            };
-            registerVM.Register = _unitOfWork.Register.Get(u => u.Id == id);
+                return NotFound();
+            }
+
             return View(registerVM);
         }
         public IActionResult Approved()
@@ -61,13 +62,33 @@ namespace asprule1020.Areas.Admin.Controllers
             {
                 return NotFound();
             }
-            RegisterVM registerVM = new RegisterVM()
+            var registerVM = BuildRegisterVm(id.Value);
+            if (registerVM is null)
             {
-                Register = new Register(),
-            };
-            registerVM.Register = _unitOfWork.Register.Get(u => u.Id == id);
+                return NotFound();
+            }
+
             return View(registerVM);
         }
+
+        private RegisterVM? BuildRegisterVm(Guid id)
+        {
+            var register = _unitOfWork.Register.Get(u => u.Id == id);
+            if (register is null)
+            {
+                return null;
+            }
+
+            return new RegisterVM
+            {
+                Register = register,
+                CheckList = _unitOfWork.EvaluationChecklist.Get(x => x.RegisterId == id)
+                    ?? new EvaluationChecklist { RegisterId = id },
+                Remarks = _unitOfWork.EvaluationRemark.Get(x => x.RegisterId == id)
+                    ?? new EvaluationRemark { RegisterId = id }
+            };
+        }
+
         private string? BuildRule1020Number(string? estProvince)
         {
             if (string.IsNullOrWhiteSpace(estProvince))

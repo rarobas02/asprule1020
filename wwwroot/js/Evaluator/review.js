@@ -2,7 +2,7 @@
 
 $(document).ready(function () {
     loadDataTable();
-})
+});
 
 function loadDataTable() {
     dataTable = $('#tblReview').DataTable({
@@ -13,8 +13,7 @@ function loadDataTable() {
             { data: 'estName', width: '15%' },
             {
                 data: null,
-                render: (_, __, row) =>
-                    `${row.estOwnerFirst} ${row.estOwnerMid ?? ''} ${row.estOwnerLast}`,
+                render: (_, __, row) => `${row.estOwnerFirst} ${row.estOwnerMid ?? ''} ${row.estOwnerLast}`,
                 width: '10%'
             },
             { data: 'estRegistrationDate', width: '15%' },
@@ -32,14 +31,53 @@ function loadDataTable() {
         ]
     });
 }
+
 function getAntiForgeryToken() {
     return $('#ajaxAntiForgeryForm input[name="__RequestVerificationToken"]').val();
+}
+
+function prepareEvaluationBinding() {
+    // Prefix checkbox names + force bool value
+    $(".remarks-check-box").each(function () {
+        if (!this.name.startsWith("CheckList.")) {
+            this.name = `CheckList.${this.name}`;
+        }
+        this.value = "true";
+    });
+
+    // Prefix remarks input names
+    $(".input-remarks").each(function () {
+        if (!this.name.startsWith("Remarks.")) {
+            this.name = `Remarks.${this.name}`;
+        }
+    });
+}
+
+function buildEvaluationFormData() {
+    prepareEvaluationBinding();
+
+    // Ensure unchecked checkboxes are posted as false
+    $(".remarks-check-box").each(function () {
+        if (!this.checked) {
+            $("#evalform").append(
+                `<input type="hidden" class="tmp-unchecked" name="${this.name}" value="false" />`
+            );
+        }
+    });
+
+    // Serialize including disabled inputs
+    const disabledInputs = $("#evalform :input:disabled").removeAttr("disabled");
+    const formData = $("#evalform").serialize();
+    disabledInputs.attr("disabled", "disabled");
+
+    $(".tmp-unchecked").remove();
+    return formData;
 }
 
 var pro_eval = {
     update: {
         status: function (button, recommendation) {
-            var formData = $("#evalform").serialize();
+            var formData = buildEvaluationFormData();
 
             $.ajax({
                 type: "POST",
@@ -95,7 +133,6 @@ $("#submit").click(function () {
 
 $(".remarks-check-box").change(function () {
     const textBox = $(this).closest("dd").find(".input-remarks");
-
     textBox.prop("disabled", this.checked);
     textBox.val("");
 });

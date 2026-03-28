@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.StaticFiles;
 using QuestPDF.Fluent;
 using QuestPDF.Infrastructure;
 using System.IO.Compression;
+using System.Reflection;
 using System.Security.Claims;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
@@ -71,11 +72,11 @@ namespace asprule1020.Areas.Admin.Controllers
             {
                 return NotFound();
             }
-            RegisterVM registerVM = new RegisterVM()
+            var registerVM = BuildRegisterVm(id.Value);
+            if (registerVM is null)
             {
-                Register = new Register(),
-            };
-            registerVM.Register = _unitOfWork.Register.Get(u => u.Id == id);
+                return NotFound();
+            }
             return View(registerVM);
         }
         [Authorize(Roles = SD.Role_Evaluator)]
@@ -138,6 +139,113 @@ namespace asprule1020.Areas.Admin.Controllers
         {
             return string.Join(" ", new[] { first, middle, last }.Where(x => !string.IsNullOrWhiteSpace(x))).Trim();
         }
+        //custom 
+        private static IActionResult? ValidateEvaluationRequest(RegisterVM? model)
+        {
+            if (model?.Register == null || model.Register.Id == Guid.Empty)
+            {
+                return new BadRequestObjectResult("Invalid register id.");
+            }
+
+            return null;
+        }
+
+        private async Task<string> GetCurrentEvaluatorFullNameAsync()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var evaluator = await _userManager.FindByIdAsync(userId);
+
+            return string.Join(" ", new[]
+            {
+        evaluator?.FirstName?.Trim(),
+        evaluator?.MiddleName?.Trim(),
+        evaluator?.LastName?.Trim()
+    }.Where(part => !string.IsNullOrWhiteSpace(part)));
+        }
+
+        private static void ApplyRegisterIdToEvaluationModels(RegisterVM model)
+        {
+            model.CheckList.RegisterId = model.Register.Id;
+            model.Remarks.RegisterId = model.Register.Id;
+        }
+
+        private void UpsertEvaluationChecklist(EvaluationChecklist checklist)
+        {
+            var checklistFromDb = _unitOfWork.EvaluationChecklist.Get(
+                x => x.RegisterId == checklist.RegisterId,
+                tracked: true);
+
+            if (checklistFromDb is null)
+            {
+                checklist.Id = Guid.NewGuid();
+                _unitOfWork.EvaluationChecklist.Add(checklist);
+                return;
+            }
+
+            CopyValues(
+                checklist,
+                checklistFromDb,
+                nameof(EvaluationChecklist.Id),
+                nameof(EvaluationChecklist.RegisterId),
+                nameof(EvaluationChecklist.Register));
+
+            checklistFromDb.RegisterId = checklist.RegisterId;
+        }
+        private void UpsertEvaluationRemark(EvaluationRemark remark)
+        {
+            var remarkFromDb = _unitOfWork.EvaluationRemark.Get(
+                x => x.RegisterId == remark.RegisterId,
+                tracked: true);
+
+            if (remarkFromDb is null)
+            {
+                remark.Id = Guid.NewGuid();
+                _unitOfWork.EvaluationRemark.Add(remark);
+                return;
+            }
+
+            CopyValues(
+                remark,
+                remarkFromDb,
+                nameof(EvaluationRemark.Id),
+                nameof(EvaluationRemark.RegisterId),
+                nameof(EvaluationRemark.Register));
+
+            remarkFromDb.RegisterId = remark.RegisterId;
+        }
+        private static void CopyValues<T>(T source, T target, params string[] excludedPropertyNames)
+        {
+            var excluded = new HashSet<string>(excludedPropertyNames);
+            var props = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance);
+
+            foreach (var prop in props)
+            {
+                if (!prop.CanRead || !prop.CanWrite || excluded.Contains(prop.Name))
+                {
+                    continue;
+                }
+
+                var value = prop.GetValue(source);
+                prop.SetValue(target, value);
+            }
+        }
+        private RegisterVM? BuildRegisterVm(Guid id)
+        {
+            var register = _unitOfWork.Register.Get(u => u.Id == id);
+            if (register is null)
+            {
+                return null;
+            }
+
+            return new RegisterVM
+            {
+                Register = register,
+                CheckList = _unitOfWork.EvaluationChecklist.Get(x => x.RegisterId == id)
+                    ?? new EvaluationChecklist { RegisterId = id },
+                Remarks = _unitOfWork.EvaluationRemark.Get(x => x.RegisterId == id)
+                    ?? new EvaluationRemark { RegisterId = id }
+            };
+        }
         #region API CALLS
 
         //TODO: Refactor the API calls to a single method with a parameter for status to avoid code duplication
@@ -185,28 +293,38 @@ namespace asprule1020.Areas.Admin.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EvaluationResult(Register register)
+        public async Task<IActionResult> EvaluationResult(RegisterVM model)
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var evaluator = await _userManager.FindByIdAsync(userId);
-            var evaluatorFullName = string.Join(" ", new[]
+            var validationError = ValidateEvaluationRequest(model);
+            if (validationError is not null)
             {
-        evaluator?.FirstName?.Trim(),
-        evaluator?.MiddleName?.Trim(),
-        evaluator?.LastName?.Trim()
-    }.Where(part => !string.IsNullOrWhiteSpace(part)));
+                return validationError;
+            }
 
-            _unitOfWork.Register.UpdateEvaluator(register, evaluatorFullName);
+            var evaluatorFullName = await GetCurrentEvaluatorFullNameAsync();
+            var registerFromDb = _unitOfWork.Register.Get(u => u.Id == model!.Register.Id);
+            if (registerFromDb is null)
+            {
+                return NotFound("Register record not found.");
+            }
+
+            ApplyRegisterIdToEvaluationModels(model);
+            UpsertEvaluationChecklist(model.CheckList);
+            UpsertEvaluationRemark(model.Remarks);
+
+            _unitOfWork.Register.UpdateEvaluator(model.Register, evaluatorFullName);
             _unitOfWork.Save();
-            try
+
+            return Json(new
             {
-                return Json(new { success = true, message = "Evaluation updated successfully" });
-            }
-            catch (Exception ex)
-            {
-                return Json(new { success = false, message = Convert.ToString(ex) });
-            }
+                success = true,
+                message = "Evaluation updated successfully",
+                trans_no = registerFromDb.TransId,
+                recommendation = model.Register.EstStatus
+            });
         }
+
+
         [Authorize(Roles = SD.Role_Evaluator)]
         [HttpGet]
         public IActionResult ViewAttachment(Guid id, string type)
