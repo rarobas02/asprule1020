@@ -35,7 +35,10 @@
 
 <form method="post" id="evalform" enctype="multipart/form-data">
     <div asp-validation-summary="All"></div>
+
     <input asp-for="Register.Id" type="hidden" />
+    <input type="hidden" name="CheckList.RegisterId" value="@register?.Id" />
+    <input type="hidden" name="Remarks.RegisterId" value="@register?.Id" />
 
     <div class="tab-content" id="receive_forward_content">
         <div class="tab-pane fade show active" id="registration_details" role="tabpanel"
