@@ -15,7 +15,6 @@ using QuestPDF.Infrastructure;
 using System.IO.Compression;
 using System.Reflection;
 using System.Security.Claims;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace asprule1020.Areas.Admin.Controllers
 {
@@ -461,7 +460,7 @@ namespace asprule1020.Areas.Admin.Controllers
             register.EstEmailApprovedSentDate = DateTime.Now;
             register.EstEvalEmailSendStatus = emailSubject;
             _unitOfWork.Save();
-
+            HttpContext.Session.SetInt32(SD.PendingCount, _unitOfWork.Register.GetAll(u => u.EstProvince == userProvince && u.EstIsEmailApprovedSent == false).Count()); // retrieve the pending count after sending email all registers with email sent status false
             TempData["success"] = "Approved email sent successfully.";
             return RedirectToAction(nameof(ApprovedItem), new { id });
         }

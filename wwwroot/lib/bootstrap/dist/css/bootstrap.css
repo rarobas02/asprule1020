@@ -7449,6 +7449,9 @@ textarea.form-control-lg {
 .top-50 {
   top: 50% !important;
 }
+.top-75 {
+  top: 25% !important;
+}
 
 .top-100 {
   top: 100% !important;
@@ -7472,6 +7475,9 @@ textarea.form-control-lg {
 
 .start-50 {
   left: 50% !important;
+}
+.start-75 {
+  left: 75% !important;
 }
 
 .start-100 {
