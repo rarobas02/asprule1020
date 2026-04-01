@@ -66,10 +66,7 @@
                     <a class="nav-link" asp-area="Admin" asp-controller="Evaluator" asp-action="Review">
                         <i class="fas fa-copy"></i>
                         <span>For Review</span>
-                        <span class="position-absolute top-50 start-75 translate-middle badge rounded-pill bg-danger">
-                            99+
-                            <span class="visually-hidden">unread messages</span>
-                        </span>
+                        @await Component.InvokeAsync("EvalForReviewCount")
                     </a>
                 </li>
             }
@@ -80,13 +77,7 @@
                     <a class="nav-link" asp-area="Admin" asp-controller="Evaluator" asp-action="Approved">
                         <i class="fas fa-check-square"></i>
                         <span>Approved</span>
-                        @if (HttpContextAccessor.HttpContext.Session.GetInt32(SD.PendingCount) != null)
-                        {
-                            <span class="position-absolute top-50 start-75 translate-middle badge rounded-pill bg-danger">
-                                @HttpContextAccessor.HttpContext.Session.GetInt32(SD.PendingCount)
-                                <span class="visually-hidden">unread messages</span>
-                            </span>
-                        }
+                        @await Component.InvokeAsync("EvalApprovedEmailNotSentCount")
                     </a>
                 </li>
             }
@@ -97,10 +88,7 @@
                     <a class="nav-link" asp-area="Admin" asp-controller="Evaluator" asp-action="Reapplication">
                         <i class="fas fa-undo"></i>
                         <span>Reapplication</span>
-                        <span class="position-absolute top-50 start-75 translate-middle badge rounded-pill bg-danger">
-                            99+
-                            <span class="visually-hidden">unread messages</span>
-                        </span>
+                        @await Component.InvokeAsync("EvalReapplicationCount")
                     </a>
                 </li>
             }
@@ -111,10 +99,7 @@
                     <a class="nav-link" asp-area="Admin" asp-controller="Evaluator" asp-action="Updating">
                         <i class="fas fa-sync-alt"></i>
                         <span>Updating</span>
-                        <span class="position-absolute top-50 start-75 translate-middle badge rounded-pill bg-danger">
-                            99+
-                            <span class="visually-hidden">unread messages</span>
-                        </span>
+                        @await Component.InvokeAsync("EvalForUpdateCount")
                     </a>
                 </li>
             }
@@ -125,7 +110,7 @@
                     <a class="nav-link" asp-area="Admin" asp-controller="PoHead" asp-action="PoHeadReview">
                         <i class="fas fa-check-circle"></i>
                         <span>For Review</span>
-                        @await Component.InvokeAsync("PendingCounter")
+                        @await Component.InvokeAsync("PoHeadForReviewCount")
                     </a>
                 </li>
             }
@@ -136,10 +121,7 @@
                     <a class="nav-link" asp-area="Admin" asp-controller="PoHead" asp-action="Approved">
                         <i class="fas fa-sync-alt"></i>
                         <span>Approved</span>
-                        <span class="position-absolute top-50 start-75 translate-middle badge rounded-pill bg-danger">
-                            99+
-                            <span class="visually-hidden">unread messages</span>
-                        </span>
+                        @await Component.InvokeAsync("PoHeadApprovedCount")
                     </a>
                 </li>
             }

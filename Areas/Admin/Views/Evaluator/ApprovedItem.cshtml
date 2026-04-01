@@ -8,8 +8,6 @@
     string FormatBool(bool? value) => value switch { true => "Yes", false => "No", _ => "N/A" };
     string FormatNumber(int? value) => value.HasValue ? value.Value.ToString("N0") : "N/A";
     string FormatList(List<string>? values) => values is { Count: > 0 } ? string.Join(", ", values) : "N/A";
-    string BuildFileUrl(string folder, string? fileName) =>
-    string.IsNullOrWhiteSpace(fileName) ? string.Empty : Url.Content($"~/Uploads/{folder}/{fileName}");
     string BuildAttachmentUrl(Guid? registerId, string type, string? storedPath) =>!registerId.HasValue || string.IsNullOrWhiteSpace(storedPath)
     ? string.Empty
     : Url.Action("ViewAttachment", "Evaluator", new { area = "Admin", id = registerId.Value, type }) ?? string.Empty;

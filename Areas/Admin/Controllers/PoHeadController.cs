@@ -49,11 +49,12 @@ namespace asprule1020.Areas.Admin.Controllers
             {
                 return NotFound();
             }
-
+            HttpContext.Session.GetInt32(SD.PoHeadForReviewCount);
             return View(registerVM);
         }
         public IActionResult Approved()
         {
+            HttpContext.Session.GetInt32(SD.PoHeadApprovedCount);
             return View();
         }
         public IActionResult ApprovedItem(Guid? id)
@@ -120,12 +121,14 @@ namespace asprule1020.Areas.Admin.Controllers
         {
             var province = User.FindFirstValue("EstProvince");
             List<Register> objRegisterList = _unitOfWork.Register.GetAll(u => u.EstProvince == province && u.EstStatus == SD.StatusApproved).ToList();
+            HttpContext.Session.GetInt32(SD.PoHeadApprovedCount);
             return Json(new { data = objRegisterList });
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EvaluationResult(Register register)
         {
+            var userProvince = HttpContext.User.FindFirstValue("EstProvince");
             if (register.Id == Guid.Empty)
             {
                 return BadRequest("Invalid register id.");
@@ -156,7 +159,8 @@ namespace asprule1020.Areas.Admin.Controllers
 
             _unitOfWork.Register.UpdatePoHead(register, evaluatorFullName, rule1020Id);
             _unitOfWork.Save();
-
+            HttpContext.Session.SetInt32(SD.PoHeadApprovedCount, _unitOfWork.Register.GetAll(u => u.EstProvince == userProvince && u.EstStatus == SD.StatusForApproval).Count());
+            HttpContext.Session.SetInt32(SD.PoHeadForReviewCount, _unitOfWork.Register.GetAll(u => u.EstProvince == userProvince && (u.EstStatus == SD.StatusForApproval || u.EstStatus == SD.StatusForReapplication)).Count());
             return Json(new
             {
                 success = true,
