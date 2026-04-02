@@ -26,7 +26,6 @@ namespace asprule1020.Areas.Admin.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IEmailSender _emailSender;
         private readonly Rule1020Monitoring _rule1020Monitoring;
-
         public EvaluatorController(
             IUnitOfWork unitOfWork,
             IWebHostEnvironment webHostEnvironment,
@@ -44,7 +43,11 @@ namespace asprule1020.Areas.Admin.Controllers
         public IActionResult Review()
         {
             var province = User.FindFirstValue("EstProvince");
-            HttpContext.Session.GetInt32(SD.EvalForReviewCount);
+            var forReviewCount = _unitOfWork.Register
+                .GetAll(u => u.EstProvince == province && u.EstStatus == SD.StatusForReview)
+                .Count();
+
+            HttpContext.Session.SetInt32(SD.EvalForReviewCount, forReviewCount);
             return View();
         }
         [Authorize(Roles = SD.Role_Evaluator)]
@@ -60,19 +63,28 @@ namespace asprule1020.Areas.Admin.Controllers
             };
             registerVM.Register = _unitOfWork.Register.Get(u => u.Id == id);
             var province = User.FindFirstValue("EstProvince");
-            HttpContext.Session.GetInt32(SD.EvalForReviewCount);
+            var forReviewCount = _unitOfWork.Register
+                .GetAll(u => u.EstProvince == province && u.EstStatus == SD.StatusForReview)
+                .Count();
+
+            HttpContext.Session.SetInt32(SD.EvalForReviewCount, forReviewCount);
             return View(registerVM);
         }
         [Authorize(Roles = SD.Role_Evaluator)]
         public IActionResult Approved()
         {
             var province = User.FindFirstValue("EstProvince");
-            HttpContext.Session.GetInt32(SD.EvalApprovedEmailNotSentCount);
+            var EvalApprovedEmailNotSentCount = _unitOfWork.Register
+    .GetAll(u => u.EstProvince == province && u.EstIsEmailApprovedSent == false && u.EstStatus == SD.StatusApproved)
+    .Count();
+
+            HttpContext.Session.SetInt32(SD.EvalApprovedEmailNotSentCount, EvalApprovedEmailNotSentCount);
             return View();
         }
         [Authorize(Roles = SD.Role_Evaluator)]
         public IActionResult ApprovedItem(Guid? id)
         {
+            var province = User.FindFirstValue("EstProvince");
             if (id == null || id == Guid.Empty)
             {
                 return NotFound();
@@ -82,12 +94,17 @@ namespace asprule1020.Areas.Admin.Controllers
             {
                 return NotFound();
             }
-            HttpContext.Session.GetInt32(SD.EvalApprovedEmailNotSentCount);
+            var EvalApprovedEmailNotSentCount = _unitOfWork.Register
+    .GetAll(u => u.EstProvince == province && u.EstIsEmailApprovedSent == false && u.EstStatus == SD.StatusApproved)
+    .Count();
+
+            HttpContext.Session.SetInt32(SD.EvalApprovedEmailNotSentCount, EvalApprovedEmailNotSentCount);
             return View(registerVM);
         }
         [Authorize(Roles = SD.Role_Evaluator)]
         public IActionResult UpdateItem(Guid? id)
         {
+            var province = User.FindFirstValue("EstProvince");
             if (id == null || id == Guid.Empty)
             {
                 return NotFound();
@@ -96,20 +113,33 @@ namespace asprule1020.Areas.Admin.Controllers
             {
                 Register = new Register(),
             };
-            registerVM.Register = _unitOfWork.Register.Get(u => u.Id == id);
-            HttpContext.Session.GetInt32(SD.EvalForUpdateCount);
+            var EvalForUpdateCount = _unitOfWork.Register
+.GetAll(u => u.EstProvince == province && u.EstStatus == SD.StatusForUpdate)
+.Count();
+
+            HttpContext.Session.SetInt32(SD.EvalForUpdateCount, EvalForUpdateCount);
             return View(registerVM);
         }
         [Authorize(Roles = SD.Role_Evaluator)]
         public IActionResult Reapplication()
         {
-            HttpContext.Session.GetInt32(SD.EvalReapplicationCount);
+            var province = User.FindFirstValue("EstProvince");
+            var EvalForReapplicationCount = _unitOfWork.Register
+.GetAll(u => u.EstProvince == province && u.EstStatus == SD.StatusReapplication)
+.Count();
+
+            HttpContext.Session.SetInt32(SD.EvalReapplicationCount, EvalForReapplicationCount);
             return View();
         }
         [Authorize(Roles = SD.Role_Evaluator)]
         public IActionResult Updating()
         {
-            HttpContext.Session.GetInt32(SD.EvalForUpdateCount);
+            var province = User.FindFirstValue("EstProvince");
+            var EvalForUpdateCount = _unitOfWork.Register
+.GetAll(u => u.EstProvince == province && u.EstStatus == SD.StatusForUpdate)
+.Count();
+
+            HttpContext.Session.SetInt32(SD.EvalForUpdateCount, EvalForUpdateCount);
             return View();
         }
         public IActionResult ViewAll()
@@ -327,8 +357,16 @@ namespace asprule1020.Areas.Admin.Controllers
             UpsertEvaluationRemark(model.Remarks);
 
             _unitOfWork.Register.UpdateEvaluator(model.Register, evaluatorFullName);
-            HttpContext.Session.SetInt32(SD.EvalForReviewCount, _unitOfWork.Register.GetAll(u => u.EstProvince == province && u.EstStatus == SD.StatusForReview).Count());
-            HttpContext.Session.SetInt32(SD.EvalForUpdateCount, _unitOfWork.Register.GetAll(u => u.EstProvince == province && u.EstStatus == SD.StatusForUpdate).Count());
+            var EvalForReapplicationCount = _unitOfWork.Register
+.GetAll(u => u.EstProvince == province && u.EstStatus == SD.StatusForReview)
+.Count();
+            var EvalForUpdateCount = _unitOfWork.Register
+.GetAll(u => u.EstProvince == province && u.EstStatus == SD.StatusForUpdate)
+.Count();
+
+            HttpContext.Session.SetInt32(SD.EvalForReviewCount, EvalForReapplicationCount);
+            HttpContext.Session.SetInt32(SD.EvalForUpdateCount, EvalForUpdateCount);
+
             _unitOfWork.Save();
 
             return Json(new
@@ -478,7 +516,13 @@ namespace asprule1020.Areas.Admin.Controllers
 
             _unitOfWork.Register.ApprovedEmailSendStatus(estIsEmailApprovedSent, estEmailApprovedSentDate, id);
             _unitOfWork.Save();
-            HttpContext.Session.SetInt32(SD.EvalApprovedEmailNotSentCount, _unitOfWork.Register.GetAll(u => u.EstProvince == userProvince && u.EstIsEmailApprovedSent == false).Count()); // retrieve the pending count after sending email all registers with email sent status false
+       
+
+            var EvalApprovedEmailNotSentCount = _unitOfWork.Register
+.GetAll(u => u.EstProvince == userProvince && u.EstIsEmailApprovedSent == false)
+.Count();
+
+            HttpContext.Session.SetInt32(SD.EvalApprovedEmailNotSentCount, EvalApprovedEmailNotSentCount);
             TempData["success"] = "Approved email sent successfully.";
             return RedirectToAction(nameof(ApprovedItem), new { id });
         }

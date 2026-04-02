@@ -15,27 +15,24 @@ namespace asprule1020.ViewComponents
         {
             _unitOfWork = unitOfWork;
         }
-        public async Task<IViewComponentResult> InvokeAsync()
+        public Task<IViewComponentResult> InvokeAsync()
         {
             var userProvince = HttpContext.User.FindFirstValue("EstProvince");
-            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            var claimsIdentity = (ClaimsIdentity)User.Identity!;
             var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
 
-
-            if (claim is not null)
-            {
-                if (HttpContext.Session.GetInt32(SD.EvalForReviewCount) == null)
-                {
-                    HttpContext.Session.SetInt32(SD.EvalForReviewCount, _unitOfWork.Register.GetAll(u => u.EstProvince == userProvince && u.EstStatus == SD.StatusForReview).Count());
-                }
-
-                return View(HttpContext.Session.GetInt32(SD.EvalForReviewCount));
-            }
-            else
+            if (claim is null)
             {
                 HttpContext.Session.Clear();
-                return View(0);
+                return Task.FromResult<IViewComponentResult>(View(0));
             }
+
+            var count = _unitOfWork.Register
+                .GetAll(u => u.EstProvince == userProvince && u.EstStatus == SD.StatusForReview)
+                .Count();
+
+            HttpContext.Session.SetInt32(SD.EvalForReviewCount, count);
+            return Task.FromResult<IViewComponentResult>(View(count));
         }
     }
 }
