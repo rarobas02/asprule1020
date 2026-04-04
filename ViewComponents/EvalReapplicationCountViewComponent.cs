@@ -26,7 +26,7 @@ namespace asprule1020.ViewComponents
             {
                 if (HttpContext.Session.GetInt32(SD.EvalReapplicationCount) == null)
                 {
-                    HttpContext.Session.SetInt32(SD.EvalReapplicationCount, _unitOfWork.Register.GetAll(u => u.EstProvince == userProvince && u.EstStatus == SD.StatusReapplication).Count());
+                    HttpContext.Session.SetInt32(SD.EvalReapplicationCount, _unitOfWork.Register.GetAll(u => u.EstProvince == userProvince && u.EstIsEmailReapplicationSent == false && u.EstStatus == SD.StatusReapplication).Count());
                 }
 
                 return View(HttpContext.Session.GetInt32(SD.EvalReapplicationCount));

@@ -4,6 +4,7 @@ using asprule1020.Infrastructure.Documents.Report;
 using asprule1020.Models;
 using asprule1020.Models.ViewModel;
 using asprule1020.Utility;
+using asprule1020.ViewComponents;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -101,6 +102,25 @@ namespace asprule1020.Areas.Admin.Controllers
             HttpContext.Session.SetInt32(SD.EvalApprovedEmailNotSentCount, EvalApprovedEmailNotSentCount);
             return View(registerVM);
         }
+        public IActionResult ReapplicationItem(Guid? id)
+        {
+            var province = User.FindFirstValue("EstProvince");
+            if (id == null || id == Guid.Empty)
+            {
+                return NotFound();
+            }
+            var registerVM = BuildRegisterVm(id.Value);
+            if (registerVM is null)
+            {
+                return NotFound();
+            }
+            var EvalReapplicationCount = _unitOfWork.Register
+    .GetAll(u => u.EstProvince == province && u.EstIsEmailReapplicationSent == false && u.EstStatus == SD.StatusReapplication)
+    .Count();
+
+            HttpContext.Session.SetInt32(SD.EvalReapplicationCount, EvalReapplicationCount);
+            return View(registerVM);
+        }
         [Authorize(Roles = SD.Role_Evaluator)]
         public IActionResult UpdateItem(Guid? id)
         {
@@ -125,7 +145,7 @@ namespace asprule1020.Areas.Admin.Controllers
         {
             var province = User.FindFirstValue("EstProvince");
             var EvalForReapplicationCount = _unitOfWork.Register
-.GetAll(u => u.EstProvince == province && u.EstStatus == SD.StatusReapplication)
+.GetAll(u => u.EstProvince == province && u.EstIsEmailReapplicationSent == false && u.EstStatus == SD.StatusReapplication)
 .Count();
 
             HttpContext.Session.SetInt32(SD.EvalReapplicationCount, EvalForReapplicationCount);
@@ -358,7 +378,7 @@ namespace asprule1020.Areas.Admin.Controllers
 
             _unitOfWork.Register.UpdateEvaluator(model.Register, evaluatorFullName);
             var EvalForReapplicationCount = _unitOfWork.Register
-.GetAll(u => u.EstProvince == province && u.EstStatus == SD.StatusForReview)
+.GetAll(u => u.EstProvince == province && u.EstIsEmailReapplicationSent == false && u.EstStatus == SD.StatusReapplication)
 .Count();
             var EvalForUpdateCount = _unitOfWork.Register
 .GetAll(u => u.EstProvince == province && u.EstStatus == SD.StatusForUpdate)
@@ -524,6 +544,87 @@ namespace asprule1020.Areas.Admin.Controllers
 
             HttpContext.Session.SetInt32(SD.EvalApprovedEmailNotSentCount, EvalApprovedEmailNotSentCount);
             TempData["success"] = "Approved email sent successfully.";
+            return RedirectToAction(nameof(ApprovedItem), new { id });
+        }
+        [Authorize(Roles = SD.Role_Evaluator)]
+        [HttpPost]
+        public IActionResult SendReapplicationEmail(Guid id, string est_email_message)
+        {
+            if (id == Guid.Empty)
+            {
+                return BadRequest("Invalid record id.");
+            }
+
+            var register = _unitOfWork.Register.Get(u => u.Id == id);
+            if (register is null)
+            {
+                return NotFound();
+            }
+
+            if (string.IsNullOrWhiteSpace(register.Email))
+            {
+                return BadRequest("No recipient email found.");
+            }
+
+            if (_emailSender is not EmailSender attachmentSender)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Email sender service is not configured for attachments.");
+            }
+
+
+            var userProvince = User.FindFirstValue("EstProvince");
+            var provinceInfo = ProvinceDetails.GetProvinceInfo(userProvince);
+
+            var trimmedMessage = (est_email_message ?? string.Empty).Trim();
+            var managerFullName = BuildManagerName(register.EstOwnerFirst, register.EstOwnerMid, register.EstOwnerLast);
+
+            var body = $"""
+                <div>
+
+                    <p>Dear Establishment Owner / Manager  {managerFullName},</p>
+
+                    <p>Good day!</p>
+
+                    <p>Upon evaluation of the submitted documents, we noted that your Rule 1020 Application is for <strong>RE-APPLICATION</strong>.</p>
+
+                    <p>You can Track your application using your Application Number: <strong>{register.TransId}</strong></p>
+
+                    <p>To further assist you in your application, you may also contact the provincial office landline {provinceInfo.ProvinceTelNo} or send an email to {provinceInfo.ProvinceEmail}</p>
+
+                    <p>You may also visit {provinceInfo.ProvincialOffice} - {provinceInfo.ProvinceAddress} for inquiries and claim your certificate.</p>
+
+                    <p>{provinceInfo.ProvincialOffice} remarks: <strong>TODO: Remarks here</strong></p>
+
+                    <p>If you wish to Re-apply, you may submit another Application at <strong>https://www.rule1020.dole4a.com/</strong></p>
+
+                    <p>Please do not reply on this email</p>
+
+                    <p>Thank you,<br>DOLE Regional Office 4a : {provinceInfo.ProvincialOffice}</p>
+                </div>
+
+
+                """;
+
+            const string emailSubject = "DOLE Rule 1020 Status - Re-Application";
+
+            attachmentSender.SendEmailAsync(
+                register.Email,
+                emailSubject,
+                body);
+
+            bool estIsEmailApprovedSent = true;
+            DateTime estEmailApprovedSentDate = DateTime.Now;
+
+            _unitOfWork.Register.ReapplicationEmailSendStatus(estIsEmailApprovedSent, estEmailApprovedSentDate, id);
+            _unitOfWork.Save();
+
+
+            var EvalReapplicationEmailNotSentCount = _unitOfWork.Register
+.GetAll(u => u.EstProvince == userProvince && u.EstIsEmailReapplicationSent == false)
+.Count();
+
+            HttpContext.Session.SetInt32(SD.EvalReapplicationCount, EvalReapplicationEmailNotSentCount);
+            TempData["success"] = "Reapplication email sent successfully.";
             return RedirectToAction(nameof(ApprovedItem), new { id });
         }
         [HttpGet]
