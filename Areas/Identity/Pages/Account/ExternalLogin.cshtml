@@ -174,6 +174,13 @@
                             <div class="invalid-feedback">Last name of Manager/Owner is required.</div>
                         </div>
                         <div class="col-md-6">
+                            <label asp-for="Input.Register.EstTaxIdentificationNumber" class="form-label">
+                                Tax Identification Number (TIN)
+                            </label>
+                            <input asp-for="Input.Register.EstTaxIdentificationNumber" type="text" class="form-control" data-element="EstTaxIdentificationNumber" required />
+                            <div class="invalid-feedback">Tax Identification Number is required.</div>
+                        </div>
+                        <div class="col-md-6">
                             <label asp-for="Input.Register.EstCurrentCap" class="form-label">
                                 Current Capitalization
                             </label>
@@ -637,7 +644,7 @@
                             <dd class="col-sm-12 col-lg-8" id="reviewEstOwnerValidIDFile"></dd>
                         </dl>
                     </div>
-                    <div class="container mt-3 bg-light p-3 d-none" id="review_branch_unit_container">
+                    <div class="container mt-3 bg-body-secondary p-3 d-none" id="review_branch_unit_container">
                         <h5 class="text-muted">Branch Unit</h5>
                         <table class="table table-bordered" id="est_branch_table">
                             <thead>
@@ -652,7 +659,7 @@
                         </table>
                     </div>
 
-                    <div class="container mt-3 bg-light p-3 d-none" id="review_labor_union_container">
+                    <div class="container mt-3 bg-body-secondary p-3 d-none" id="review_labor_union_container">
                         <h5 class="text-muted">Labor Union</h5>
                         <table class="table table-bordered" id="est_union_table">
                             <thead>

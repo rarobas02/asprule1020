@@ -223,7 +223,7 @@ namespace asprule1020.Areas.Identity.Pages.Account
                 user.RegisterId = registerEntity.Id;
                 await _userManager.UpdateAsync(user);
                 await _emailSender.SendEmailAsync(Input.Email, $"Rule 1020 Tracking Number : {registerEntity.TransId}",
-    $"<p>Good day!</p><p>Your Application has been submitted for your Establishment <strong>{registerEntity.EstName}</strong></p><p>Thank you!</p>");
+    $"<div style=\"font-family: Arial, sans-serif;\">\r\n\r\n            <p>Good day!</p>\r\n\r\n            <p>Your Application has been submitted for your Establishment <strong>{registerEntity.EstName}.</strong></p>\r\n\r\n            <p>You can track your application using this Number: <strong>{registerEntity.TransId}</strong></p>\r\n\r\n            <p>The DOLE {registerEntity.EstProvince} Provincial Office will evaluate your application.</p>\r\n\r\n            <p>Please do not reply on this email.</p>\r\n\r\n            <p>Thank you,<br>DOLE Regional Office 4a : {registerEntity.EstProvince} Provincial Office</p>\r\n        </div>");
                 // Redirect to Client confirmation page with submitted registration id.
                 var confirmationUrl = Url.Action(
                     "RegisterConfirmation",
