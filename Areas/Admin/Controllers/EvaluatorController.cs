@@ -296,13 +296,23 @@ namespace asprule1020.Areas.Admin.Controllers
                 return null;
             }
 
+            var laborUnion = _unitOfWork.LaborUnion
+                .GetAll(x => x.RegisterId == id)
+                .ToList();
+
+            var branchUnit = _unitOfWork.BranchUnit
+                .GetAll(x => x.RegisterId == id)
+                .ToList();
+
             return new RegisterVM
             {
                 Register = register,
                 CheckList = _unitOfWork.EvaluationChecklist.Get(x => x.RegisterId == id)
                     ?? new EvaluationChecklist { RegisterId = id },
                 Remarks = _unitOfWork.EvaluationRemark.Get(x => x.RegisterId == id)
-                    ?? new EvaluationRemark { RegisterId = id }
+                    ?? new EvaluationRemark { RegisterId = id },
+                LaborUnion = laborUnion,
+                BranchUnit = branchUnit
             };
         }
         #region API CALLS

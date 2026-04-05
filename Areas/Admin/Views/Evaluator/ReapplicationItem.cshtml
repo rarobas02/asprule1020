@@ -1,16 +1,20 @@
 ﻿@model RegisterVM
 
 @{
-    ViewData["Title"] = "Approved Registration Details";
+    ViewData["Title"] = "Re-Application Registration Details";
     var register = Model?.Register;
+    var laborUnion = Model?.LaborUnion;
+    var branchUnit = Model?.BranchUnit;
     string FormatString(string? value) => string.IsNullOrWhiteSpace(value) ? "N/A" : value;
     string FormatDate(DateTime? date) => date?.ToString("MMMM dd, yyyy") ?? "N/A";
     string FormatBool(bool? value) => value switch { true => "Yes", false => "No", _ => "N/A" };
     string FormatNumber(int? value) => value.HasValue ? value.Value.ToString("N0") : "N/A";
     string FormatList(List<string>? values) => values is { Count: > 0 } ? string.Join(", ", values) : "N/A";
-    string BuildAttachmentUrl(Guid? registerId, string type, string? storedPath) =>!registerId.HasValue || string.IsNullOrWhiteSpace(storedPath)
+    string BuildAttachmentUrl(Guid? registerId, string type, string? storedPath) => !registerId.HasValue || string.IsNullOrWhiteSpace(storedPath)
     ? string.Empty
     : Url.Action("ViewAttachment", "Evaluator", new { area = "Admin", id = registerId.Value, type }) ?? string.Empty;
+    int? laborUnionCount = 1;
+    int? branchUnitCount = 1;
 }
 
 <ul class="nav nav-tabs" id="action_tab" role="tablist">
@@ -30,6 +34,34 @@
     </li>
     <li class="nav-item" role="presentation">
         <button class="nav-link d-flex align-self-start align-items-center"
+                id="branch-units-ap-tab"
+                data-bs-toggle="tab"
+                data-bs-target="#branch-units"
+                type="button"
+                role="tab"
+                aria-controls="branch-units"
+                aria-selected="true">
+            <i class="fa-solid fa-arrow-trend-up fa-xs me-1"></i>
+            Branch Units
+            <span class="badge badge-pill badge-danger ms-2 branch-units-badge"></span>
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link d-flex align-self-start align-items-center"
+                id="labor-unions-ap-tab"
+                data-bs-toggle="tab"
+                data-bs-target="#labor-unions"
+                type="button"
+                role="tab"
+                aria-controls="labor-unions"
+                aria-selected="true">
+            <i class="fa-solid fa-arrow-trend-up fa-xs me-1"></i>
+            Labor Unions
+            <span class="badge badge-pill badge-danger ms-2 labor-unions-badge"></span>
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link d-flex align-self-start align-items-center"
                 id="approved_action-ap-tab"
                 data-bs-toggle="tab"
                 data-bs-target="#approved_action"
@@ -44,7 +76,7 @@
     </li>
 </ul>
 
-<div class="tab-content" id="receive_forward_content">
+<div class="tab-content">
     <div class="tab-pane fade show active" id="registration_details" role="tabpanel"
          aria-labelledby="registration_details-ap-tab">
         <div class="row">
@@ -88,8 +120,8 @@
                     <dt class="col-sm-12 col-lg">Type of Establishment:</dt>
                     <dd class="col-sm-12 col-lg">@FormatString(register?.EstType)</dd>
                     <dd class="col-sm-12 col-lg">
-                        <input asp-for="CheckList.est_type_ck" type="checkbox" class="form-check-input remarks-check-box" onclick="return false;" tabindex="-1" />  
-                        <input asp-for="Remarks.est_type_input" type="text" class="form-control mb-3 input-remarks" readonly /> 
+                        <input asp-for="CheckList.est_type_ck" type="checkbox" class="form-check-input remarks-check-box" onclick="return false;" tabindex="-1" />
+                        <input asp-for="Remarks.est_type_input" type="text" class="form-control mb-3 input-remarks" readonly />
                     </dd>
                 </div>
                 <hr class="row mb-3" />
@@ -507,6 +539,89 @@
                     </div>
                 </form>
             </div>
+        </div>
+    </div>
+    <div class="tab-pane fade" id="branch-units">
+        <div class="row">
+            <div class="p-4 bg-light">
+                <h4>Branch Unit</h4>
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="datatable" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th width="10%">#</th>
+                                <th width="30%">Rule 1020 Registration #</th>
+                                <th width="30%">Branch Establishment Name</th>
+                                <th width="30%">Location</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            @if (branchUnit != null && branchUnit.Any())
+                            {
+                                foreach (var unit in branchUnit)
+                                {
+                                    <tr>
+                                        <td>@branchUnitCount++</td>
+                                        <td>@FormatString(unit?.Rule1020Number)</td>
+                                        <td>@FormatString(unit?.BranchName)</td>
+                                        <td>@FormatString(unit?.BranchAddress)</td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="4" class="text-center text-muted">No Branch Unit records found.</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div id="labor-unions" class="tab-pane fade">
+        <div>
+            <div class="row">
+                <div class="p-4 bg-light">
+                    <h4>Labor Union</h4>
+                    <div class="table-responsive">
+                        <table class="table table-bordered" id="datatable" width="100%" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th width="10%">#</th>
+                                    <th width="30%">Labor Union Name</th>
+                                    <th width="30%">Labor Union Address</th>
+                                    <th width="30%">Labor Union BLR reg. #</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (laborUnion != null && laborUnion.Any())
+                                {
+                                    foreach (var union in laborUnion)
+                                    {
+                                        <tr>
+                                            <td>@laborUnionCount++</td>
+                                            <td>@FormatString(union?.UnionName)</td>
+                                            <td>@FormatString(union?.UnionAddress)</td>
+                                            <td>@FormatString(union?.UnionBLR)</td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="4" class="text-center text-muted">No labor union records found.</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 </div>
