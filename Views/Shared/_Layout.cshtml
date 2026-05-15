@@ -1,5 +1,5 @@
 ﻿<!doctype html>
-<html lang="en" data-bs-theme="auto">
+<html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -25,52 +25,11 @@
     </style>
 </head>
 <body>
-    @*class="bg-body text-body d-flex flex-column"*@
-    <!-- Navbar -->
-    @*<nav class="navbar app-navbar navbar-dark">*@
-    @*<div class="container">
-            <a class="navbar-brand d-flex align-items-center gap-2" href="#">
-                <img src="~/img/_Layout/chatgpt-icon.svg" class="img-fluid object-fit-contain w-25" alt="Icon">
-                <div class="d-flex flex-column">
-                    <span class="h3 fw-semibold d-block m-0 p-0">My Form</span>
-                    <small class="m-0 p-0">Created by Remark Robas</small>
-                </div>
-            </a>
-            <div class="d-flex align-items-center gap-2">
-                <button id="themeToggle" class="btn btn-outline-light btn-sm">
-                    Toggle dark mode
-                </button>
-            </div>
-        </div>
-    </nav>
-
-    <!-- Main -->
-    <main class="container py-5 flex-grow-1">
-        @RenderBody()
-    </main>
-
-    <!-- Footer -->
-    <footer class="border-top py-4">
-        <div class="container d-flex flex-column flex-md-row justify-content-between gap-3">
-            <div>
-                <div class="fw-semibold">My Home App</div>
-                <div class="text-secondary small">© 2026 • All rights reserved</div>
-                <div class="text-secondary small">support@example.com • +1 (000) 123-4567</div>
-            </div>
-            <div class="d-flex gap-3">
-                <a class="text-decoration-none" href="register.html">Register</a>
-                <a class="text-decoration-none" href="update.html">Update</a>
-                <a class="text-decoration-none" href="#">Help</a>
-                <a class="text-decoration-none" href="#">Contact</a>
-            </div>
-        </div>
-    </footer>*@
-
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
         <div class="container-fluid">
 
             <a href="https://calabarzon.dole.gov.ph" target="_blank" class="navbar-brand">
-                <img class="h-50" src="assets/img/icon/dole-system-logo-triangle.png" alt="DOLE LOGO">
+                <img class="h-50" src="~/img/Client/dole-system-logo-triangle.png" alt="DOLE LOGO">
             </a>
             <div class="col text-light">
                 <h1 class="d-flex"><strong>RULE 1020 ONLINE</strong></h1>
@@ -85,15 +44,7 @@
 
                                     <div class="col-xl-5 col-md-8">
                                         <div class="card-group d-block d-md-flex row">
-                                            <!-- <span class="close">&times;</span> -->
                                             <div class="card col-md-7 p-2 mb-2">
-                                                <!-- <button type="button" class="btn-close" data-coreui-dismiss="modal" aria-label="Close"></button> -->
-                                                <!-- <div class="card-body"> -->
-                                                <!-- <div class="text-center mb-4"> -->
-                                                <!-- Modal content -->
-                                                <!-- <div class="modal fade" id="orangeModalSubscription" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-                                            aria-hidden="true">
-                                            <div class="modal-dialog modal-notify modal-warning" role="document"> -->
                                                 <div class="modal-content">
 
                                                     <!--Header-->
@@ -104,54 +55,7 @@
                                                                 <h3>Rule 1020 Online Application</h3>
                                                             </strong>
                                                         </div>
-
                                                     </div>
-                                                    <!-- <div class="text-center mb-8 bg-primary"> -->
-                                                    <!--Body-->
-                                                    <!-- <hr>
-                                                </div> -->
-                                                    <!-- <div class="text-center">
-                                            <p class="text-medium-emphasis"><small>Sign In to your account</small></p>
-                                        </div>
-                                        <form action="includes/process_login.php" method="post">
-
-                                        <input type="hidden" name="login_attempt" id="login_attempt" value="<?php echo (isset($_GET['login-attempt'])) ? $_GET['login-attempt'] : 0; ?>">
-
-                                        <div class="input-group mb-3">
-                                            <span class="input-group-text">
-                                                <i class="cil-user"></i>
-                                            </span>
-                                            <input class="form-control" type="text" name="username" placeholder="Username">
-                                        </div>
-                                        <div class="input-group mb-4">
-                                            <span class="input-group-text">
-                                                <i class="cil-lock-locked"></i>
-                                            </span>
-                                            <input class="form-control" type="password" name="password" placeholder="Password">
-                                        </div> -->
-                                                    <!-- <?php
-                                                    if (isset($_GET['login-attempt'])):
-                                                        echo '<div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                                <strong>Login failed!</strong> Invalid username or password.
-                                                <button type="button" class="btn-close" data-coreui-dismiss="alert" aria-label="Close"></button>
-                                                </div>';
-                                                    elseif (isset($_GET['user-access'])):
-                                                        echo '<div class="alert alert-warning alert-dismissible fade show" role="alert">
-                                                <strong>Login failed!</strong> Your account is currently DISABLED.
-                                                <button type="button" class="btn-close" data-coreui-dismiss="alert" aria-label="Close"></button>
-                                                </div>';
-                                                    endif;
-                                                    ?>
-
-                                        <div class="row">
-                                        <div class="card-body text-center">
-                                                <button class="btn btn-primary px-4" type="submit">Login</button>
-                                                <button class="btn btn-primary px-4" type="close">Cancel</button>
-                                            </div>
-                                            
-                                        </div> -->
-
-
                                                 </div>
                                             </div>
                                             <!--/.Content-->
@@ -171,34 +75,18 @@
     <main>
         @RenderBody()
     </main>
-    <hr>
-    <footer>
-        <div class="row d-flex flex-row">
-            <div class="col-md-6 bg-white">
-                <!-- <p>&copy; 2023 <a href="https://calabarzon.dole.gov.ph" class="text-dark">DOLE CALABARZON</a>
-                    </p> -->
-                <h3>
-                    <img src="assets/img/dole-logo-decent.png" style="max-width: 10%;height: auto;"><a href="https://calabarzon.dole.gov.ph" class="px-2 text-decoration-none">
-                    <span class="m-3 h5">DOLE CALABARZON</span>
-                </h3></a>
+    <footer class="border-top py-4 bg-primary-subtle">
+        <div class="container d-flex flex-column flex-md-row justify-content-between gap-3">
+            <div>
+                <div class="fw-semibold">DOLE Region 4a</div>
+                <div class="text-secondary small">© 2026 • All rights reserved</div>
+                <div class="text-secondary small">doleregion4a@gmail.com • +1 (000) 123-4567</div>
             </div>
-            <div class="col-md-6 text-md-end d-flex flex-row-reverse bg-white">
-                <h3>
-                    <a href="#" class="btn btn-outline-primary btn-icon-split btn-lg mx-3">
-                        <span class="icon text-primary">
-                            <i class="p-2 fab fa-instagram"></i>
-                        </span>Instagram</span>
-                    </a>
-                </h3>
-                <div class="vr text-primary"></div>
-                <h3>
-                    <a href="https://facebook.com/DOLE4A"
-                           class="btn btn-outline-primary btn-icon-split btn-lg mx-3">
-                        <span class="icon text-primary">
-                            <i class="p-2 fab fa-facebook"></i>
-                        </span>Facebook
-                    </a>
-                </h3>
+            <div class="d-flex gap-3">
+                <a class="text-decoration-none" asp-area="Identity" asp-page="/Account/Register">Register</a>
+                <a class="text-decoration-none" asp-area="Identity" asp-page="/Account/Login">Update</a>
+                <a class="text-decoration-none" asp-area="Client" asp-controller="Verify" asp-action="Index">Verify</a>
+                <a class="text-decoration-none" href="#">Contact</a>
             </div>
         </div>
     </footer>
@@ -211,28 +99,28 @@
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
     <script>
-            const html = document.documentElement;
-            const toggle = document.getElementById("themeToggle");
+            // const html = document.documentElement;
+            // const toggle = document.getElementById("themeToggle");
 
-            function getPreferredTheme() {
-              const stored = localStorage.getItem("theme");
-              if (stored) return stored;
-              return window.matchMedia("(prefers-color-scheme: dark)").matches
-                ? "dark"
-                : "light";
-            }
+            // function getPreferredTheme() {
+            //   const stored = localStorage.getItem("theme");
+            //   if (stored) return stored;
+            //   return window.matchMedia("(prefers-color-scheme: dark)").matches
+            //     ? "dark"
+            //     : "light";
+            // }
 
-            function setTheme(theme) {
-              html.setAttribute("data-bs-theme", theme);
-              localStorage.setItem("theme", theme);
-            }
+            // function setTheme(theme) {
+            //   html.setAttribute("data-bs-theme", theme);
+            //   localStorage.setItem("theme", theme);
+            // }
 
-            setTheme(getPreferredTheme());
+            // setTheme(getPreferredTheme());
 
-            toggle.addEventListener("click", () => {
-              const current = html.getAttribute("data-bs-theme");
-              setTheme(current === "dark" ? "light" : "dark");
-            });
+            // toggle.addEventListener("click", () => {
+            //   const current = html.getAttribute("data-bs-theme");
+            //   setTheme(current === "dark" ? "light" : "dark");
+            // });
     </script>
 </body>
 </html>
