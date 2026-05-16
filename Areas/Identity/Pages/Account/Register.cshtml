@@ -24,27 +24,25 @@
     var selectedTechInfo2 = Model?.Input?.Register?.EstTechInfo2 ?? new List<string>();
 }
 <div class="p-5 my-5 container card rounded-2">
-<div class="row">
-    <section>
-        <div class="row">
-            <div class="col-2 col-md-2 text-right mb-2">
-                <a asp-area="Client" asp-controller="Register" asp-action="Index" class="btn btn-outline-primary form-control btn-sm">Back to Home</a>
+    <div class="row">
+        <section>
+            <div class="row d-inline-block">
+                <a asp-area="Client" asp-controller="Register" asp-action="Index" class="btn btn-outline-primary form-control btn-sm border-0 d-inline-block text-start"><i class="fas fa-arrow-left"></i><small class="d-inline-flex text-nowrap">Back to Home</small></a>
             </div>
-        </div>
-        <div class="text-center mb-4">
-            @* <img src="~/img/_Layout/chatgpt-icon.svg"
+            <div class="text-center mb-4">
+                @* <img src="~/img/_Layout/chatgpt-icon.svg"
                          alt="Brand logo"
                          class="rounded-circle border border-2 border-primary-subtle"
                          style="width: 96px; height: 96px;" /> *@
-            <h1 class="h3 fw-semibold mt-3 mb-1">Register using the following external Services</h1>
-            <p class="text-secondary mb-0">Accessible login after register</p>
-        </div>
-        @{
-            if ((Model.ExternalLogins?.Count ?? 0) == 0)
-            {
-                <div>
-                    <p>
-                        There are no external authentication services configured. See this <a href="https://go.microsoft.com/fwlink/?LinkID=532715">
+                <h1 class="h3 fw-semibold mt-3 mb-1">Register using the following external Services</h1>
+                <p class="text-secondary mb-0">Accessible login after register</p>
+            </div>
+            @{
+                if ((Model.ExternalLogins?.Count ?? 0) == 0)
+                {
+                    <div>
+                        <p>
+                            There are no external authentication services configured. See this <a href="https://go.microsoft.com/fwlink/?LinkID=532715">
                             article
                             about setting up this ASP.NET application to support logging in via external services
                         </a>.
@@ -369,7 +367,7 @@
                                                    id="@checkboxId"
                                                    name="Input.Register.EstTechInfo1"
                                                    value="@option"
-                                                   @(selectedTechInfo1.Contains(option) ? "checked" : null) />
+                                            @(selectedTechInfo1.Contains(option) ? "checked" : null) />
                                             <label class="form-check-label" for="@checkboxId">@option</label>
                                         </div>
                                     }
@@ -380,7 +378,7 @@
                                                id="EstTechInfo1OtherCheckBox"
                                                name="Input.Register.EstTechInfo1"
                                                value="Others"
-                                               @(selectedTechInfo1.Contains("Others") ? "checked" : null) />
+                                        @(selectedTechInfo1.Contains("Others") ? "checked" : null) />
                                         <label class="form-check-label" for="EstTechInfo1OtherCheckBox">Others, Please Specify</label>
                                     </div>
                                 </div>
@@ -405,7 +403,7 @@
                                                    id="@checkboxId"
                                                    name="Input.Register.EstTechInfo2"
                                                    value="@option"
-                                                   @(selectedTechInfo2.Contains(option) ? "checked" : null) />
+                                            @(selectedTechInfo2.Contains(option) ? "checked" : null) />
                                             <label class="form-check-label" for="@checkboxId">@option</label>
                                         </div>
                                     }
@@ -416,7 +414,7 @@
                                                id="EstTechInfo2OtherCheckBox"
                                                name="Input.Register.EstTechInfo2"
                                                value="Others"
-                                               @(selectedTechInfo2.Contains("Others") ? "checked" : null) />
+                                        @(selectedTechInfo2.Contains("Others") ? "checked" : null) />
                                         <label class="form-check-label" for="EstTechInfo2OtherCheckBox">Others, Please Specify</label>
                                     </div>
                                 </div>
@@ -469,143 +467,104 @@
                                 <label class="form-label ml-3" for="estIsHaveLaborUnion">
                                     Do you have an Existing
                                     Registered Labor Union/s?<span class="text-muted fw-lighter">
-                                        (Please
-                                        Specify)
-                                    </span>
-                                </label>
+                                    (Please
+                                    Specify)
+                                </span>
+                            </label>
 
-                                <div class="rounded d-none" id="EstLaborUnionContent">
-                                    <div class="mb-2 mt-3 p-2 bg-primary text-center text-light rounded">
-                                        <h4>Labor Union</h4>
-                                    </div>
-
-                                    <button class="btn btn-warning w-100" id="EstAddUnionBtn" type="button">
-                                        Add
-                                        Labor Union
-                                    </button>
-                                    <div id="EstLaborUnionDiv"></div>
+                            <div class="rounded d-none" id="EstLaborUnionContent">
+                                <div class="mb-2 mt-3 p-2 bg-primary text-center text-light rounded">
+                                    <h4>Labor Union</h4>
                                 </div>
+
+                                <button class="btn btn-warning w-100" id="EstAddUnionBtn" type="button">
+                                    Add
+                                    Labor Union
+                                </button>
+                                <div id="EstLaborUnionDiv"></div>
                             </div>
                         </div>
+                    </div>
 
-                        <div class="text-center mb-4">
-                            @* <img src="~/img/_Layout/chatgpt-icon.svg"
+                    <div class="text-center mb-4">
+                        @* <img src="~/img/_Layout/chatgpt-icon.svg"
                          alt="Brand logo"
                          class="rounded-circle border border-2 border-primary-subtle"
                          style="width: 96px; height: 96px;" /> *@
-                            <h1 class="h3 fw-semibold mt-3 mb-1">Attachments</h1>
-                            <p class="text-secondary mb-0">Upload the required Files in PDF format</p>
-                        </div>
-                        <div class="col-md-6">
-                            <label asp-for="Input.Register.EstSECNumber" class="form-label">
-                                SEC Company Registration Number / DTI Business Name No.
-                            </label>
-                            <input asp-for="Input.Register.EstSECNumber" type="text" class="form-control" data-element="EstSECNumber" minlength="5" required />
-                            <div class="invalid-feedback">SEC Company Registration Number / DTI Business Name No. is required.</div>
-                        </div>
-                        <div class="col-md-6">
-                            <label asp-for="Input.Register.EstSECDateIssued" class="form-label">
-                                Provide Other Chemical Subtances
-                                uses or
-                                Handled
-                            </label>
-                            <input asp-for="Input.Register.EstSECDateIssued" type="date" class="form-control" data-element="EstSECDateIssued" required />
-                            <div class="invalid-feedback">First name is required.</div>
-                        </div>
-                        <div class="col-md-6">
-                            <label asp-for="Input.Register.EstSECFile" class="form-label">
-                                Scanned or Photocopy of <span>SEC Registration or DTI Certificate</span>: <span class="text-danger fw-bolder"> *</span>
-                                <small class="text-info">
-                                    <i>
-                                        Attach PDF file with a maximum upload file size of 25
-                                        megabytes
-                                    </i>
-                                </small>
-                            </label>
-                            <input asp-for="Input.EstSECFileUpload" type="file" class="form-control" data-element="EstSECFile" required />
-                            <small id="EstSECFileErrorMessege" class="text-danger"></small>
-                        </div>
-                        <div class="row p-0 m-0">
-                            <div class="col-12 mt-3">
-                                <div class="bg-body-secondary rounded p-3">
-                                    <div class="form-check d-flex align-items-start">
-                                        <input asp-for="Input.Register.EstIsPeza"
-                                               class="form-check-input me-2"
-                                               type="checkbox"
-                                               data-element="EstIsPeza">
+                        <h1 class="h3 fw-semibold mt-3 mb-1">Attachments</h1>
+                        <p class="text-secondary mb-0">Upload the required Files in PDF format</p>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="Input.Register.EstSECNumber" class="form-label">
+                            SEC Company Registration Number / DTI Business Name No.
+                        </label>
+                        <input asp-for="Input.Register.EstSECNumber" type="text" class="form-control" data-element="EstSECNumber" minlength="5" required />
+                        <div class="invalid-feedback">SEC Company Registration Number / DTI Business Name No. is required.</div>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="Input.Register.EstSECDateIssued" class="form-label">
+                            Provide Other Chemical Subtances
+                            uses or
+                            Handled
+                        </label>
+                        <input asp-for="Input.Register.EstSECDateIssued" type="date" class="form-control" data-element="EstSECDateIssued" required />
+                        <div class="invalid-feedback">First name is required.</div>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="Input.Register.EstSECFile" class="form-label">
+                            Scanned or Photocopy of <span>SEC Registration or DTI Certificate</span>: <span class="text-danger fw-bolder"> *</span>
+                            <small class="text-info">
+                                <i>
+                                    Attach PDF file with a maximum upload file size of 25
+                                    megabytes
+                                </i>
+                            </small>
+                        </label>
+                        <input asp-for="Input.EstSECFileUpload" type="file" class="form-control" data-element="EstSECFile" required />
+                        <small id="EstSECFileErrorMessege" class="text-danger"></small>
+                    </div>
+                    <div class="row p-0 m-0">
+                        <div class="col-12 mt-3">
+                            <div class="bg-body-secondary rounded p-3">
+                                <div class="form-check d-flex align-items-start">
+                                    <input asp-for="Input.Register.EstIsPeza"
+                                           class="form-check-input me-2"
+                                           type="checkbox"
+                                           data-element="EstIsPeza">
 
-                                        <label class="form-check-label" for="EstIsPeza">
-                                            Does your Establishment / Organization Registered in PEZA?
-                                            <span class="text-muted fw-lighter">
-                                                (Please check this and attach your PEZA certificate and Date Issued)
-                                            </span>
-                                        </label>
-                                    </div>
+                                    <label class="form-check-label" for="EstIsPeza">
+                                        Does your Establishment / Organization Registered in PEZA?
+                                        <span class="text-muted fw-lighter">
+                                            (Please check this and attach your PEZA certificate and Date Issued)
+                                        </span>
+                                    </label>
                                 </div>
                             </div>
-                            <div class="col-md-6">
-                                <label asp-for="Input.Register.EstBisPermitNumber" class="form-label">
-                                    <span id="EstBisPermitNumberLabelText" class="EstBisPermitNumberLabelText">Business or Mayor's Permit</span> Number
-                                </label>
-                                <input asp-for="Input.Register.EstBisPermitNumber" type="text" class="form-control" data-element="EstBisPermitNumber" minlength="5" required />
-                                <div class="invalid-feedback">SEC Company Registration Number / DTI Business Number is required.</div>
-                            </div>
-                            <div class="col-md-6">
-                                <label asp-for="Input.Register.EstBisPermitDateIssued" class="form-label">
-                                    <span class="EstBisPermitNumberLabelText">Business or Mayor's Permit</span> Issued Date
-                                </label>
-                                <input asp-for="Input.Register.EstBisPermitDateIssued" type="date" class="form-control" data-element="EstBisPermitDateIssued" required />
-                                <div class="invalid-feedback"><span class="EstBisPermitNumberLabelText">Business or Mayor's Permit</span> is required.</div>
-                            </div>
-                            <div class="col-md-6" id="EstPezaNoExpiry">
-                                <label asp-for="Input.Register.EstBisPermitValidityDate" class="form-label" id="EstBisPermitValidityDateLabel">
-                                    <span class="EstBisPermitNumberLabelText">Business or Mayor's Permit</span> Validity Date<span class="text-danger fw-bolder" id="EstBisPermitValidityDateRequiredSign"> *</span>
-                                </label>
-                                <input asp-for="Input.Register.EstBisPermitValidityDate" type="date" class="form-control" data-element="EstBisPermitValidityDate" />
-                                <div class="invalid-feedback"><span class="EstBisPermitNumberLabelText">Business or Mayor's Permit</span> is required.</div>
-                            </div>
-                            <div class="col-md-6">
-                                <label asp-for="Input.Register.EstBisPermitFile" class="form-label">
-                                    Scanned or Photocopy of <span class="EstBisPermitNumberLabelText">Business or Mayor's Permit</span> <span class="text-danger fw-bolder"> *</span>
-                                    <small class="text-info">
-                                        <i>
-                                            Attach PDF file with a maximum upload file size of 25
-                                            megabytes
-                                        </i>
-                                    </small>
-                                </label>
-                                <input asp-for="Input.EstBisPermitFileUpload" type="file" class="form-control" data-element="EstBisPermitFile" required />
-                                <div class="invalid-feedback"><span class="EstBisPermitNumberLabelText">Business or Mayor's Permit</span> is required.</div>
-                                <small id="EstBisPermitFileErrorMessege" class="text-danger"></small>
-
-                            </div>
                         </div>
-
-
-
                         <div class="col-md-6">
-                            <label asp-for="Input.Register.EstOwnerValidIDNumber" class="form-label">
-                                Valid National ID Number
+                            <label asp-for="Input.Register.EstBisPermitNumber" class="form-label">
+                                <span id="EstBisPermitNumberLabelText" class="EstBisPermitNumberLabelText">Business or Mayor's Permit</span> Number
                             </label>
-                            <input asp-for="Input.Register.EstOwnerValidIDNumber" type="text" class="form-control" data-element="EstOwnerValidIDNumber" minlength="5" required />
-                            <div class="invalid-feedback">Valid ID Number is required.</div>
+                            <input asp-for="Input.Register.EstBisPermitNumber" type="text" class="form-control" data-element="EstBisPermitNumber" minlength="5" required />
+                            <div class="invalid-feedback">SEC Company Registration Number / DTI Business Number is required.</div>
                         </div>
                         <div class="col-md-6">
-                            <label asp-for="Input.Register.EstOwnerValidIDDateIssued" class="form-label">
-                                Valid National ID Number Date Issued
+                            <label asp-for="Input.Register.EstBisPermitDateIssued" class="form-label">
+                                <span class="EstBisPermitNumberLabelText">Business or Mayor's Permit</span> Issued Date
                             </label>
-                            <input asp-for="Input.Register.EstOwnerValidIDDateIssued" type="date" class="form-control" data-element="EstOwnerValidIDDateIssued" required />
-                            <div class="invalid-feedback"> is required.</div>
+                            <input asp-for="Input.Register.EstBisPermitDateIssued" type="date" class="form-control" data-element="EstBisPermitDateIssued" required />
+                            <div class="invalid-feedback"><span class="EstBisPermitNumberLabelText">Business or Mayor's Permit</span> is required.</div>
                         </div>
-                        <div class="col-md-6">
-                            <label asp-for="Input.Register.EstOwnerValidIDDateExpire" class="form-label">
-                                Valid National ID Number Date Expire
+                        <div class="col-md-6" id="EstPezaNoExpiry">
+                            <label asp-for="Input.Register.EstBisPermitValidityDate" class="form-label" id="EstBisPermitValidityDateLabel">
+                                <span class="EstBisPermitNumberLabelText">Business or Mayor's Permit</span> Validity Date<span class="text-danger fw-bolder" id="EstBisPermitValidityDateRequiredSign"> *</span>
                             </label>
-                            <input asp-for="Input.Register.EstOwnerValidIDDateExpire" type="date" class="form-control" data-element="EstOwnerValidIDDateExpire" />
+                            <input asp-for="Input.Register.EstBisPermitValidityDate" type="date" class="form-control" data-element="EstBisPermitValidityDate" />
+                            <div class="invalid-feedback"><span class="EstBisPermitNumberLabelText">Business or Mayor's Permit</span> is required.</div>
                         </div>
                         <div class="col-md-6">
-                            <label asp-for="Input.Register.EstOwnerValidIDFile" class="form-label">
-                                Scanned or Photocopy of <span>Valid ID</span>: <span class="text-danger fw-bolder"> *</span>
+                            <label asp-for="Input.Register.EstBisPermitFile" class="form-label">
+                                Scanned or Photocopy of <span class="EstBisPermitNumberLabelText">Business or Mayor's Permit</span> <span class="text-danger fw-bolder"> *</span>
                                 <small class="text-info">
                                     <i>
                                         Attach PDF file with a maximum upload file size of 25
@@ -613,188 +572,227 @@
                                     </i>
                                 </small>
                             </label>
-                            <input asp-for="Input.EstOwnerValidIdFileUpload" type="file" class="form-control" data-element="EstOwnerValidIDFile" required />
-                            <div class="invalid-feedback">Valid ID is required.</div>
-                            <small id="EstOwnerValidIDFileErrorMessege" class="text-danger"></small>
+                            <input asp-for="Input.EstBisPermitFileUpload" type="file" class="form-control" data-element="EstBisPermitFile" required />
+                            <div class="invalid-feedback"><span class="EstBisPermitNumberLabelText">Business or Mayor's Permit</span> is required.</div>
+                            <small id="EstBisPermitFileErrorMessege" class="text-danger"></small>
 
                         </div>
-                        <div class="col-12 d-grid">
-                            <button type="button" class="btn btn-primary btn-lg mt-3 next" id="Next">Next</button>
-                        </div>
+                    </div>
+
+
+
+                    <div class="col-md-6">
+                        <label asp-for="Input.Register.EstOwnerValidIDNumber" class="form-label">
+                            Valid National ID Number
+                        </label>
+                        <input asp-for="Input.Register.EstOwnerValidIDNumber" type="text" class="form-control" data-element="EstOwnerValidIDNumber" minlength="5" required />
+                        <div class="invalid-feedback">Valid ID Number is required.</div>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="Input.Register.EstOwnerValidIDDateIssued" class="form-label">
+                            Valid National ID Number Date Issued
+                        </label>
+                        <input asp-for="Input.Register.EstOwnerValidIDDateIssued" type="date" class="form-control" data-element="EstOwnerValidIDDateIssued" required />
+                        <div class="invalid-feedback"> is required.</div>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="Input.Register.EstOwnerValidIDDateExpire" class="form-label">
+                            Valid National ID Number Date Expire
+                        </label>
+                        <input asp-for="Input.Register.EstOwnerValidIDDateExpire" type="date" class="form-control" data-element="EstOwnerValidIDDateExpire" />
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="Input.Register.EstOwnerValidIDFile" class="form-label">
+                            Scanned or Photocopy of <span>Valid ID</span>: <span class="text-danger fw-bolder"> *</span>
+                            <small class="text-info">
+                                <i>
+                                    Attach PDF file with a maximum upload file size of 25
+                                    megabytes
+                                </i>
+                            </small>
+                        </label>
+                        <input asp-for="Input.EstOwnerValidIdFileUpload" type="file" class="form-control" data-element="EstOwnerValidIDFile" required />
+                        <div class="invalid-feedback">Valid ID is required.</div>
+                        <small id="EstOwnerValidIDFileErrorMessege" class="text-danger"></small>
+
+                    </div>
+                    <div class="col-12 d-grid">
+                        <button type="button" class="btn btn-primary btn-lg mt-3 next" id="Next">Next</button>
                     </div>
                 </div>
             </div>
-        </fieldset>
+        </div>
+    </fieldset>
 
-        <fieldset id="step2" class="d-none">
-            <div class="card w-100 shadow-sm border-0">
-                <div class="card-header">
-                    <h5 class="card-title">Establishment Application Profile</h5>
+    <fieldset id="step2" class="d-none">
+        <div class="card w-100 shadow-sm border-0">
+            <div class="card-header">
+                <h5 class="card-title">Establishment Application Profile</h5>
+            </div>
+            <div class="card-body">
+                <div class="container">
+                    <dl class="row">
+                        <!-- employer details review -->
+                        <dt class="col-sm-12 col-lg-4">Set Account Username / NickName</dt>
+                        <dd class="col-sm-12 col-lg-8" id="reviewUserName"></dd>
+                        <dt class="col-sm-12 col-lg-4">Establishment Email Address</dt>
+                        <dd class="col-sm-12 col-lg-8" id="reviewEmail"></dd>
+                        <dt class="col-sm-12 col-lg-4">Establishment Cellphone / Telephone Number</dt>
+                        <dd class="col-sm-12 col-lg-8" id="reviewEstPhone"></dd>
+                        <dt class="col-sm-12 col-lg-4">Establishment Name</dt>
+                        <dd class="col-sm-12 col-lg-8" id="reviewEstName"></dd>
+                        <dt class="col-sm-12 col-lg-4">Establishment Type</dt>
+                        <dd class="col-sm-12 col-lg-8" id="reviewEstType"></dd>
+                        <dt class="col-sm-12 col-lg-4">Legal Organization</dt>
+                        <dd class="col-sm-12 col-lg-8" id="reviewEstLegalOrg"></dd>
+                        <dt class="col-sm-12 col-lg-4">Other Legal Organization</dt>
+                        <dd class="col-sm-12 col-lg-8" id="reviewEstLegalOrgOther"></dd>
+                        <dt class="col-sm-12 col-lg-4">Region</dt>
+                        <dd class="col-sm-12 col-lg-8" id="reviewEstRegion"></dd>
+                        <dt class="col-sm-12 col-lg-4">Province</dt>
+                        <dd class="col-sm-12 col-lg-8" id="reviewEstProvince"></dd>
+                        <dt class="col-sm-12 col-lg-4">City / Municipality</dt>
+                        <dd class="col-sm-12 col-lg-8" id="reviewEstCityMun"></dd>
+                        <dt class="col-sm-12 col-lg-4">Barangay</dt>
+                        <dd class="col-sm-12 col-lg-8" id="reviewEstBrgy"></dd>
+                        <dt class="col-sm-12 col-lg-4">Street Address / Floor / Bldg. No. / Subdivision</dt>
+                        <dd class="col-sm-12 col-lg-8" id="reviewEstStreet"></dd>
+                        <dt class="col-sm-12 col-lg-4">Manager/Owner First Name</dt>
+                        <dd class="col-sm-12 col-lg-8" id="reviewEstOwnerFirst"></dd>
+                        <dt class="col-sm-12 col-lg-4">Manager/Owner Middle Name</dt>
+                        <dd class="col-sm-12 col-lg-8" id="reviewEstOwnerMid"></dd>
+                        <dt class="col-sm-12 col-lg-4">Manager/Owner Last Name</dt>
+                        <dd class="col-sm-12 col-lg-8" id="reviewEstOwnerLast"></dd>
+                        <dt class="col-sm-12 col-lg-4">Current Capitalization</dt>
+                        <dd class="col-sm-12 col-lg-8" id="reviewEstCurrentCap"></dd>
+                        <dt class="col-sm-12 col-lg-4">Total Assets</dt>
+                        <dd class="col-sm-12 col-lg-8" id="reviewEstTotalAssets"></dd>
+                        <dt class="col-sm-12 col-lg-4">Nature of Business</dt>
+                        <dd class="col-sm-12 col-lg-8" id="reviewEstBusinessNature"></dd>
+                        <dt class="col-sm-12 col-lg-4">Specify Nature of Business</dt>
+                        <dd class="col-sm-12 col-lg-8" id="reviewEstOtherBusNature"></dd>
+                        <dt class="col-sm-12 col-lg-4">Number of Male Employees</dt>
+                        <dd class="col-sm-12 col-lg-8" id="reviewEstMaleCount"></dd>
+                        <dt class="col-sm-12 col-lg-4">Number of Female Employees</dt>
+                        <dd class="col-sm-12 col-lg-8" id="reviewEstFemaleCount"></dd>
+                        <dt class="col-sm-12 col-lg-4">Total Number of Employees</dt>
+                        <dd class="col-sm-12 col-lg-8" id="reviewEstTotalEmployees"></dd>
+                        <dt class="col-sm-12 col-lg-4">Technical Information 1</dt>
+                        <dd class="col-sm-12 col-lg-8" id="reviewEstTechInfo1"></dd>
+                        <dt class="col-sm-12 col-lg-4">Other Technical Information 1</dt>
+                        <dd class="col-sm-12 col-lg-8" id="reviewEstTechInfo1Other"></dd>
+                        <dt class="col-sm-12 col-lg-4">Technical Information 2</dt>
+                        <dd class="col-sm-12 col-lg-8" id="reviewEstTechInfo2"></dd>
+                        <dt class="col-sm-12 col-lg-4">Other Technical Information 2</dt>
+                        <dd class="col-sm-12 col-lg-8" id="reviewEstTechInfo2Other"></dd>
+                        <dt class="col-sm-12 col-lg-4">Chemical Substances Used or Handled</dt>
+                        <dd class="col-sm-12 col-lg-8" id="reviewEstChemSubstance"></dd>
+                        <dt class="col-sm-12 col-lg-4">SEC / DTI Registration Number</dt>
+                        <dd class="col-sm-12 col-lg-8" id="reviewEstSECNumber"></dd>
+                        <dt class="col-sm-12 col-lg-4">SEC / DTI Date Issued</dt>
+                        <dd class="col-sm-12 col-lg-8" id="reviewEstSECDateIssued"></dd>
+                        <dt class="col-sm-12 col-lg-4">SEC / DTI Attachment</dt>
+                        <dd class="col-sm-12 col-lg-8" id="reviewEstSECFile"></dd>
+                        <dt class="col-sm-12 col-lg-4">Business Permit Number</dt>
+                        <dd class="col-sm-12 col-lg-8" id="reviewEstBisPermitNumber"></dd>
+                        <dt class="col-sm-12 col-lg-4">Business Permit Date Issued</dt>
+                        <dd class="col-sm-12 col-lg-8" id="reviewEstBisPermitDateIssued"></dd>
+                        <dt class="col-sm-12 col-lg-4">Business Permit Validity Date</dt>
+                        <dd class="col-sm-12 col-lg-8" id="reviewEstBisPermitValidityDate"></dd>
+                        <dt class="col-sm-12 col-lg-4">Business Permit Attachment</dt>
+                        <dd class="col-sm-12 col-lg-8" id="reviewEstBisPermitFile"></dd>
+                        <dt class="col-sm-12 col-lg-4">Valid National ID Number</dt>
+                        <dd class="col-sm-12 col-lg-8" id="reviewEstOwnerValidIDNumber"></dd>
+                        <dt class="col-sm-12 col-lg-4">Valid National ID Date Issued</dt>
+                        <dd class="col-sm-12 col-lg-8" id="reviewEstOwnerValidIDDateIssued"></dd>
+                        <dt class="col-sm-12 col-lg-4">Valid National ID Date Expire</dt>
+                        <dd class="col-sm-12 col-lg-8" id="reviewEstOwnerValidIDDateExpire"></dd>
+                        <dt class="col-sm-12 col-lg-4">Valid ID Attachment</dt>
+                        <dd class="col-sm-12 col-lg-8" id="reviewEstOwnerValidIDFile"></dd>
+                    </dl>
                 </div>
-                <div class="card-body">
-                    <div class="container">
-                        <dl class="row">
-                            <!-- employer details review -->
-                            <dt class="col-sm-12 col-lg-4">Set Account Username / NickName</dt>
-                            <dd class="col-sm-12 col-lg-8" id="reviewUserName"></dd>
-                            <dt class="col-sm-12 col-lg-4">Establishment Email Address</dt>
-                            <dd class="col-sm-12 col-lg-8" id="reviewEmail"></dd>
-                            <dt class="col-sm-12 col-lg-4">Establishment Cellphone / Telephone Number</dt>
-                            <dd class="col-sm-12 col-lg-8" id="reviewEstPhone"></dd>
-                            <dt class="col-sm-12 col-lg-4">Establishment Name</dt>
-                            <dd class="col-sm-12 col-lg-8" id="reviewEstName"></dd>
-                            <dt class="col-sm-12 col-lg-4">Establishment Type</dt>
-                            <dd class="col-sm-12 col-lg-8" id="reviewEstType"></dd>
-                            <dt class="col-sm-12 col-lg-4">Legal Organization</dt>
-                            <dd class="col-sm-12 col-lg-8" id="reviewEstLegalOrg"></dd>
-                            <dt class="col-sm-12 col-lg-4">Other Legal Organization</dt>
-                            <dd class="col-sm-12 col-lg-8" id="reviewEstLegalOrgOther"></dd>
-                            <dt class="col-sm-12 col-lg-4">Region</dt>
-                            <dd class="col-sm-12 col-lg-8" id="reviewEstRegion"></dd>
-                            <dt class="col-sm-12 col-lg-4">Province</dt>
-                            <dd class="col-sm-12 col-lg-8" id="reviewEstProvince"></dd>
-                            <dt class="col-sm-12 col-lg-4">City / Municipality</dt>
-                            <dd class="col-sm-12 col-lg-8" id="reviewEstCityMun"></dd>
-                            <dt class="col-sm-12 col-lg-4">Barangay</dt>
-                            <dd class="col-sm-12 col-lg-8" id="reviewEstBrgy"></dd>
-                            <dt class="col-sm-12 col-lg-4">Street Address / Floor / Bldg. No. / Subdivision</dt>
-                            <dd class="col-sm-12 col-lg-8" id="reviewEstStreet"></dd>
-                            <dt class="col-sm-12 col-lg-4">Manager/Owner First Name</dt>
-                            <dd class="col-sm-12 col-lg-8" id="reviewEstOwnerFirst"></dd>
-                            <dt class="col-sm-12 col-lg-4">Manager/Owner Middle Name</dt>
-                            <dd class="col-sm-12 col-lg-8" id="reviewEstOwnerMid"></dd>
-                            <dt class="col-sm-12 col-lg-4">Manager/Owner Last Name</dt>
-                            <dd class="col-sm-12 col-lg-8" id="reviewEstOwnerLast"></dd>
-                            <dt class="col-sm-12 col-lg-4">Current Capitalization</dt>
-                            <dd class="col-sm-12 col-lg-8" id="reviewEstCurrentCap"></dd>
-                            <dt class="col-sm-12 col-lg-4">Total Assets</dt>
-                            <dd class="col-sm-12 col-lg-8" id="reviewEstTotalAssets"></dd>
-                            <dt class="col-sm-12 col-lg-4">Nature of Business</dt>
-                            <dd class="col-sm-12 col-lg-8" id="reviewEstBusinessNature"></dd>
-                            <dt class="col-sm-12 col-lg-4">Specify Nature of Business</dt>
-                            <dd class="col-sm-12 col-lg-8" id="reviewEstOtherBusNature"></dd>
-                            <dt class="col-sm-12 col-lg-4">Number of Male Employees</dt>
-                            <dd class="col-sm-12 col-lg-8" id="reviewEstMaleCount"></dd>
-                            <dt class="col-sm-12 col-lg-4">Number of Female Employees</dt>
-                            <dd class="col-sm-12 col-lg-8" id="reviewEstFemaleCount"></dd>
-                            <dt class="col-sm-12 col-lg-4">Total Number of Employees</dt>
-                            <dd class="col-sm-12 col-lg-8" id="reviewEstTotalEmployees"></dd>
-                            <dt class="col-sm-12 col-lg-4">Technical Information 1</dt>
-                            <dd class="col-sm-12 col-lg-8" id="reviewEstTechInfo1"></dd>
-                            <dt class="col-sm-12 col-lg-4">Other Technical Information 1</dt>
-                            <dd class="col-sm-12 col-lg-8" id="reviewEstTechInfo1Other"></dd>
-                            <dt class="col-sm-12 col-lg-4">Technical Information 2</dt>
-                            <dd class="col-sm-12 col-lg-8" id="reviewEstTechInfo2"></dd>
-                            <dt class="col-sm-12 col-lg-4">Other Technical Information 2</dt>
-                            <dd class="col-sm-12 col-lg-8" id="reviewEstTechInfo2Other"></dd>
-                            <dt class="col-sm-12 col-lg-4">Chemical Substances Used or Handled</dt>
-                            <dd class="col-sm-12 col-lg-8" id="reviewEstChemSubstance"></dd>
-                            <dt class="col-sm-12 col-lg-4">SEC / DTI Registration Number</dt>
-                            <dd class="col-sm-12 col-lg-8" id="reviewEstSECNumber"></dd>
-                            <dt class="col-sm-12 col-lg-4">SEC / DTI Date Issued</dt>
-                            <dd class="col-sm-12 col-lg-8" id="reviewEstSECDateIssued"></dd>
-                            <dt class="col-sm-12 col-lg-4">SEC / DTI Attachment</dt>
-                            <dd class="col-sm-12 col-lg-8" id="reviewEstSECFile"></dd>
-                            <dt class="col-sm-12 col-lg-4">Business Permit Number</dt>
-                            <dd class="col-sm-12 col-lg-8" id="reviewEstBisPermitNumber"></dd>
-                            <dt class="col-sm-12 col-lg-4">Business Permit Date Issued</dt>
-                            <dd class="col-sm-12 col-lg-8" id="reviewEstBisPermitDateIssued"></dd>
-                            <dt class="col-sm-12 col-lg-4">Business Permit Validity Date</dt>
-                            <dd class="col-sm-12 col-lg-8" id="reviewEstBisPermitValidityDate"></dd>
-                            <dt class="col-sm-12 col-lg-4">Business Permit Attachment</dt>
-                            <dd class="col-sm-12 col-lg-8" id="reviewEstBisPermitFile"></dd>
-                            <dt class="col-sm-12 col-lg-4">Valid National ID Number</dt>
-                            <dd class="col-sm-12 col-lg-8" id="reviewEstOwnerValidIDNumber"></dd>
-                            <dt class="col-sm-12 col-lg-4">Valid National ID Date Issued</dt>
-                            <dd class="col-sm-12 col-lg-8" id="reviewEstOwnerValidIDDateIssued"></dd>
-                            <dt class="col-sm-12 col-lg-4">Valid National ID Date Expire</dt>
-                            <dd class="col-sm-12 col-lg-8" id="reviewEstOwnerValidIDDateExpire"></dd>
-                            <dt class="col-sm-12 col-lg-4">Valid ID Attachment</dt>
-                            <dd class="col-sm-12 col-lg-8" id="reviewEstOwnerValidIDFile"></dd>
-                        </dl>
-                    </div>
-                    <div class="container mt-3 bg-body-secondary p-3 d-none" id="review_branch_unit_container">
-                        <h5 class="text-muted">Branch Unit</h5>
-                        <table class="table table-bordered" id="est_branch_table" style="table-layout: fixed; width: 100%;">
-                            <colgroup>
-                                <col style="width: 33.3333%;" />
-                                <col style="width: 33.3333%;" />
-                                <col style="width: 33.3334%;" />
-                            </colgroup>
-                            <thead>
-                                <tr>
-                                    <th class="text-center">Rule 1020 Application #</th>
-                                    <th class="text-center">Branch Establishment Name</th>
-                                    <th class="text-center">Location</th>
-                                </tr>
-                            </thead>
-                            <tbody id="review_est_branch_body">
-                            </tbody>
-                        </table>
-                    </div>
+                <div class="container mt-3 bg-body-secondary p-3 d-none" id="review_branch_unit_container">
+                    <h5 class="text-muted">Branch Unit</h5>
+                    <table class="table table-bordered" id="est_branch_table" style="table-layout: fixed; width: 100%;">
+                        <colgroup>
+                            <col style="width: 33.3333%;" />
+                            <col style="width: 33.3333%;" />
+                            <col style="width: 33.3334%;" />
+                        </colgroup>
+                        <thead>
+                            <tr>
+                                <th class="text-center">Rule 1020 Application #</th>
+                                <th class="text-center">Branch Establishment Name</th>
+                                <th class="text-center">Location</th>
+                            </tr>
+                        </thead>
+                        <tbody id="review_est_branch_body">
+                        </tbody>
+                    </table>
+                </div>
 
-                    <div class="container mt-3 bg-body-secondary p-3 d-none" id="review_labor_union_container">
-                        <h5 class="text-muted">Labor Union</h5>
-                        <table class="table table-bordered" id="est_union_table">
-                            <thead>
-                                <tr>
-                                    <th class="text-center">Name of Labor union</th>
-                                    <th class="text-center">Address of Labor union</th>
-                                    <th class="text-center">BLR Registration number</th>
-                                </tr>
-                            </thead>
-                            <tbody id="review_est_union_body">
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                <div class="alert alert-info">
-                    <div class="form-check">
-                        <input type="checkbox" id="certify" name="certify_agreement" class="form-check-input"
-                               value="true">
-                        <label for="certify" class="form-check-label">
-                            &nbsp;&nbsp;&nbsp;&nbsp; I HEREBY: 1)Certify the truthfulness of the above-mentioned
-                            information based on my own personal knowledge and authentic records;
-                            2)Commit to strictly implement the herein attached designed for this specific
-                            establishment and comply with occupational and health
-                            standard required by law;
-                            and 3)Be responsible for any accident that will happen during the operation of the
-                            Establishment
-                            especially for the welfare of the workers who are employed to perform the duties.
-                        </label>
-                    </div>
-                </div>
-                <div class="alert alert-info">
-                    <div class="form-check">
-                        <input type="checkbox" id="certifydpa" name="certify_agreement" class="form-check-input"
-                               value="true">
-                        <label for="certify_dpa" class="form-check-label">
-                            &nbsp;&nbsp;&nbsp;&nbsp; CONSENT NOTICE: The Department of Labor and Employment
-                            Regional Office No. IV-A values and is committed to comply with Republic Act No.
-                            10173
-                            otherwise known as the Philippine Data Privacy Act of 2012 (“Data Privacy Act”) to
-                            protect and safeguard your privacy. By accomplishing this form, you signify your
-                            acceptance
-                            to provide pertinent and personal information about you or data establishment. All
-                            information that will be collected through this form will be used for the sole
-                            purpose of monitoring
-                            and fulfilling the functions of this Office. We may only keep your information until
-                            such time that we have attained the purpose by which we collect them and when the
-                            information is no longer required
-                            the DOLE RO IVA procedure will be followed to dispose of said data. Under the
-                            foregoing circumstances and to the extent permissible by applicable law. You agree
-                            not to take action against DOLE RO IVA for the
-                            disclosure and retention of your information.
-                        </label>
-                    </div>
-                </div>
-                <div class="col-12 d-grid">
-                    <button type="button" id="previous" class="btn btn-primary btn-lg previous">Previous</button>
-                    <button type="submit" id="registerSubmit" class="btn btn-primary btn-lg ladda-button mt-2">Submit Form</button>
+                <div class="container mt-3 bg-body-secondary p-3 d-none" id="review_labor_union_container">
+                    <h5 class="text-muted">Labor Union</h5>
+                    <table class="table table-bordered" id="est_union_table">
+                        <thead>
+                            <tr>
+                                <th class="text-center">Name of Labor union</th>
+                                <th class="text-center">Address of Labor union</th>
+                                <th class="text-center">BLR Registration number</th>
+                            </tr>
+                        </thead>
+                        <tbody id="review_est_union_body">
+                        </tbody>
+                    </table>
                 </div>
             </div>
-        </fieldset>
-    </form>
+            <div class="alert alert-info">
+                <div class="form-check">
+                    <input type="checkbox" id="certify" name="certify_agreement" class="form-check-input"
+                           value="true">
+                    <label for="certify" class="form-check-label">
+                        &nbsp;&nbsp;&nbsp;&nbsp; I HEREBY: 1)Certify the truthfulness of the above-mentioned
+                        information based on my own personal knowledge and authentic records;
+                        2)Commit to strictly implement the herein attached designed for this specific
+                        establishment and comply with occupational and health
+                        standard required by law;
+                        and 3)Be responsible for any accident that will happen during the operation of the
+                        Establishment
+                        especially for the welfare of the workers who are employed to perform the duties.
+                    </label>
+                </div>
+            </div>
+            <div class="alert alert-info">
+                <div class="form-check">
+                    <input type="checkbox" id="certifydpa" name="certify_agreement" class="form-check-input"
+                           value="true">
+                    <label for="certify_dpa" class="form-check-label">
+                        &nbsp;&nbsp;&nbsp;&nbsp; CONSENT NOTICE: The Department of Labor and Employment
+                        Regional Office No. IV-A values and is committed to comply with Republic Act No.
+                        10173
+                        otherwise known as the Philippine Data Privacy Act of 2012 (“Data Privacy Act”) to
+                        protect and safeguard your privacy. By accomplishing this form, you signify your
+                        acceptance
+                        to provide pertinent and personal information about you or data establishment. All
+                        information that will be collected through this form will be used for the sole
+                        purpose of monitoring
+                        and fulfilling the functions of this Office. We may only keep your information until
+                        such time that we have attained the purpose by which we collect them and when the
+                        information is no longer required
+                        the DOLE RO IVA procedure will be followed to dispose of said data. Under the
+                        foregoing circumstances and to the extent permissible by applicable law. You agree
+                        not to take action against DOLE RO IVA for the
+                        disclosure and retention of your information.
+                    </label>
+                </div>
+            </div>
+            <div class="col-12 d-grid">
+                <button type="button" id="previous" class="btn btn-primary btn-lg previous">Previous</button>
+                <button type="submit" id="registerSubmit" class="btn btn-primary btn-lg ladda-button mt-2">Submit Form</button>
+            </div>
+        </div>
+    </fieldset>
+</form>
 
 </div>
 </div>

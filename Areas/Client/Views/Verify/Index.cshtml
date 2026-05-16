@@ -4,11 +4,10 @@
 @{
 }
 <div class="container-sm my-5" aria-hidden="true">
-    <div class="col-1 col-md-1 text-right mb-2">
-        <a asp-area="Client" asp-controller="Register" asp-action="Index" class="btn btn-outline-primary form-control btn-sm">Back to Home</a>
-    </div>
     <div class="shadow p-3 bg-body rounded">
-
+        <div class="row d-inline-block">
+            <a asp-area="Client" asp-controller="Register" asp-action="Index" class="btn btn-outline-primary form-control btn-sm border-0 d-inline-block text-start"><i class="fas fa-arrow-left"></i><small class="d-inline-flex text-nowrap">Back to Home</small></a>
+        </div>
         <div class="my-4 mb-4 text-center">
             <img class="w-25" src="~/img/Client/track_status.svg" alt="track application image" draggable="false">
             <h2 class="text-muted mt-4 mb-0">APPLICATION STATUS TRACKER</h2>
